@@ -1,0 +1,80 @@
+﻿@model WebApplication13.Models.Account
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>Account</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Date)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Date)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Time)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Time)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.StartMoney)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.StartMoney)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.StaffAmount)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.StaffAmount)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.CreateDateTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.CreateDateTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.UpdateDateTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.UpdateDateTime)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

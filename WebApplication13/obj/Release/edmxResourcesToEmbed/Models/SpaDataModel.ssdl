@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="spasystemdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="Time" Type="time" Precision="7" Nullable="false" />
+    <Property Name="StartMoney" Type="int" Nullable="false" />
+    <Property Name="StaffAmount" Type="smallint" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Branch">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="MassageSetId" Type="int" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="DiscountMaster">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="DiscountMasterDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DiscountMasterId" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="DiscountMasterId" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Value" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="DiscountRecord">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="Time" Type="time" Precision="7" Nullable="false" />
+    <Property Name="DiscountMasterId" Type="int" Nullable="false" />
+    <Property Name="DiscountMasterDetailId" Type="int" Nullable="false" />
+    <Property Name="Value" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="IsCreditCard" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CancelStatus" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MassagePlan">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MassageSet">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="MassageTopicId" />
+      <PropertyRef Name="MassagePlanId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="MassageTopicId" Type="int" Nullable="false" />
+    <Property Name="MassagePlanId" Type="int" Nullable="false" />
+    <Property Name="Price" Type="smallint" Nullable="false" />
+    <Property Name="Commission" Type="smallint" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MassageTopic">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="HeaderColor" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="ChildColor" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="OrderRecord">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="Time" Type="time" Precision="7" Nullable="false" />
+    <Property Name="MassageTopicId" Type="int" Nullable="false" />
+    <Property Name="MassagePlanId" Type="int" Nullable="false" />
+    <Property Name="Price" Type="smallint" Nullable="false" />
+    <Property Name="Commission" Type="smallint" Nullable="false" />
+    <Property Name="CancelStatus" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="OrderRecordWithDiscount">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="OrderRecordId" Type="int" Nullable="false" />
+    <Property Name="DiscountRecordId" Type="int" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="OtherSale">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Price" Type="smallint" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="OtherSaleRecord">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="Time" Type="time" Precision="7" Nullable="false" />
+    <Property Name="OtherSaleId" Type="int" Nullable="false" />
+    <Property Name="Price" Type="smallint" Nullable="false" />
+    <Property Name="CancelStatus" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="SystemSetting">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Value" Type="varchar" MaxLength="200" />
+    <Property Name="Version" Type="int" />
+    <Property Name="Status" Type="varchar" MaxLength="20" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Surname" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="50" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Version">
+    <Key>
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="VersionNo" Type="smallint" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
+  <EntityContainer Name="spasystemdbModelStoreContainer">
+    <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Branch" EntityType="Self.Branch" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DiscountMaster" EntityType="Self.DiscountMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DiscountMasterDetail" EntityType="Self.DiscountMasterDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DiscountRecord" EntityType="Self.DiscountRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MassagePlan" EntityType="Self.MassagePlan" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MassageSet" EntityType="Self.MassageSet" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MassageTopic" EntityType="Self.MassageTopic" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderRecord" EntityType="Self.OrderRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderRecordWithDiscount" EntityType="Self.OrderRecordWithDiscount" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OtherSale" EntityType="Self.OtherSale" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OtherSaleRecord" EntityType="Self.OtherSaleRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

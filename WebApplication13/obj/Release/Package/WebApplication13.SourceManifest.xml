@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\Package\PackageTmp" />
+  <setAcl path="C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+</sitemanifest>

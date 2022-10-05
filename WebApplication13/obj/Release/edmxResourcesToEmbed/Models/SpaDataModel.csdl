@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="spasystemdbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Time" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="StartMoney" Type="Int32" Nullable="false" />
+    <Property Name="StaffAmount" Type="Int16" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Branch">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="MassageSetId" Type="Int32" Nullable="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MassagePlan">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MassageSet">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="MassageTopicId" />
+      <PropertyRef Name="MassagePlanId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="MassageTopicId" Type="Int32" Nullable="false" />
+    <Property Name="MassagePlanId" Type="Int32" Nullable="false" />
+    <Property Name="Price" Type="Int16" Nullable="false" />
+    <Property Name="Commission" Type="Int16" Nullable="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MassageTopic">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="HeaderColor" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ChildColor" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="OrderRecord">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Time" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="MassageTopicId" Type="Int32" Nullable="false" />
+    <Property Name="MassagePlanId" Type="Int32" Nullable="false" />
+    <Property Name="Price" Type="Int16" Nullable="false" />
+    <Property Name="Commission" Type="Int16" Nullable="false" />
+    <Property Name="CancelStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityContainer Name="spasystemdbEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Accounts" EntityType="Self.Account" />
+    <EntitySet Name="Branches" EntityType="Self.Branch" />
+    <EntitySet Name="MassagePlans" EntityType="Self.MassagePlan" />
+    <EntitySet Name="MassageSets" EntityType="Self.MassageSet" />
+    <EntitySet Name="MassageTopics" EntityType="Self.MassageTopic" />
+    <EntitySet Name="OrderRecords" EntityType="Self.OrderRecord" />
+    <EntitySet Name="Users" EntityType="spasystemdbModel.User" />
+    <EntitySet Name="Versions" EntityType="spasystemdbModel.Version" />
+    <EntitySet Name="OtherSales" EntityType="spasystemdbModel.OtherSale" />
+    <EntitySet Name="OtherSaleRecords" EntityType="spasystemdbModel.OtherSaleRecord" />
+    <EntitySet Name="SystemSettings" EntityType="spasystemdbModel.SystemSetting" />
+    <EntitySet Name="DiscountMasters" EntityType="spasystemdbModel.DiscountMaster" />
+    <EntitySet Name="DiscountMasterDetails" EntityType="spasystemdbModel.DiscountMasterDetail" />
+    <EntitySet Name="DiscountRecords" EntityType="spasystemdbModel.DiscountRecord" />
+    <EntitySet Name="OrderRecordWithDiscounts" EntityType="spasystemdbModel.OrderRecordWithDiscount" />
+  </EntityContainer>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Surname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Version">
+    <Key>
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="VersionNo" Type="Int16" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="OtherSale">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Price" Type="Int16" Nullable="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="OtherSaleRecord">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Time" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="OtherSaleId" Type="Int32" Nullable="false" />
+    <Property Name="Price" Type="Int16" Nullable="false" />
+    <Property Name="CancelStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="SystemSetting">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Value" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Version" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="DiscountMaster">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="DiscountMasterDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DiscountMasterId" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DiscountMasterId" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Value" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="DiscountRecord">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Time" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="DiscountMasterId" Type="Int32" Nullable="false" />
+    <Property Name="DiscountMasterDetailId" Type="Int32" Nullable="false" />
+    <Property Name="Value" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="IsCreditCard" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CancelStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="OrderRecordWithDiscount">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="OrderRecordId" Type="Int32" Nullable="false" />
+    <Property Name="DiscountRecordId" Type="Int32" Nullable="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+</Schema>

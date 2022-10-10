@@ -1356,6 +1356,11 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
@@ -1365,6 +1370,22 @@ namespace WebApplication13.Controllers
                     //float tPaxNumInFloat = (float)tPaxNum;
                     //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
                     //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for(int m=0;m<listDiscount.Count();m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
@@ -1443,9 +1464,16 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,

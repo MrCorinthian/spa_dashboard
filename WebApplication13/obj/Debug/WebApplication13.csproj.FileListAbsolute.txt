@@ -317,3 +317,42 @@ C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\
 C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Debug\WebApplication13.csproj.CopyComplete
 C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Debug\WebApplication13.dll
 C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Debug\WebApplication13.pdb
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\csc.exe
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\vbc.exe
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\VBCSCompiler.exe
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.dll.config
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.pdb
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Helpers.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Mvc.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Razor.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Deployment.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Deployment.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Helpers.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Mvc.xml
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.CoreCompileInputs.cache
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.CopyComplete
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.dll
+C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.pdb

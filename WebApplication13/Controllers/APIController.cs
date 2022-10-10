@@ -39,7 +39,8 @@ namespace WebApplication13.Controllers
                 Password_Version = getBranchPasswordDetail(getBranchId).Version,
                 Password_Status = getBranchPasswordDetail(getBranchId).Status,
                 System_Version = getBranchSystemVersion(getBranchId).Value,
-                System_URL = getBranchDownloadURL(getBranchId).Value
+                System_URL = getBranchDownloadURL(getBranchId).Value,
+                Master_DB = "https://drive.google.com/u/0/uc?id=1TP8xez3QP2WqJ_PYjLZT_03sUatEk1Ws&export=download"
 
             };
             var json = Json(send, JsonRequestBehavior.AllowGet);

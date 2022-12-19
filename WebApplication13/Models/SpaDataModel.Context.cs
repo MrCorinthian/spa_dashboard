@@ -40,5 +40,11 @@ namespace WebApplication13.Models
         public virtual DbSet<DiscountMasterDetail> DiscountMasterDetails { get; set; }
         public virtual DbSet<DiscountRecord> DiscountRecords { get; set; }
         public virtual DbSet<OrderRecordWithDiscount> OrderRecordWithDiscounts { get; set; }
+        public virtual DbSet<Member> Members { get; set; }
+        public virtual DbSet<MemberDetail> MemberDetails { get; set; }
+        public virtual DbSet<MemberGroup> MemberGroups { get; set; }
+        public virtual DbSet<MemberGroupPriviledge> MemberGroupPriviledges { get; set; }
+        public virtual DbSet<MemberPriviledge> MemberPriviledges { get; set; }
+        public virtual DbSet<PriviledgeType> PriviledgeTypes { get; set; }
     }
 }

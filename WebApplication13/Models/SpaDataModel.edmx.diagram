@@ -20,6 +20,12 @@
         <EntityTypeShape EntityType="spasystemdbModel.DiscountMasterDetail" Width="1.5" PointX="11" PointY="4.75" />
         <EntityTypeShape EntityType="spasystemdbModel.DiscountRecord" Width="1.5" PointX="12.625" PointY="4.75" />
         <EntityTypeShape EntityType="spasystemdbModel.OrderRecordWithDiscount" Width="1.5" PointX="9.375" PointY="7.5" />
+        <EntityTypeShape EntityType="spasystemdbModel.Member" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MemberDetail" Width="1.5" PointX="10.75" PointY="10.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MemberGroup" Width="1.5" PointX="11.75" PointY="0.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MemberGroupPriviledge" Width="1.5" PointX="2.75" PointY="11.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MemberPriviledge" Width="1.5" PointX="4.75" PointY="11.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.PriviledgeType" Width="1.5" PointX="6.75" PointY="11.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -12,13 +12,18 @@ namespace WebApplication13.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DiscountMaster
+    public partial class MemberPriviledge
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public int PriviledgeTypeId { get; set; }
+        public string ShowName { get; set; }
+        public int Value { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> ExpireDate { get; set; }
         public string Status { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
-        public string ShowName { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

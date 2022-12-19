@@ -33,7 +33,7 @@ namespace WebApplication13.Controllers
                 MassageSet = getAllMassageSet(getMassageSetId(getBranchId)),
                 OtherSale = db.OtherSales.ToList(),
                 DiscountMaster = db.DiscountMasters.ToList(),
-                DiscountMasterDetail = getAllDiscountMasterDetail(getBranchId),
+                //DiscountMasterDetail = getAllDiscountMasterDetail(getBranchId),
                 SystemConfig = getAllSetting(getBranchId),
                 Password = getBranchPasswordDetail(getBranchId).Value,
                 Password_Version = getBranchPasswordDetail(getBranchId).Version,

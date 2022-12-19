@@ -12,13 +12,23 @@ namespace WebApplication13.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DiscountMaster
+    public partial class Member
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Status { get; set; }
+        public int MemberNo { get; set; }
+        public string Title { get; set; }
+        public string FirstName { get; set; }
+        public string FamilyName { get; set; }
+        public Nullable<System.DateTime> Birth { get; set; }
+        public string AddressInTH { get; set; }
+        public string City { get; set; }
+        public string TelephoneNo { get; set; }
+        public string WhatsAppId { get; set; }
+        public string LineId { get; set; }
+        public string ActiveStatus { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
-        public string ShowName { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

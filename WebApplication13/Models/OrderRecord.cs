@@ -27,5 +27,7 @@ namespace WebApplication13.Models
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
         public string IsCreditCard { get; set; }
+        public Nullable<int> MemberId { get; set; }
+        public Nullable<short> MemberDiscountAmount { get; set; }
     }
 }

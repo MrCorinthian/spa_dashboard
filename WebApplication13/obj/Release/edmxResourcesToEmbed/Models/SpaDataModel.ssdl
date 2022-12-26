@@ -108,7 +108,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" Nullable="false" />
-    <Property Name="MemberNo" Type="int" Nullable="false" />
+    <Property Name="MemberNo" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="Title" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="FamilyName" Type="varchar" MaxLength="100" Nullable="false" />

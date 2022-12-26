@@ -15,7 +15,7 @@ namespace WebApplication13.Models
     public partial class Member
     {
         public int Id { get; set; }
-        public int MemberNo { get; set; }
+        public string MemberNo { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string FamilyName { get; set; }

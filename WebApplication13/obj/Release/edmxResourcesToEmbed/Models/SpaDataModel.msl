@@ -207,28 +207,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Members">
-      <EntityTypeMapping TypeName="spasystemdbModel.Member">
-        <MappingFragment StoreEntitySet="Member">
-          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
-          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
-          <ScalarProperty Name="ActiveStatus" ColumnName="ActiveStatus" />
-          <ScalarProperty Name="LineId" ColumnName="LineId" />
-          <ScalarProperty Name="WhatsAppId" ColumnName="WhatsAppId" />
-          <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="AddressInTH" ColumnName="AddressInTH" />
-          <ScalarProperty Name="Birth" ColumnName="Birth" />
-          <ScalarProperty Name="FamilyName" ColumnName="FamilyName" />
-          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-          <ScalarProperty Name="Title" ColumnName="Title" />
-          <ScalarProperty Name="MemberNo" ColumnName="MemberNo" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="MemberDetails">
       <EntityTypeMapping TypeName="spasystemdbModel.MemberDetail">
         <MappingFragment StoreEntitySet="MemberDetail">
@@ -297,6 +275,28 @@
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Members">
+      <EntityTypeMapping TypeName="spasystemdbModel.Member">
+        <MappingFragment StoreEntitySet="Member">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="ActiveStatus" ColumnName="ActiveStatus" />
+          <ScalarProperty Name="LineId" ColumnName="LineId" />
+          <ScalarProperty Name="WhatsAppId" ColumnName="WhatsAppId" />
+          <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="AddressInTH" ColumnName="AddressInTH" />
+          <ScalarProperty Name="Birth" ColumnName="Birth" />
+          <ScalarProperty Name="FamilyName" ColumnName="FamilyName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="MemberNo" ColumnName="MemberNo" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

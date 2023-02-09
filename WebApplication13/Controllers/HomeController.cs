@@ -1760,6 +1760,575 @@ namespace WebApplication13.Controllers
             }
         }
 
+        public ActionResult Member(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            
+            if (cmd != null)
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+            }
+
+            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            if (noms == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                List<Member> listMem = new List<Member>();
+
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+
+                List<MemberItem> listMemForView = new List<MemberItem>();
+
+                foreach(Member mem in listMem)
+                {
+                    
+                    string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
+                    string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
+
+                    MemberItem memItem = new MemberItem() { Id=mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire= splitExpire[0] };
+                    if(mem.ActiveStatus.Equals("true"))
+                    {
+                        memItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memItem.Status = "Inactive";
+                    }
+
+                    if(!string.IsNullOrEmpty(mem.Birth.ToString()))
+                    {
+                        string[] splitBirth = mem.Birth.ToString().Split(' ');
+                        memItem.Birth = splitBirth[0];
+                    }
+                    
+                    listMemForView.Add(memItem);
+                };
+
+                HeaderValueVIP hv = new HeaderValueVIP()
+                {
+                    MemberList = listMemForView
+                };
+
+
+                return View(hv);
+            }
+        }
+
+        public ActionResult ManageMemberType(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            if (cmd != null)
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+            }
+
+            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            if (noms == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                List<MemberGroup> listMemG = new List<MemberGroup>();
+
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMemG = context.MemberGroups
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+
+                List<MemberGroupItem> listMemGForView = new List<MemberGroupItem>();
+
+                foreach (MemberGroup memG in listMemG)
+                {
+                    MemberGroupItem memGItem = new MemberGroupItem();
+                    memGItem.MemberGroupId = memG.Id.ToString();
+                    memGItem.MemberGroupName = memG.Name;
+                    memGItem.MemberGroupShowName = memG.ShowName;
+                    if (memG.Status.Equals("true"))
+                    {
+                        memGItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memGItem.Status = "Inactive";
+                    }
+
+                    if(getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
+                    {
+                        memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+                        memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+                        memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+                    }
+                    //else
+                    //{
+                    //    memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+                    //    memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+                    //    memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+                    //}
+
+                    listMemGForView.Add(memGItem);
+                };
+
+                HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
+                {
+                    MemberGroupList = listMemGForView
+                };
+
+
+                return View(hvg);
+            }
+        }
+
+        public ActionResult ManagePriviledge(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            if (cmd != null)
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+            }
+
+            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            if (noms == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
+
+                List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
+
+                foreach (MemberPriviledge memP in listMemPriv)
+                {
+                    MemberPriviledgeItem memPrivItem = new MemberPriviledgeItem();
+                    memPrivItem.Id = memP.Id.ToString();
+                    memPrivItem.ShowName = memP.ShowName;
+                    memPrivItem.PriviledgeTypeId = memP.PriviledgeTypeId.ToString();
+                    memPrivItem.PriviledgeTypeName = getPriviledgeTypeDetail(memP.PriviledgeTypeId).Name;
+                    memPrivItem.Value = memP.Value.ToString();
+                    memPrivItem.StartDate = memP.StartDate.ToString();
+                    memPrivItem.ExpireDate = memP.ExpireDate.ToString();
+
+                    if (memP.Status.Equals("true"))
+                    {
+                        memPrivItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memPrivItem.Status = "Inactive";
+                    }
+
+                    listMemPrivForView.Add(memPrivItem);
+                };
+
+                HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
+                {
+                    MemberPriviledgeList = listMemPrivForView
+                };
+
+
+                return View(hvp);
+            }
+        }
+
+        public ActionResult MemberDetail(string accountId, string cmd, string MemberId)
+        {
+            if (cmd != null)
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+            }
+
+            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            if (noms == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                Member myMem = getMember(Int32.Parse(MemberId));
+                string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+                string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+                List<MemberItem> listMemForView = new List<MemberItem>();
+
+                MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+                if (myMem.ActiveStatus.Equals("true"))
+                {
+                    memItem.Status = "Active";
+                }
+                else
+                {
+                    memItem.Status = "Inactive";
+                }
+
+                if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
+                {
+                    string[] splitBirth = myMem.Birth.ToString().Split(' ');
+                    memItem.Birth = splitBirth[0];
+                }
+                
+
+                listMemForView.Add(memItem);
+
+                HeaderValueVIP hv = new HeaderValueVIP()
+                {
+                    MemberList = listMemForView
+                };
+
+
+                return View(hv);
+            }
+        }
+        [HttpPost]
+        public string SaveMember(ForInsertMember myData)
+        {
+            if(myData.pageMode.Equals("New"))
+            {
+                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDateVal) || string.IsNullOrEmpty(myData.expireDateVal) || string.IsNullOrEmpty(myData.statusVal))
+                {
+                    return "NoReq";
+                }
+                else
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        Member newMem = new Member()
+                        {
+                            MemberNo = myData.memberNoVal,
+                            Title = myData.titleVal,
+                            FirstName = myData.firstNameVal,
+                            FamilyName = myData.familyNameVal,
+                            AddressInTH = myData.addressVal,
+                            City = myData.cityVal,
+                            TelephoneNo = myData.telephoneVal,
+                            WhatsAppId = myData.whatsappVal,
+                            LineId = myData.lineVal,
+                            CreatedBy = "Admin",
+                            CreateDateTime = DateTime.Now
+                        };
+                        if (myData.statusVal.Equals("Active"))
+                        {
+                            newMem.ActiveStatus = "true";
+                        }
+                        else
+                        {
+                            newMem.ActiveStatus = "false";
+                        }
+
+                        if(!string.IsNullOrEmpty(myData.birthDayVal))
+                        {
+                            string fullBirthday = myData.birthMonthVal + "/" + myData.birthDayVal + "/" + myData.birthYearVal;
+                            newMem.Birth = DateTime.Parse(fullBirthday);
+                        }
+                        
+
+                        db.Members.Add(newMem);
+                        db.SaveChanges();
+
+                        MemberDetail newMemDetail = new MemberDetail()
+                        {
+                            MemberId = getLastestMember().Id,
+                            MemberGroupId = Int32.Parse(myData.vipTypeVal),
+                            StartDate = DateTime.Parse(myData.startDateVal),
+                            ExpireDate = DateTime.Parse(myData.expireDateVal),
+                            Status = "true",
+                            CreateDateTime = DateTime.Now,
+                            CreatedBy = "Admin"
+                        };
+                        db.MemberDetails.Add(newMemDetail);
+                        db.SaveChanges();
+
+                        return "Success";
+                    }
+                }
+                
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDateVal) || string.IsNullOrEmpty(myData.expireDateVal) || string.IsNullOrEmpty(myData.statusVal))
+                {
+                    return "NoReq";
+                }
+                else
+                {
+                    int usedMemId = Int32.Parse(myData.Id);
+                    using (var db = new spasystemdbEntities())
+                    {
+                        Member curMem = db.Members
+                                .Where(b => b.Id == usedMemId)
+                                .FirstOrDefault();
+
+                        //Member curMem = getMember(Int32.Parse(myData.Id));
+                        curMem.MemberNo = myData.memberNoVal;
+                        curMem.Title = myData.titleVal;
+                        curMem.FirstName = myData.firstNameVal;
+                        curMem.FamilyName = myData.familyNameVal;
+
+                        if (!string.IsNullOrEmpty(myData.birthDayVal))
+                        {
+                            string fullBirthday = myData.birthMonthVal + "/" + myData.birthDayVal + "/" + myData.birthYearVal;
+                            curMem.Birth = DateTime.Parse(fullBirthday);
+                        }
+                        
+                        curMem.AddressInTH = myData.addressVal;
+                        curMem.City = myData.cityVal;
+                        curMem.TelephoneNo = myData.telephoneVal;
+                        curMem.WhatsAppId = myData.whatsappVal;
+                        curMem.LineId = myData.lineVal;
+                        curMem.UpdatedBy = "Admin";
+                        curMem.UpdateDateTime = DateTime.Now;
+
+                        if (myData.statusVal.Equals("Active"))
+                        {
+                            curMem.ActiveStatus = "true";
+                        }
+                        else
+                        {
+                            curMem.ActiveStatus = "false";
+                        }
+
+                        //db.SaveChanges();
+                        MemberDetail curMemDetail = db.MemberDetails
+                                            .Where(b => b.MemberId == usedMemId)
+                                            .FirstOrDefault();
+                        //MemberDetail curMemDetail = getMemberDetail(Int32.Parse(myData.Id));
+                        curMemDetail.MemberGroupId = Int32.Parse(myData.vipTypeVal);
+                        curMemDetail.StartDate = DateTime.Parse(myData.startDateVal);
+                        curMemDetail.ExpireDate = DateTime.Parse(myData.expireDateVal);
+                        //curMemDetail.Status = "true";
+                        curMemDetail.UpdateDateTime = DateTime.Now;
+                        curMemDetail.UpdatedBy = "Admin";
+
+                        //db.MemberDetails.Add(newMemDetail);
+                        db.SaveChanges();
+
+                        return "Success";
+                    }
+                }
+                
+            }
+            
+        }
+        [HttpPost]
+        public string DeleteMember(string id)
+        {
+            
+            
+                if (string.IsNullOrEmpty(id))
+                {
+                    return "IdNull";
+                }
+                else
+                {
+                    int usedMemId = Int32.Parse(id);
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MemberDetail curMemDetail = db.MemberDetails
+                                                .Where(b => b.MemberId == usedMemId)
+                                                .FirstOrDefault();
+
+                        db.MemberDetails.Remove(curMemDetail);
+                        db.SaveChanges();
+
+                        // Decrease the auto-increment seed
+                        //var tableName = db.Model.GetEntityTypes().First().Relational().TableName;
+                        //var command = $"DBCC CHECKIDENT ('Member', RESEED, {id - 1});";
+                        //db.Database.ExecuteSqlRaw(command);
+
+                    Member curMem = db.Members
+                                    .Where(b => b.Id == usedMemId)
+                                    .FirstOrDefault();
+
+                        db.Members.Remove(curMem);
+                        db.SaveChanges();
+
+                            return "Success";
+                    }
+                }
+
+            
+        }
+
+        [HttpPost]
+        public ActionResult UpdateMemberTable(string selectedOption)
+        {
+            //Console.WriteLine("print from c#"+selectedOption);
+            List<Member> listMem = new List<Member>();
+
+            if(selectedOption.Equals("1"))
+            {
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+            }
+            else if(selectedOption.Equals("2"))
+            {
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .Where(b => b.ActiveStatus == "true")
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+            }
+            else
+            {
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .Where(b => b.ActiveStatus == "false")
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+            }
+
+            List<MemberItem> listMemForView = new List<MemberItem>();
+
+            foreach (Member mem in listMem)
+            {
+                
+                string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
+                string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
+
+                MemberItem memItem = new MemberItem() { Id = mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+                if (mem.ActiveStatus.Equals("true"))
+                {
+                    memItem.Status = "Active";
+                }
+                else
+                {
+                    memItem.Status = "Inactive";
+                }
+
+                if(!string.IsNullOrEmpty(mem.Birth.ToString()))
+                {
+                    string[] splitBirth = mem.Birth.ToString().Split(' ');
+                    memItem.Birth = splitBirth[0];
+                }
+
+                listMemForView.Add(memItem);
+            };
+
+            HeaderValueVIP hv = new HeaderValueVIP()
+            {
+                MemberList = listMemForView
+            };
+
+
+            return View("Member",hv);
+        }
+        public ActionResult EditMemberDetail(string accountId, string cmd, string MemberId, string Mode)
+        {
+            if (cmd != null)
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+            }
+
+            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            if (noms == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                if(Mode.Equals("Edit"))
+                {
+                    Member myMem = getMember(Int32.Parse(MemberId));
+                    
+                    string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+                    string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+                    
+                    string[] splitVipStartPart = splitStart[0].Split('/');
+                    string[] splitVipExpirePart = splitExpire[0].Split('/');
+
+                    List<MemberItem> listMemForView = new List<MemberItem>();
+
+                    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(),VipStart = splitStart[0], VipExpire = splitExpire[0],VipStartDay=splitVipStartPart[1],VipStartMonth=splitVipStartPart[0],VipStartYear=splitVipStartPart[2],VipExpireDay=splitVipExpirePart[1],VipExpireMonth=splitVipExpirePart[0],VipExpireYear=splitVipExpirePart[2] };
+                    if (myMem.ActiveStatus.Equals("true"))
+                    {
+                        memItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memItem.Status = "Inactive";
+                    }
+
+                    if(!string.IsNullOrEmpty(myMem.Birth.ToString()))
+                    {
+                        string[] splitBirth = myMem.Birth.ToString().Split(' ');
+                        string[] splitBirthPart = splitBirth[0].Split('/');
+                        memItem.Birth = splitBirth[0];
+                        memItem.BirthDay = splitBirthPart[1];
+                        memItem.BirthMonth = splitBirthPart[0];
+                        memItem.BirthYear = splitBirthPart[2];
+                    }
+
+                    memItem.MemberGroupForSelect = getAllMemberGroup();
+                    memItem.MemberGroupId = getMemberDetail(myMem.Id).MemberGroupId.ToString();
+                    memItem.PageMode = Mode;
+
+                    listMemForView.Add(memItem);
+
+                    HeaderValueVIP hv = new HeaderValueVIP()
+                    {
+                        MemberList = listMemForView
+                    };
+
+
+                    return View(hv);
+                }
+                else
+                {
+                    List<MemberItem> listMemForView = new List<MemberItem>();
+
+                    MemberItem memItem = new MemberItem();
+                    memItem.MemberGroupForSelect = getAllMemberGroup();
+                    memItem.PageMode = Mode;
+
+                    listMemForView.Add(memItem);
+
+                    HeaderValueVIP hv = new HeaderValueVIP()
+                    {
+                        MemberList = listMemForView
+                    };
+
+
+                    return View(hv);
+                }
+            }
+        }
+
         //public ActionResult AccountChosen(string accountId)
         //{
         //    // if credentials are correct.
@@ -5548,6 +6117,175 @@ namespace WebApplication13.Controllers
             return listOfFinalSale;
 
         }
+
+        public Member getLastestMember()
+        {
+            Member mem = new Member();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                mem = contexts.Members
+                                .OrderByDescending(b => b.Id)
+                                .FirstOrDefault();
+            }
+
+
+            return mem;
+
+        }
+
+        public Member getMember(int memberId)
+        {
+            Member mem = new Member();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                mem = contexts.Members
+                                .Where(b => b.Id == memberId)
+                                .FirstOrDefault();
+            }
+
+
+            return mem;
+
+        }
+
+        public MemberDetail getMemberDetail(int memberId)
+        {
+            MemberDetail memDetail = new MemberDetail();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memDetail = contexts.MemberDetails
+                                .Where(b => b.MemberId == memberId)
+                                .FirstOrDefault();
+            }
+
+            
+            return memDetail;
+
+        }
+
+        public MemberGroup getMemberGroupDetail(int memberGroupId)
+        {
+            MemberGroup memGroupDetail = new MemberGroup();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memGroupDetail = contexts.MemberGroups
+                                .Where(b => b.Id == memberGroupId)
+                                .FirstOrDefault();
+            }
+
+
+            return memGroupDetail;
+
+        }
+
+        public MemberPriviledge getMemberPriviledgeDetail(int memberPriviledgeId)
+        {
+            MemberPriviledge memPriviledgeDetail = new MemberPriviledge();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memPriviledgeDetail = contexts.MemberPriviledges
+                                .Where(b => b.Id == memberPriviledgeId)
+                                .FirstOrDefault();
+            }
+
+
+            return memPriviledgeDetail;
+
+        }
+        public PriviledgeType getPriviledgeTypeDetail(int priviledgeId)
+        {
+            PriviledgeType privType = new PriviledgeType();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                privType = contexts.PriviledgeTypes
+                                .Where(b => b.Id == priviledgeId)
+                                .FirstOrDefault();
+            }
+
+
+            return privType;
+
+        }
+
+        public List<MemberGroup> getAllMemberGroup()
+        {
+            List<MemberGroup> allMemGroup = new List<MemberGroup>();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                allMemGroup = contexts.MemberGroups
+                                .Where(b => b.Status == "true")
+                                .ToList();
+            }
+
+
+            return allMemGroup;
+
+        }
+
+        public List<MemberPriviledge> getAllMemberPriviledge()
+        {
+            List<MemberPriviledge> allMemPriviledge = new List<MemberPriviledge>();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                allMemPriviledge = contexts.MemberPriviledges
+                                .ToList();
+            }
+
+
+            return allMemPriviledge;
+
+        }
+
+
+        public List<PriviledgeType> getAllPriviledgeType()
+        {
+            List<PriviledgeType> allPriviledgeType = new List<PriviledgeType>();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                allPriviledgeType = contexts.PriviledgeTypes
+                                .ToList();
+            }
+
+
+            return allPriviledgeType;
+
+        }
+
+        public List<MemberGroupPriviledge> getMemberGroupPriviledge(int memberGroupId)
+        {
+            List<MemberGroupPriviledge> memGroupPriv = new List<MemberGroupPriviledge>();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memGroupPriv = contexts.MemberGroupPriviledges
+                                .Where(b => b.MemberGroupId == memberGroupId)
+                                .ToList();
+            }
+
+
+            return memGroupPriv;
+
+        }
+
     }
     public static class ExtensionHelpers
     {

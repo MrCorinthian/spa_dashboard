@@ -64,6 +64,8 @@
     <EntitySetMapping Name="OrderRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.OrderRecord">
         <MappingFragment StoreEntitySet="OrderRecord">
+          <ScalarProperty Name="MemberDiscountAmount" ColumnName="MemberDiscountAmount" />
+          <ScalarProperty Name="MemberId" ColumnName="MemberId" />
           <ScalarProperty Name="IsCreditCard" ColumnName="IsCreditCard" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
@@ -151,6 +153,7 @@
     <EntitySetMapping Name="DiscountMasters">
       <EntityTypeMapping TypeName="spasystemdbModel.DiscountMaster">
         <MappingFragment StoreEntitySet="DiscountMaster">
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />
@@ -200,6 +203,100 @@
           <ScalarProperty Name="OrderRecordId" ColumnName="OrderRecordId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MemberDetails">
+      <EntityTypeMapping TypeName="spasystemdbModel.MemberDetail">
+        <MappingFragment StoreEntitySet="MemberDetail">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="MemberGroupId" ColumnName="MemberGroupId" />
+          <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MemberGroups">
+      <EntityTypeMapping TypeName="spasystemdbModel.MemberGroup">
+        <MappingFragment StoreEntitySet="MemberGroup">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MemberGroupPriviledges">
+      <EntityTypeMapping TypeName="spasystemdbModel.MemberGroupPriviledge">
+        <MappingFragment StoreEntitySet="MemberGroupPriviledge">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="MemberPriviledgeId" ColumnName="MemberPriviledgeId" />
+          <ScalarProperty Name="MemberGroupId" ColumnName="MemberGroupId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MemberPriviledges">
+      <EntityTypeMapping TypeName="spasystemdbModel.MemberPriviledge">
+        <MappingFragment StoreEntitySet="MemberPriviledge">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ExpireDate" ColumnName="ExpireDate" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="PriviledgeTypeId" ColumnName="PriviledgeTypeId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PriviledgeTypes">
+      <EntityTypeMapping TypeName="spasystemdbModel.PriviledgeType">
+        <MappingFragment StoreEntitySet="PriviledgeType">
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Members">
+      <EntityTypeMapping TypeName="spasystemdbModel.Member">
+        <MappingFragment StoreEntitySet="Member">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="ActiveStatus" ColumnName="ActiveStatus" />
+          <ScalarProperty Name="LineId" ColumnName="LineId" />
+          <ScalarProperty Name="WhatsAppId" ColumnName="WhatsAppId" />
+          <ScalarProperty Name="TelephoneNo" ColumnName="TelephoneNo" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="AddressInTH" ColumnName="AddressInTH" />
+          <ScalarProperty Name="Birth" ColumnName="Birth" />
+          <ScalarProperty Name="FamilyName" ColumnName="FamilyName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="MemberNo" ColumnName="MemberNo" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

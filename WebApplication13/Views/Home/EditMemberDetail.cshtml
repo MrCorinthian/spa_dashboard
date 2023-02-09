@@ -1,0 +1,538 @@
+﻿@model WebApplication13.Models.HeaderValueVIP
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Spa System Admin Panel</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="../vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #starTxt {
+            display: inline-block;
+            width: 48%;
+            color: red;
+        }
+
+    </style>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the table rows
+            var memBtn = document.getElementById("cancelBtn").addEventListener("click", function (e) {
+
+                // Get the href value associated with the row
+                @*var href = @Model.MemberList[0].Id;
+                var getMode = "@Model.MemberList[0].PageMode";
+                //let urlHead = "MemberDetail?MemberId=";
+                console.log(getMode);
+
+                // Navigate to the specified page
+                if (getMode == "Edit")
+                {
+                    window.location.href = "MemberDetail" + '?MemberId=' + encodeURIComponent(href);
+                }
+                else if(getMode == "New")
+                {
+                    console.log("in");
+                    window.location.href = "Member";
+                }*@
+                window.location.href = "Member";
+                //window.location.href = urlHead + encodeURIComponent(href);
+
+                });
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        // Get the data from the query string
+        var data = new URLSearchParams(location.search).get("MemberId");
+
+        // Use the data
+        //console.log("edit : " + data);
+        //console.log("@Model.MemberList[0].PageMode");
+    </script>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the table rows
+            //console.log("in"+data);
+            $("#saveBtn").click(function () {
+                var myData = {
+                    Id: data,
+                    memberNoVal: $("#memberNoTbx").val(),
+                    vipTypeVal: $("#vipTypeDropdown").val(),
+                    titleVal: $("#titleDropdown").val(),
+                    firstNameVal: $("#firstNameTbx").val(),
+                    familyNameVal: $("#familyNameTbx").val(),
+                    birthDayVal: $("#birthDayTbx").val(),
+                    birthMonthVal: $("#birthMonthTbx").val(),
+                    birthYearVal: $("#birthYearTbx").val(),
+                    addressVal: $("#addressTbx").val(),
+                    cityVal: $("#cityTbx").val(),
+                    telephoneVal: $("#telephoneTbx").val(),
+                    whatsappVal: $("#whatsappTbx").val(),
+                    lineVal: $("#lineTbx").val(),
+                    startDateVal: $("#startDateTbx").val(),
+                    expireDateVal: $("#expireDateTbx").val(),
+                    statusVal: $("#statusDropdown").val(),
+                    pageMode: "@Model.MemberList[0].PageMode"
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/SaveMember",
+                    data: JSON.stringify({ myData: myData }),
+                    contentType: "application/json; charset=utf-8",
+                    //data: {
+                    //    memberNoVal: memberNoVal,
+                    //    vipTypeVal: vipTypeVal,
+                    //    titleVal: titleVal,
+                    //    firstNameVal: firstNameVal,
+                    //    familyNameVal: familyNameVal,
+                    //    birthVal: birthVal,
+                    //    addressVal: addressVal,
+                    //    cityVal: cityVal,
+                    //    telephoneVal: telephoneVal,
+                    //    whatsappVal: whatsappVal,
+                    //    lineVal: lineVal,
+                    //    expireDateVal: expireDateVal,
+                    //    statusVal, statusVal
+                    //},
+                    success: function (response) {
+                        if (response === "Success") {
+                            alert("Data saved successfully!");
+                            window.location.href = "Member";
+                        }
+                        else if (response === "NoReq"){
+                            alert("Some of require data is empty, please check the input again");
+                        }
+                        else {
+                            alert("Error saving data, please check your internet connection");
+                        }
+                    }
+                });
+            });
+        });
+
+
+    </script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            //document.getElementById("birthDayTbx").style.width = "100px";
+            //document.getElementById("birthMonthTbx").style.width = "100px";
+            //document.getElementById("birthYearTbx").style.width = "100px";
+            var input = document.getElementById("birthDayTbx");
+            var minLength = 2;
+
+            input.addEventListener("blur", function () {
+                if (input.value.length < minLength) {
+                    alert("The minimum length of Birthday (Day) is " + minLength + " characters.");
+                    input.value = "";
+                }
+            });
+        });
+    </script>
+    @*<script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            //document.getElementById("birthDayTbx").style.width = "100px";
+            //document.getElementById("birthMonthTbx").style.width = "100px";
+            //document.getElementById("birthYearTbx").style.width = "100px";
+            document.getElementById("starTxt").style.color = "red";
+
+        });
+    </script>*@
+
+</head>
+
+<body>
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Spa System Admin Panel</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                @*<li class="dropdown">
+                        <a href="@Url.Action("UrbanThree", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
+                    </li>*@
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="@Url.Action("Member", "Home")"><i class="fa fa-users fa-fw"></i> VIP member list</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ManageMemberType", "Home")"><i class="fa fa-briefcase fa-fw"></i> VIP member type</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ManagePriviledge", "Home")"><i class="fa fa-ticket fa-fw"></i> VIP priviledge</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">VIP member list</h1>
+                </div>
+                <div class="col-lg-10">
+
+                </div>
+                <div class="col-lg-2">
+                    <button id="saveBtn" type="button" class="btn btn-success">Save</button>
+                    <button id="cancelBtn" type="button" class="btn btn-danger">Cancel</button>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--<div class="panel panel-default">-->
+                    <!--<div class="panel-heading">
+                        VIP Member
+                    </div>-->
+                    <!-- /.panel-heading -->
+                    <div class="panel-body" style="overflow-x:auto;">
+                        <table width="100%" class="table table-bordered table-hover" id="memberTable">
+                            @*<thead>
+                                    <tr style="background-color:#F0F0F0">
+                                        <th>No.</th>
+                                        <th>Member no.</th>
+                                        <th>VIP type</th>
+                                        <th>Title</th>
+                                        <th>First name</th>
+                                        <th>Family name</th>
+                                        <th>Birth</th>
+                                        <th>Address in Thailand</th>
+                                        <th>City</th>
+                                        <th>Telephone no.</th>
+                                        <th>WhatsApp id</th>
+                                        <th>Line id</th>
+                                        <th>Create date</th>
+                                        <th>VIP expire date</th>
+                                        <th>Active status</th>
+                                    </tr>
+                                </thead>*@
+                            <tbody>
+                                @foreach (var item in Model.MemberList)
+                                {
+                                    if (item.PageMode.Equals("Edit"))
+                                    {
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Member no. <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="memberNoTbx" class="form-control" placeholder="Member no. on card" value="@item.MemberNo"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">VIP type <div id="starTxt">*</div></td>
+                                            <td class="center">
+                                                <select class="form-control" id="vipTypeDropdown">
+                                                    @foreach (var type in Model.MemberList[0].MemberGroupForSelect)
+                                                    {
+                                                        if (item.MemberGroupId.Equals(type.Id.ToString()))
+                                                        {
+                                                            <option value="@type.Id" selected>@type.ShowName</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@type.Id">@type.ShowName</option>
+                                                        }
+
+                                                    }
+                                                    @*if (item.Title.Equals("MR"))
+                            {
+                                <option selected>MR</option>
+                                <option>MRS</option>
+                                <option>MISS</option>
+                            }
+                            else if (item.Title.Equals("MRS"))
+                            {
+                                <option>MR</option>
+                                <option selected>MRS</option>
+                                <option>MISS</option>
+                            }
+                            else if (item.Title.Equals("MISS"))
+                            {
+                                <option>MR</option>
+                                <option>MRS</option>
+                                <option selected>MISS</option>
+                            }*@
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Title <div id="starTxt">*</div></td>
+                                            <td class="center">
+                                                @*<div class="form-group">*@
+                                                <select class="form-control" id="titleDropdown">
+                                                    @if (item.Title.Equals("MR"))
+                                                    {
+                                                        <option selected>MR</option>
+                                                        <option>MRS</option>
+                                                        <option>MISS</option>
+                                                    }
+                                                    else if (item.Title.Equals("MRS"))
+                                                    {
+                                                        <option>MR</option>
+                                                        <option selected>MRS</option>
+                                                        <option>MISS</option>
+                                                    }
+                                                    else if (item.Title.Equals("MISS"))
+                                                    {
+                                                        <option>MR</option>
+                                                        <option>MRS</option>
+                                                        <option selected>MISS</option>
+                                                    }
+                                                </select>
+                                                @*</div>*@
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">First name <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="firstNameTbx" class="form-control" placeholder="First name" value="@item.FirstName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Family name <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="familyNameTbx" class="form-control" placeholder="Family name" value="@item.FamilyName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Birth</td>
+                                            <td class="center">
+                                                <input id="birthMonthTbx" placeholder="mm" style="width: 80px;" maxlength="2" value="@item.BirthMonth">
+                                                <input id="birthDayTbx" placeholder="dd" style="width: 80px;" maxlength="2" value="@item.BirthDay">
+                                                <input id="birthYearTbx" placeholder="yyyy" style="width: 80px;" maxlength="4" value="@item.BirthYear">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Address in Thailand</td>
+                                            <td class="center"><input id="addressTbx" class="form-control" placeholder="Address in Thailand" value="@item.AddressInTH"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">City</td>
+                                            <td class="center"><input id="cityTbx" class="form-control" placeholder="City" value="@item.City"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Telephone no.</td>
+                                            <td class="center"><input id="telephoneTbx" class="form-control" placeholder="Telephone no." value="@item.TelephoneNo"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">WhatsApp id</td>
+                                            <td class="center"><input id="whatsappTbx" class="form-control" placeholder="WhatsApp Id" value="@item.WhatsAppId"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Line id</td>
+                                            <td class="center"><input id="lineTbx" class="form-control" placeholder="Line Id" value="@item.LineId"></td>
+                                        </tr>
+                                        @*<tr>
+                    <td>Create date</td>
+                    <td class="center">@item.CreateDate</td>
+                </tr>*@
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">VIP start date <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="startDateTbx" class="form-control" placeholder="Start date mm/dd/yyyy" value="@item.VipStart"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">VIP expire date <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="expireDateTbx" class="form-control" placeholder="Expire date mm/dd/yyyy" value="@item.VipExpire"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Active status <div id="starTxt">*</div></td>
+                                            <td class="center">
+                                                <select class="form-control" id="statusDropdown">
+                                                    @if (item.Status.Equals("Active"))
+                                                    {
+                                                        <option selected>Active</option>
+                                                        <option>Inactive</option>
+                                                    }
+                                                    else if (item.Status.Equals("Inactive"))
+                                                    {
+                                                        <option>Active</option>
+                                                        <option selected>Inactive</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    }
+                                    else if (item.PageMode.Equals("New"))
+                                    {
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Member no. <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="memberNoTbx" class="form-control" placeholder="Member no. on card"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">VIP type <div id="starTxt">*</div></td>
+                                            <td class="center">
+                                                <select id="vipTypeDropdown" class="form-control">
+                                                    @foreach (var type in Model.MemberList[0].MemberGroupForSelect)
+                                                    {
+                                                        <option value="@type.Id">@type.ShowName</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Title <div id="starTxt">*</div></td>
+                                            <td class="center">
+                                                @*<div class="form-group">*@
+                                                <select id="titleDropdown" class="form-control">
+                                                    <option>MR</option>
+                                                    <option>MRS</option>
+                                                    <option>MISS</option>
+                                                </select>
+                                                @*</div>*@
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">First name <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="firstNameTbx" class="form-control" placeholder="First name"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Family name <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="familyNameTbx" class="form-control" placeholder="Family name"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Birth</td>
+                                            <td class="center">
+                                                <input id="birthMonthTbx" placeholder="mm" style="width: 80px;" maxlength="2">
+                                                <input id="birthDayTbx" placeholder="dd" style="width: 80px;" maxlength="2">
+                                                <input id="birthYearTbx" placeholder="yyyy" style="width: 80px;" maxlength="4">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Address in Thailand</td>
+                                            <td class="center"><input id="addressTbx" class="form-control" placeholder="Address in Thailand"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">City</td>
+                                            <td class="center"><input id="cityTbx" class="form-control" placeholder="City"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Telephone no.</td>
+                                            <td class="center"><input id="telephoneTbx" class="form-control" placeholder="Telephone no."></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">WhatsApp id</td>
+                                            <td class="center"><input id="whatsappTbx" class="form-control" placeholder="WhatsApp Id"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Line id</td>
+                                            <td class="center"><input id="lineTbx" class="form-control" placeholder="Line Id"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">VIP start date <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="startDateTbx" class="form-control" placeholder="Start date mm/dd/yyyy"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">VIP expire date <div id="starTxt">*</div></td>
+                                            <td class="center"><input id="expireDateTbx" class="form-control" placeholder="Expire date mm/dd/yyyy"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color:#F0F0F0">Active status <div id="starTxt">*</div></td>
+                                            <td class="center">
+                                                <select id="statusDropdown" class="form-control">
+                                                    <option>Active</option>
+                                                    <option>Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                    <!--</div>-->
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+
+
+        </div>
+
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../vendor/raphael/raphael.min.js"></script>
+    <script src="../vendor/morrisjs/morris.min.js"></script>
+    <script src="../data/morris-data.js"></script>
+    <script src="../js/maingraphcalculate.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="../vendor/datatables-responsive/dataTables.responsive.js"></script>
+
+    <!-- Flot Charts JavaScript -->
+    <script src="../vendor/flot/excanvas.min.js"></script>
+    <script src="../vendor/flot/jquery.flot.js"></script>
+    <script src="../vendor/flot/jquery.flot.pie.js"></script>
+    <script src="../vendor/flot/jquery.flot.resize.js"></script>
+    <script src="../vendor/flot/jquery.flot.time.js"></script>
+    <script src="../vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
+
+
+
+</body>
+
+</html>

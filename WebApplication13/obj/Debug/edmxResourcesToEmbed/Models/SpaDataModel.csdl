@@ -77,6 +77,8 @@
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
     <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="MemberId" Type="Int32" />
+    <Property Name="MemberDiscountAmount" Type="Int16" />
   </EntityType>
   <EntityContainer Name="spasystemdbEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Accounts" EntityType="Self.Account" />
@@ -94,6 +96,12 @@
     <EntitySet Name="DiscountMasterDetails" EntityType="spasystemdbModel.DiscountMasterDetail" />
     <EntitySet Name="DiscountRecords" EntityType="spasystemdbModel.DiscountRecord" />
     <EntitySet Name="OrderRecordWithDiscounts" EntityType="spasystemdbModel.OrderRecordWithDiscount" />
+    <EntitySet Name="MemberDetails" EntityType="spasystemdbModel.MemberDetail" />
+    <EntitySet Name="MemberGroups" EntityType="spasystemdbModel.MemberGroup" />
+    <EntitySet Name="MemberGroupPriviledges" EntityType="spasystemdbModel.MemberGroupPriviledge" />
+    <EntitySet Name="MemberPriviledges" EntityType="spasystemdbModel.MemberPriviledge" />
+    <EntitySet Name="PriviledgeTypes" EntityType="spasystemdbModel.PriviledgeType" />
+    <EntitySet Name="Members" EntityType="spasystemdbModel.Member" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -170,6 +178,7 @@
     <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="ShowName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="DiscountMasterDetail">
     <Key>
@@ -218,5 +227,93 @@
     <Property Name="DiscountRecordId" Type="Int32" Nullable="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MemberDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="MemberId" Type="Int32" Nullable="false" />
+    <Property Name="MemberGroupId" Type="Int32" Nullable="false" />
+    <Property Name="StartDate" Type="DateTime" Precision="0" />
+    <Property Name="ExpireDate" Type="DateTime" Precision="0" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="MemberGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ShowName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="MemberGroupPriviledge">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="MemberGroupId" Type="Int32" Nullable="false" />
+    <Property Name="MemberPriviledgeId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="MemberPriviledge">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="PriviledgeTypeId" Type="Int32" Nullable="false" />
+    <Property Name="ShowName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Value" Type="Int32" Nullable="false" />
+    <Property Name="StartDate" Type="DateTime" Precision="0" />
+    <Property Name="ExpireDate" Type="DateTime" Precision="0" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="PriviledgeType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Member">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MemberNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Title" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="FamilyName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Birth" Type="DateTime" Precision="0" />
+    <Property Name="AddressInTH" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TelephoneNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="WhatsAppId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LineId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ActiveStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
 </Schema>

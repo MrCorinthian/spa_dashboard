@@ -33,6 +33,7 @@
     <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="ShowName" Type="varchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="DiscountMasterDetail">
     <Key>
@@ -102,6 +103,84 @@
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
   </EntityType>
+  <EntityType Name="Member">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MemberNo" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Title" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="FamilyName" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Birth" Type="date" />
+    <Property Name="AddressInTH" Type="varchar" MaxLength="300" />
+    <Property Name="City" Type="varchar" MaxLength="50" />
+    <Property Name="TelephoneNo" Type="varchar" MaxLength="20" />
+    <Property Name="WhatsAppId" Type="varchar" MaxLength="50" />
+    <Property Name="LineId" Type="varchar" MaxLength="50" />
+    <Property Name="ActiveStatus" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+    <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MemberDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MemberId" Type="int" Nullable="false" />
+    <Property Name="MemberGroupId" Type="int" Nullable="false" />
+    <Property Name="StartDate" Type="date" />
+    <Property Name="ExpireDate" Type="date" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+    <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MemberGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ShowName" Type="varchar" MaxLength="500" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+    <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MemberGroupPriviledge">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="MemberGroupId" Type="int" Nullable="false" />
+    <Property Name="MemberPriviledgeId" Type="int" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+    <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MemberPriviledge">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="PriviledgeTypeId" Type="int" Nullable="false" />
+    <Property Name="ShowName" Type="varchar" MaxLength="500" Nullable="false" />
+    <Property Name="Value" Type="int" Nullable="false" />
+    <Property Name="StartDate" Type="date" />
+    <Property Name="ExpireDate" Type="date" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+    <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
       <PropertyRef Name="Id" />
@@ -121,6 +200,8 @@
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
     <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
+    <Property Name="MemberId" Type="int" />
+    <Property Name="MemberDiscountAmount" Type="smallint" />
   </EntityType>
   <EntityType Name="OrderRecordWithDiscount">
     <Key>
@@ -164,6 +245,16 @@
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
     <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="PriviledgeType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
   </EntityType>
   <EntityType Name="SystemSetting">
     <Key>
@@ -211,10 +302,16 @@
     <EntitySet Name="MassagePlan" EntityType="Self.MassagePlan" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MassageSet" EntityType="Self.MassageSet" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MassageTopic" EntityType="Self.MassageTopic" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MemberDetail" EntityType="Self.MemberDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MemberGroup" EntityType="Self.MemberGroup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MemberGroupPriviledge" EntityType="Self.MemberGroupPriviledge" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MemberPriviledge" EntityType="Self.MemberPriviledge" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderRecord" EntityType="Self.OrderRecord" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderRecordWithDiscount" EntityType="Self.OrderRecordWithDiscount" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OtherSale" EntityType="Self.OtherSale" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OtherSaleRecord" EntityType="Self.OtherSaleRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PriviledgeType" EntityType="Self.PriviledgeType" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />

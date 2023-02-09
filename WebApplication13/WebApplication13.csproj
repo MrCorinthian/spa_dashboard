@@ -107,6 +107,9 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\myProgressRing.css" />
+    <Content Include="Content\myStyle.css" />
+    <Content Include="Content\progressring1.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -389,7 +392,11 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FinalSaleForEachTopic.cs" />
+    <Compile Include="Models\ForInsertMember.cs" />
     <Compile Include="Models\HeaderValue.cs" />
+    <Compile Include="Models\HeaderValueVIP.cs" />
+    <Compile Include="Models\HeaderValueVIPGroup.cs" />
+    <Compile Include="Models\HeaderValueVIPPriv.cs" />
     <Compile Include="Models\JsonProp.cs" />
     <Compile Include="Models\JsonPropForTopAB.cs" />
     <Compile Include="Models\JsonPropForTopABflot.cs" />
@@ -412,12 +419,15 @@
     <Compile Include="Models\MemberGroup.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MemberGroupItem.cs" />
     <Compile Include="Models\MemberGroupPriviledge.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MemberItem.cs" />
     <Compile Include="Models\MemberPriviledge.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MemberPriviledgeItem.cs" />
     <Compile Include="Models\OrderRecord.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
@@ -483,6 +493,11 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\Home\UrbanSix.cshtml" />
     <Content Include="Views\Home\UrbanSeven.cshtml" />
+    <Content Include="Views\Home\Member.cshtml" />
+    <Content Include="Views\Home\MemberDetail.cshtml" />
+    <Content Include="Views\Home\ManageMemberType.cshtml" />
+    <Content Include="Views\Home\ManagePriviledge.cshtml" />
+    <Content Include="Views\Home\EditMemberDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -27,6 +27,8 @@
     <!-- Custom Fonts -->
     <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+    <link href="../Content/progressring1.css" rel="stylesheet">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -42,8 +44,7 @@
             var radioM = document.getElementById("chkMonthly");
             var radioY = document.getElementById("chkYearly");
 
-            if(chkDaily.checked)
-            {
+            if (chkDaily.checked) {
                 dvPassportD.style.display = "block";
                 dvPassportM.style.display = "none";
                 dvPassportY.style.display = "none";
@@ -51,13 +52,13 @@
                 radioM.checked = false;
                 radioY.checked = false;
             }
-            else{
+            else {
                 //dvPassportD.style.display = "block";
                 //dvPassportM.style.display = "none";
                 //dvPassportY.style.display = "none";
             }
-        //dvPassport.style.display = chkDaily.checked ? "block" : "none";
-    }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
     </script>
 
     <script type="text/javascript">
@@ -69,8 +70,7 @@
             var radioD = document.getElementById("chkDaily");
             var radioY = document.getElementById("chkYearly");
 
-            if(chkMonthly.checked)
-            {
+            if (chkMonthly.checked) {
                 dvPassportD.style.display = "none";
                 dvPassportM.style.display = "block";
                 dvPassportY.style.display = "none";
@@ -78,13 +78,13 @@
                 radioD.checked = false;
                 radioY.checked = false;
             }
-            else{
+            else {
                 //dvPassportD.style.display = "block";
                 //dvPassportM.style.display = "none";
                 //dvPassportY.style.display = "none";
             }
-        //dvPassport.style.display = chkDaily.checked ? "block" : "none";
-    }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
     </script>
 
     <script type="text/javascript">
@@ -96,8 +96,7 @@
             var radioD = document.getElementById("chkDaily");
             var radioM = document.getElementById("chkMonthly");
 
-            if(chkYearly.checked)
-            {
+            if (chkYearly.checked) {
                 dvPassportD.style.display = "none";
                 dvPassportM.style.display = "none";
                 dvPassportY.style.display = "block";
@@ -105,21 +104,37 @@
                 radioD.checked = false;
                 radioM.checked = false;
             }
-            else{
+            else {
                 //dvPassportD.style.display = "block";
                 //dvPassportM.style.display = "none";
                 //dvPassportY.style.display = "none";
             }
-        //dvPassport.style.display = chkDaily.checked ? "block" : "none";
-    }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
+    </script>
+    <script type="text/javascript">
+        function navigateToOtherPage() {
+            document.getElementById("overlay").style.display = "block";
+        }
     </script>
 
+    <script type="text/javascript">
+
+        function navigationSuccess() {
+            document.getElementById("overlay").style.display = "none";
+        }
+
+    </script>
 
 </head>
 
 <body>
     <div id="wrapper">
-
+        <div id="overlay">
+            <div class="spinner">
+                <div class="ring"></div>
+            </div>
+        </div>
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -145,7 +160,7 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Dashboard</a>
+                            <a href="@Url.Action("Dashboard", "Home")" onclick="navigateToOtherPage();">@*<i class="fa fa-chevron-down fa-fw"></i>*@ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</a>
                         </li>
                         @*<li>
             <a href="@Url.Action("Khaosan", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Khaosan Thai 1&2</a>
@@ -157,19 +172,22 @@
                             <a href="@Url.Action("UrbanTwo", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 2</a>
                         </li>*@
                         <li>
-                            <a href="@Url.Action("UrbanThree", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 3</a>
+                            <a href="@Url.Action("UrbanThree", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 3</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanFour", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 4</a>
+                            <a href="@Url.Action("UrbanFour", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 4</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanFive", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 5</a>
+                            <a href="@Url.Action("UrbanFive", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 5</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanSix", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 6</a>
+                            <a href="@Url.Action("UrbanSix", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 6</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanSeven", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 7</a>
+                            <a href="@Url.Action("UrbanSeven", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 7</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Member", "Home")" target="_blank"><i class="fa fa-user-plus fa-fw"></i> VIP member</a>
                         </li>
                     </ul>
                 </div>
@@ -187,7 +205,7 @@
                         @*
                         <h4>Average  :  @Html.DisplayFor(model => model.strAverage)</h4>
                         <br />
-                        
+
                         <div class="radiofilter">
                             Select report type :
                             <label for="chkDaily">
@@ -237,7 +255,7 @@
                         </div>
                         <p></p>
                         <br />
-*@
+                        *@
                     </div>
 
                     <!-- /.col-lg-12 -->
@@ -262,7 +280,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Total Pax -->
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
@@ -396,7 +414,7 @@
                                             <td class="center">@item.TotalSale</td>
                                         </tr>
                                     }
-                                    
+
                                 </tbody>
                             </table>
 
@@ -407,7 +425,7 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-*@
+            *@
         </div>
 
         <!-- /#page-wrapper -->

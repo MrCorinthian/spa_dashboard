@@ -107,8 +107,8 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
-    <Property Name="MemberNo" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MemberNo" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="Title" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="FamilyName" Type="varchar" MaxLength="100" Nullable="false" />
@@ -128,7 +128,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MemberId" Type="int" Nullable="false" />
     <Property Name="MemberGroupId" Type="int" Nullable="false" />
     <Property Name="StartDate" Type="date" />

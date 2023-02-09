@@ -21,8 +21,12 @@ namespace WebApplication13.Models
         public string telephoneVal { get; set; }
         public string whatsappVal { get; set; }
         public string lineVal { get; set; }
-        public string startDateVal { get; set; }
-        public string expireDateVal { get; set; }
+        public string startDayVal { get; set; }
+        public string startMonthVal { get; set; }
+        public string startYearVal { get; set; }
+        public string expireDayVal { get; set; }
+        public string expireMonthVal { get; set; }
+        public string expireYearVal { get; set; }
         public string statusVal { get; set; }
         public string pageMode { get; set; }
     }

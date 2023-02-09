@@ -2005,7 +2005,7 @@ namespace WebApplication13.Controllers
         {
             if(myData.pageMode.Equals("New"))
             {
-                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDateVal) || string.IsNullOrEmpty(myData.expireDateVal) || string.IsNullOrEmpty(myData.statusVal))
+                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDayVal) || string.IsNullOrEmpty(myData.expireDayVal) || string.IsNullOrEmpty(myData.statusVal))
                 {
                     return "NoReq";
                 }
@@ -2046,12 +2046,15 @@ namespace WebApplication13.Controllers
                         db.Members.Add(newMem);
                         db.SaveChanges();
 
+                        string fullVipStart = myData.startMonthVal + "/" + myData.startDayVal + "/" + myData.startYearVal;
+                        string fullVipExpire = myData.expireMonthVal + "/" + myData.expireDayVal + "/" + myData.expireYearVal;
+
                         MemberDetail newMemDetail = new MemberDetail()
                         {
                             MemberId = getLastestMember().Id,
                             MemberGroupId = Int32.Parse(myData.vipTypeVal),
-                            StartDate = DateTime.Parse(myData.startDateVal),
-                            ExpireDate = DateTime.Parse(myData.expireDateVal),
+                            StartDate = DateTime.Parse(fullVipStart),
+                            ExpireDate = DateTime.Parse(fullVipExpire),
                             Status = "true",
                             CreateDateTime = DateTime.Now,
                             CreatedBy = "Admin"
@@ -2066,7 +2069,7 @@ namespace WebApplication13.Controllers
             }
             else
             {
-                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDateVal) || string.IsNullOrEmpty(myData.expireDateVal) || string.IsNullOrEmpty(myData.statusVal))
+                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDayVal) || string.IsNullOrEmpty(myData.expireDayVal) || string.IsNullOrEmpty(myData.statusVal))
                 {
                     return "NoReq";
                 }
@@ -2108,14 +2111,17 @@ namespace WebApplication13.Controllers
                             curMem.ActiveStatus = "false";
                         }
 
+                        string fullVipStart = myData.startMonthVal + "/" + myData.startDayVal + "/" + myData.startYearVal;
+                        string fullVipExpire = myData.expireMonthVal + "/" + myData.expireDayVal + "/" + myData.expireYearVal;
+
                         //db.SaveChanges();
                         MemberDetail curMemDetail = db.MemberDetails
                                             .Where(b => b.MemberId == usedMemId)
                                             .FirstOrDefault();
                         //MemberDetail curMemDetail = getMemberDetail(Int32.Parse(myData.Id));
                         curMemDetail.MemberGroupId = Int32.Parse(myData.vipTypeVal);
-                        curMemDetail.StartDate = DateTime.Parse(myData.startDateVal);
-                        curMemDetail.ExpireDate = DateTime.Parse(myData.expireDateVal);
+                        curMemDetail.StartDate = DateTime.Parse(fullVipStart);
+                        curMemDetail.ExpireDate = DateTime.Parse(fullVipExpire);
                         //curMemDetail.Status = "true";
                         curMemDetail.UpdateDateTime = DateTime.Now;
                         curMemDetail.UpdatedBy = "Admin";

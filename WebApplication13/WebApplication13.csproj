@@ -416,6 +416,7 @@
     <Compile Include="Models\MemberDetail.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MemberDetailForPOS.cs" />
     <Compile Include="Models\MemberGroup.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>

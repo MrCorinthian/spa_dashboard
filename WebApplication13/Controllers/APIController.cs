@@ -296,6 +296,52 @@ namespace WebApplication13.Controllers
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult VerifyMember(string memberNo)
+        {
+            //int getMemNo = Int32.Parse(memberNo);
+            Member getCurMem = getMemberFromMemberNo(memberNo);
+            if(getCurMem != null)
+            {
+                var send = new
+                {
+                    Status = "true",
+                    Id = getCurMem.Id,
+                    MemberNo = getCurMem.MemberNo,
+                    Title = getCurMem.Title,
+                    FirstName = getCurMem.FirstName,
+                    FamilyName = getCurMem.FamilyName,
+                    //BirthDay = getAllMassageSet(getMassageSetId(getBranchId)),
+                    //BirthMonth = db.OtherSales.ToList(),
+                    //BirthYear = db.DiscountMasters.ToList(),
+                    Address = getCurMem.AddressInTH,
+                    City = getCurMem.City,
+                    TelephoneNo = getCurMem.TelephoneNo,
+                    WhatsappId = getCurMem.WhatsAppId,
+                    LineId = getCurMem.LineId,
+                    MemberDetails = getMemberDetail(getCurMem.Id)
+                    //MemberGroupId = db.MemberGroupPriviledges.ToList(),
+                    //PriviledgeTypeId = db.MemberDetails.ToList(),
+                    //Value = getAllSetting(getBranchId)
+
+                };
+                var json = Json(send, JsonRequestBehavior.AllowGet);
+                json.MaxJsonLength = int.MaxValue;
+                return json;
+            }
+            else
+            {
+                var send = new
+                {
+                    Status = "false",
+                };
+                var json = Json(send, JsonRequestBehavior.AllowGet);
+                json.MaxJsonLength = int.MaxValue;
+                return json;
+            }
+
+        }
+
         public int getVersionNo(int branchId)
         {
             //List<OrderRecord> orderList = new List<OrderRecord>();
@@ -431,6 +477,92 @@ namespace WebApplication13.Controllers
             }
 
             return listSetting;
+        }
+
+        public Member getMemberFromMemberNo(string memberNo)
+        {
+            Member mem = new Member();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                mem = contexts.Members
+                                .Where(b => b.MemberNo == memberNo && b.ActiveStatus == "true")
+                                .FirstOrDefault();
+            }
+
+
+            return mem;
+
+        }
+
+
+        public Member getMember(int memberId)
+        {
+            Member mem = new Member();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                mem = contexts.Members
+                                .Where(b => b.Id == memberId)
+                                .FirstOrDefault();
+            }
+
+
+            return mem;
+
+        }
+
+        public MemberDetail getMemberDetail(int memberId)
+        {
+            MemberDetail memDetail = new MemberDetail();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memDetail = contexts.MemberDetails
+                                .Where(b => b.MemberId == memberId)
+                                .FirstOrDefault();
+            }
+
+
+            return memDetail;
+
+        }
+
+        public MemberGroup getMemberGroupDetail(int memberGroupId)
+        {
+            MemberGroup memGroupDetail = new MemberGroup();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memGroupDetail = contexts.MemberGroups
+                                .Where(b => b.Id == memberGroupId)
+                                .FirstOrDefault();
+            }
+
+
+            return memGroupDetail;
+
+        }
+
+        public MemberPriviledge getMemberPriviledgeDetail(int memberPriviledgeId)
+        {
+            MemberPriviledge memPriviledgeDetail = new MemberPriviledge();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                memPriviledgeDetail = contexts.MemberPriviledges
+                                .Where(b => b.Id == memberPriviledgeId)
+                                .FirstOrDefault();
+            }
+
+
+            return memPriviledgeDetail;
+
         }
 
         public class RootObject

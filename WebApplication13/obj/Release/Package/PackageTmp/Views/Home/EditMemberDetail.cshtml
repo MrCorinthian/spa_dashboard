@@ -99,8 +99,12 @@
                     telephoneVal: $("#telephoneTbx").val(),
                     whatsappVal: $("#whatsappTbx").val(),
                     lineVal: $("#lineTbx").val(),
-                    startDateVal: $("#startDateTbx").val(),
-                    expireDateVal: $("#expireDateTbx").val(),
+                    startDayVal: $("#vipStartDayTbx").val(),
+                    startMonthVal: $("#vipStartMonthTbx").val(),
+                    startYearVal: $("#vipStartYearTbx").val(),
+                    expireDayVal: $("#vipExpireDayTbx").val(),
+                    expireMonthVal: $("#vipExpireMonthTbx").val(),
+                    expireYearVal: $("#vipExpireYearTbx").val(),
                     statusVal: $("#statusDropdown").val(),
                     pageMode: "@Model.MemberList[0].PageMode"
                 };
@@ -373,11 +377,19 @@
                 </tr>*@
                                         <tr>
                                             <td style="background-color:#F0F0F0">VIP start date <div id="starTxt">*</div></td>
-                                            <td class="center"><input id="startDateTbx" class="form-control" placeholder="Start date mm/dd/yyyy" value="@item.VipStart"></td>
+                                            <td class="center">
+                                                <input id="vipStartMonthTbx" placeholder="mm" style="width: 80px;" maxlength="2" value="@item.VipStartMonth">
+                                                <input id="vipStartDayTbx" placeholder="dd" style="width: 80px;" maxlength="2" value="@item.VipStartDay">
+                                                <input id="vipStartYearTbx" placeholder="yyyy" style="width: 80px;" maxlength="4" value="@item.VipStartYear">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="background-color:#F0F0F0">VIP expire date <div id="starTxt">*</div></td>
-                                            <td class="center"><input id="expireDateTbx" class="form-control" placeholder="Expire date mm/dd/yyyy" value="@item.VipExpire"></td>
+                                            <td class="center">
+                                                <input id="vipExpireMonthTbx" placeholder="mm" style="width: 80px;" maxlength="2" value="@item.VipExpireMonth">
+                                                <input id="vipExpireDayTbx" placeholder="dd" style="width: 80px;" maxlength="2" value="@item.VipExpireDay">
+                                                <input id="vipExpireYearTbx" placeholder="yyyy" style="width: 80px;" maxlength="4" value="@item.VipExpireYear">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="background-color:#F0F0F0">Active status <div id="starTxt">*</div></td>
@@ -464,11 +476,19 @@
                                         </tr>
                                         <tr>
                                             <td style="background-color:#F0F0F0">VIP start date <div id="starTxt">*</div></td>
-                                            <td class="center"><input id="startDateTbx" class="form-control" placeholder="Start date mm/dd/yyyy"></td>
+                                            <td class="center">
+                                                <input id="vipStartMonthTbx" placeholder="mm" style="width: 80px;" maxlength="2">
+                                                <input id="vipStartDayTbx" placeholder="dd" style="width: 80px;" maxlength="2">
+                                                <input id="vipStartYearTbx" placeholder="yyyy" style="width: 80px;" maxlength="4">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="background-color:#F0F0F0">VIP expire date <div id="starTxt">*</div></td>
-                                            <td class="center"><input id="expireDateTbx" class="form-control" placeholder="Expire date mm/dd/yyyy"></td>
+                                            <td class="center">
+                                                <input id="vipExpireMonthTbx" placeholder="mm" style="width: 80px;" maxlength="2">
+                                                <input id="vipExpireDayTbx" placeholder="dd" style="width: 80px;" maxlength="2">
+                                                <input id="vipExpireYearTbx" placeholder="yyyy" style="width: 80px;" maxlength="4">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="background-color:#F0F0F0">Active status <div id="starTxt">*</div></td>

@@ -1985,7 +1985,8 @@ namespace WebApplication13.Controllers
                 if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
                 {
                     string[] splitBirth = myMem.Birth.ToString().Split(' ');
-                    memItem.Birth = splitBirth[0];
+                    string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
+                    memItem.Birth = splitBirthInEach[1]+"/"+ splitBirthInEach[0]+"/"+ splitBirthInEach[2];
                 }
                 
 

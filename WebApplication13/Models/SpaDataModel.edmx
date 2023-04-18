@@ -186,6 +186,83 @@
           <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'spasystemdb.dbo.MobileComPaymentStatus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="MobileComPaymentStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentMonth" Type="datetime2" Precision="7" />
+          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'spasystemdb.dbo.MobileComTier' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="MobileComTier">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TierName" Type="nvarchar" MaxLength="50" />
+          <Property Name="TierColor" Type="nvarchar" MaxLength="10" />
+          <Property Name="ComBahtFrom" Type="float" />
+          <Property Name="ComBahtTo" Type="float" />
+          <Property Name="ComPercentage" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="MobileComTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MobileUserId" Type="int" />
+          <Property Name="TotalBaht" Type="float" />
+          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MobileUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="TitleName" Type="nvarchar" MaxLength="10" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" />
+          <Property Name="IdCardNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="Nationality" Type="nvarchar" MaxLength="50" />
+          <Property Name="Birthday" Type="date" />
+          <Property Name="Address" Type="nvarchar" MaxLength="300" />
+          <Property Name="Province" Type="nvarchar" MaxLength="50" />
+          <Property Name="Occupation" Type="nvarchar" MaxLength="50" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="20" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="LineId" Type="nvarchar" MaxLength="50" />
+          <Property Name="WhatsAppId" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompanyTexId" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankAccount" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankAccountNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="ProfilePath" Type="nvarchar(max)" />
+          <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
+          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="Updated" Type="datetime2" Precision="7" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MobileUserLoginToken">
+          <Key>
+            <PropertyRef Name="Token" />
+          </Key>
+          <Property Name="Token" Type="nvarchar" MaxLength="36" Nullable="false" />
+          <Property Name="MobileUserId" Type="int" />
+          <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
+          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="Expired" Type="datetime2" Precision="7" />
+        </EntityType>
         <EntityType Name="OrderRecord">
           <Key>
             <PropertyRef Name="Id" />
@@ -261,6 +338,18 @@
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="Receipt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="64" />
+          <Property Name="UsedStatus" Type="nvarchar" MaxLength="1" />
+          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="Updated" Type="datetime2" Precision="7" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="SystemSetting">
           <Key>
             <PropertyRef Name="Id" />
@@ -312,14 +401,44 @@
           <EntitySet Name="MemberGroup" EntityType="Self.MemberGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MemberGroupPriviledge" EntityType="Self.MemberGroupPriviledge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MemberPriviledge" EntityType="Self.MemberPriviledge" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileUserLoginToken" EntityType="Self.MobileUserLoginToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderRecord" EntityType="Self.OrderRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderRecordWithDiscount" EntityType="Self.OrderRecordWithDiscount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OtherSale" EntityType="Self.OtherSale" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OtherSaleRecord" EntityType="Self.OtherSaleRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PriviledgeType" EntityType="Self.PriviledgeType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Receipt" EntityType="Self.Receipt" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileComPaymentStatus" EntityType="Self.MobileComPaymentStatus" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [MobileComPaymentStatus].[Id] AS [Id], 
+    [MobileComPaymentStatus].[PaymentMonth] AS [PaymentMonth], 
+    [MobileComPaymentStatus].[Created] AS [Created], 
+    [MobileComPaymentStatus].[CreatedBy] AS [CreatedBy]
+    FROM [dbo].[MobileComPaymentStatus] AS [MobileComPaymentStatus]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [MobileComTier].[Id] AS [Id], 
+    [MobileComTier].[TierName] AS [TierName], 
+    [MobileComTier].[TierColor] AS [TierColor], 
+    [MobileComTier].[ComBahtFrom] AS [ComBahtFrom], 
+    [MobileComTier].[ComBahtTo] AS [ComBahtTo], 
+    [MobileComTier].[ComPercentage] AS [ComPercentage]
+    FROM [dbo].[MobileComTier] AS [MobileComTier]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [MobileComTransaction].[Id] AS [Id], 
+    [MobileComTransaction].[MobileUserId] AS [MobileUserId], 
+    [MobileComTransaction].[TotalBaht] AS [TotalBaht], 
+    [MobileComTransaction].[Created] AS [Created], 
+    [MobileComTransaction].[CreatedBy] AS [CreatedBy]
+    FROM [dbo].[MobileComTransaction] AS [MobileComTransaction]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -427,6 +546,12 @@
           <EntitySet Name="MemberPriviledges" EntityType="spasystemdbModel.MemberPriviledge" />
           <EntitySet Name="PriviledgeTypes" EntityType="spasystemdbModel.PriviledgeType" />
           <EntitySet Name="Members" EntityType="spasystemdbModel.Member" />
+          <EntitySet Name="MobileUserLoginTokens" EntityType="spasystemdbModel.MobileUserLoginToken" />
+          <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
+          <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
+          <EntitySet Name="MobileComPaymentStatus" EntityType="spasystemdbModel.MobileComPaymentStatu" />
+          <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
+          <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -640,6 +765,89 @@
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="MobileUserLoginToken">
+          <Key>
+            <PropertyRef Name="Token" />
+          </Key>
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="36" FixedLength="false" Unicode="true" />
+          <Property Name="MobileUserId" Type="Int32" />
+          <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="Expired" Type="DateTime" Precision="7" />
+        </EntityType>
+        <EntityType Name="MobileUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TitleName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IdCardNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Birthday" Type="DateTime" Precision="0" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Province" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Occupation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LineId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WhatsAppId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyTexId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ProfilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Updated" Type="DateTime" Precision="7" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Receipt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="UsedStatus" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Updated" Type="DateTime" Precision="7" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileComPaymentStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentMonth" Type="DateTime" Precision="7" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileComTier">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TierName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TierColor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ComBahtFrom" Type="Double" />
+          <Property Name="ComBahtTo" Type="Double" />
+          <Property Name="ComPercentage" Type="Double" />
+        </EntityType>
+        <EntityType Name="MobileComTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MobileUserId" Type="Int32" />
+          <Property Name="TotalBaht" Type="Double" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -943,6 +1151,95 @@
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="MemberNo" ColumnName="MemberNo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileUserLoginTokens">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileUserLoginToken">
+              <MappingFragment StoreEntitySet="MobileUserLoginToken">
+                <ScalarProperty Name="Expired" ColumnName="Expired" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileUsers">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileUser">
+              <MappingFragment StoreEntitySet="MobileUser">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ProfilePath" ColumnName="ProfilePath" />
+                <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
+                <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+                <ScalarProperty Name="CompanyTexId" ColumnName="CompanyTexId" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="WhatsAppId" ColumnName="WhatsAppId" />
+                <ScalarProperty Name="LineId" ColumnName="LineId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="IdCardNumber" ColumnName="IdCardNumber" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="TitleName" ColumnName="TitleName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Receipts">
+            <EntityTypeMapping TypeName="spasystemdbModel.Receipt">
+              <MappingFragment StoreEntitySet="Receipt">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileComPaymentStatus">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileComPaymentStatu">
+              <MappingFragment StoreEntitySet="MobileComPaymentStatus">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="PaymentMonth" ColumnName="PaymentMonth" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileComTiers">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
+              <MappingFragment StoreEntitySet="MobileComTier">
+                <ScalarProperty Name="ComPercentage" ColumnName="ComPercentage" />
+                <ScalarProperty Name="ComBahtTo" ColumnName="ComBahtTo" />
+                <ScalarProperty Name="ComBahtFrom" ColumnName="ComBahtFrom" />
+                <ScalarProperty Name="TierColor" ColumnName="TierColor" />
+                <ScalarProperty Name="TierName" ColumnName="TierName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileComTransactions">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
+              <MappingFragment StoreEntitySet="MobileComTransaction">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

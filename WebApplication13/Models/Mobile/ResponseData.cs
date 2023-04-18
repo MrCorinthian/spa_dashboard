@@ -5,9 +5,9 @@ using System.Web;
 
 namespace WebApplication13.Models.Mobile
 {
-    public class UserSignin
+    public class ResponseData
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public bool Success { get; set; }
+        public string Data { get; set; }
     }
 }

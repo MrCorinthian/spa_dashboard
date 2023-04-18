@@ -199,7 +199,7 @@
     <Content Include="Models\SpaDataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SpaDataModel.edmx</DependentUpon>
-      <LastGenOutput>SpaDataModel.cs</LastGenOutput>
+      <LastGenOutput>SpaDataModel1.cs</LastGenOutput>
     </Content>
     <Content Include="pages\blank.html" />
     <Content Include="pages\buttons.html" />
@@ -401,7 +401,10 @@
     <Compile Include="Controllers\APIController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Mobile\BaseApiController.cs" />
+    <Compile Include="Controllers\Mobile\FileController.cs" />
+    <Compile Include="Controllers\Mobile\RegisterController.cs" />
     <Compile Include="Controllers\Mobile\UserController.cs" />
+    <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -459,7 +462,15 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MemberPriviledgeItem.cs" />
-    <Compile Include="Models\Mobile\UserSignin.cs" />
+    <Compile Include="Models\MobileUser.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MobileUserLoginToken.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Mobile\MobileUserInfo.cs" />
+    <Compile Include="Models\Mobile\RegisterData.cs" />
+    <Compile Include="Models\Mobile\ResponseData.cs" />
     <Compile Include="Models\OrderRecord.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
@@ -490,6 +501,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SpaDataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SpaDataModel1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SystemSetting.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>

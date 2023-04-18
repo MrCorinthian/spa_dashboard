@@ -181,6 +181,47 @@
     <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
     <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="MobileUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" />
+    <Property Name="Password" Type="nvarchar" MaxLength="50" />
+    <Property Name="TitleName" Type="nvarchar" MaxLength="10" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="100" />
+    <Property Name="IdCardNumber" Type="nvarchar" MaxLength="100" />
+    <Property Name="Nationality" Type="nvarchar" MaxLength="50" />
+    <Property Name="Birthday" Type="date" />
+    <Property Name="Address" Type="nvarchar" MaxLength="300" />
+    <Property Name="Province" Type="nvarchar" MaxLength="50" />
+    <Property Name="Occupation" Type="nvarchar" MaxLength="50" />
+    <Property Name="PhoneNumber" Type="varchar" MaxLength="20" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="LineId" Type="nvarchar" MaxLength="50" />
+    <Property Name="WhatsAppId" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyTexId" Type="nvarchar" MaxLength="50" />
+    <Property Name="BankAccount" Type="nvarchar" MaxLength="50" />
+    <Property Name="BankAccountNumber" Type="nvarchar" MaxLength="20" />
+    <Property Name="ProfilePath" Type="nvarchar(max)" />
+    <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="Updated" Type="datetime2" Precision="7" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MobileUserLoginToken">
+    <Key>
+      <PropertyRef Name="Token" />
+    </Key>
+    <Property Name="Token" Type="nvarchar" MaxLength="36" Nullable="false" />
+    <Property Name="MobileUserId" Type="int" />
+    <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" />
+    <Property Name="Expired" Type="datetime2" Precision="7" />
+  </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
       <PropertyRef Name="Id" />
@@ -307,6 +348,8 @@
     <EntitySet Name="MemberGroup" EntityType="Self.MemberGroup" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MemberGroupPriviledge" EntityType="Self.MemberGroupPriviledge" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MemberPriviledge" EntityType="Self.MemberPriviledge" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileUserLoginToken" EntityType="Self.MobileUserLoginToken" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderRecord" EntityType="Self.OrderRecord" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderRecordWithDiscount" EntityType="Self.OrderRecordWithDiscount" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OtherSale" EntityType="Self.OtherSale" Schema="dbo" store:Type="Tables" />

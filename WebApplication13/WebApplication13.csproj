@@ -462,6 +462,15 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MemberPriviledgeItem.cs" />
+    <Compile Include="Models\MobileComPaymentStatu.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MobileComTier.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MobileComTransaction.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MobileUser.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
@@ -485,6 +494,9 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PriviledgeType.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Receipt.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpaDataModel.Context.cs">

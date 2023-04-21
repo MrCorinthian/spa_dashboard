@@ -344,5 +344,51 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Receipts">
+      <EntityTypeMapping TypeName="spasystemdbModel.Receipt">
+        <MappingFragment StoreEntitySet="Receipt">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="Updated" ColumnName="Updated" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileComPaymentStatus">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileComPaymentStatu">
+        <MappingFragment StoreEntitySet="MobileComPaymentStatus">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="PaymentMonth" ColumnName="PaymentMonth" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileComTransactions">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
+        <MappingFragment StoreEntitySet="MobileComTransaction">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileComTiers">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
+        <MappingFragment StoreEntitySet="MobileComTier">
+          <ScalarProperty Name="ComPercentage" ColumnName="ComPercentage" />
+          <ScalarProperty Name="ComBahtTo" ColumnName="ComBahtTo" />
+          <ScalarProperty Name="ComBahtFrom" ColumnName="ComBahtFrom" />
+          <ScalarProperty Name="TierColor" ColumnName="TierColor" />
+          <ScalarProperty Name="TierName" ColumnName="TierName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

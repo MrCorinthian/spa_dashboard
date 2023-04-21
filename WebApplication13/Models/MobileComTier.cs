@@ -17,8 +17,8 @@ namespace WebApplication13.Models
         public int Id { get; set; }
         public string TierName { get; set; }
         public string TierColor { get; set; }
-        public Nullable<double> ComBahtFrom { get; set; }
+        public double ComBahtFrom { get; set; }
         public Nullable<double> ComBahtTo { get; set; }
-        public Nullable<double> ComPercentage { get; set; }
+        public double ComPercentage { get; set; }
     }
 }

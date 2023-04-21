@@ -202,24 +202,29 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTier' does not have a pri
         <EntityType Name="MobileComTier">
           <Key>
             <PropertyRef Name="Id" />
+            <PropertyRef Name="ComBahtFrom" />
+            <PropertyRef Name="ComPercentage" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TierName" Type="nvarchar" MaxLength="50" />
           <Property Name="TierColor" Type="nvarchar" MaxLength="10" />
-          <Property Name="ComBahtFrom" Type="float" />
+          <Property Name="ComBahtFrom" Type="float" Nullable="false" />
           <Property Name="ComBahtTo" Type="float" />
-          <Property Name="ComPercentage" Type="float" />
+          <Property Name="ComPercentage" Type="float" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="MobileComTransaction">
           <Key>
             <PropertyRef Name="Id" />
+            <PropertyRef Name="MobileUserId" />
+            <PropertyRef Name="TotalBaht" />
+            <PropertyRef Name="Created" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MobileUserId" Type="int" />
-          <Property Name="TotalBaht" Type="float" />
-          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="MobileUserId" Type="int" Nullable="false" />
+          <Property Name="TotalBaht" Type="float" Nullable="false" />
+          <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="MobileUser">
@@ -550,8 +555,8 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
           <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
           <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
           <EntitySet Name="MobileComPaymentStatus" EntityType="spasystemdbModel.MobileComPaymentStatu" />
-          <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
           <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
+          <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -828,26 +833,31 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
           <Property Name="Created" Type="DateTime" Precision="7" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="MobileComTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="MobileUserId" />
+            <PropertyRef Name="TotalBaht" />
+            <PropertyRef Name="Created" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+          <Property Name="TotalBaht" Type="Double" Nullable="false" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="MobileComTier">
           <Key>
             <PropertyRef Name="Id" />
+            <PropertyRef Name="ComBahtFrom" />
+            <PropertyRef Name="ComPercentage" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TierName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TierColor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ComBahtFrom" Type="Double" />
+          <Property Name="ComBahtFrom" Type="Double" Nullable="false" />
           <Property Name="ComBahtTo" Type="Double" />
-          <Property Name="ComPercentage" Type="Double" />
-        </EntityType>
-        <EntityType Name="MobileComTransaction">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MobileUserId" Type="Int32" />
-          <Property Name="TotalBaht" Type="Double" />
-          <Property Name="Created" Type="DateTime" Precision="7" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ComPercentage" Type="Double" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1221,6 +1231,17 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="MobileComTransactions">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
+              <MappingFragment StoreEntitySet="MobileComTransaction">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="MobileComTiers">
             <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
               <MappingFragment StoreEntitySet="MobileComTier">
@@ -1229,17 +1250,6 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
                 <ScalarProperty Name="ComBahtFrom" ColumnName="ComBahtFrom" />
                 <ScalarProperty Name="TierColor" ColumnName="TierColor" />
                 <ScalarProperty Name="TierName" ColumnName="TierName" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MobileComTransactions">
-            <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
-              <MappingFragment StoreEntitySet="MobileComTransaction">
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
-                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

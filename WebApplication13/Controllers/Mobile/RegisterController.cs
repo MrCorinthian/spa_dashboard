@@ -27,42 +27,45 @@ namespace WebApplication13.Controllers.Mobile
                     DateTime now = DateTime.Now;
                     MobileUser user = new MobileUser();
                     string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
+                    var findUsername = db.MobileUsers.FirstOrDefault(c => c.Username.ToUpper() == user.Username.ToUpper());
+                    if (findUsername == null)
+                    {
+                        user.Username = data.Username;
+                        user.Password = EncryptionDAL.EncryptString(data.Password);
+                        //user.TitleName = data.TitleName;
+                        user.FirstName = data.FirstName;
+                        user.LastName = data.LastName;
+                        user.IdCardNumber = data.IdCardNumber;
+                        user.Province = data.Province;
+                        user.PhoneNumber = data.PhoneNumber;
+                        user.Occupation = data.Occupation;
+                        user.BankAccount = data.BankAccount;
+                        user.BankAccountNumber = data.BankAccountNumber;
 
-                    //user.Username = data.Username;
-                    user.Password = data.Password;
-                    //user.TitleName = data.TitleName;
-                    user.FirstName = data.FirstName;
-                    user.LastName = data.LastName;
-                    user.IdCardNumber = data.IdCardNumber;
-                    user.Province = data.Province;
-                    user.PhoneNumber = data.PhoneNumber;
-                    user.Occupation = data.Occupation;
-                    user.BankAccount = data.BankAccount;
-                    user.BankAccountNumber = data.BankAccountNumber;
+                        if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{subPath}{data.ProfilePath}";
+                        if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
+                        if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
+                        if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
+                        if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
+                        if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                        if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
+                        if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
 
-                    if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{subPath}{data.ProfilePath}";
-                    if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
-                    if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
-                    if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
-                    if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
-                    if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
-                    if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                    if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
+                        user.Active = "Y";
+                        user.CreatedBy = "system";
+                        user.Created = now;
+                        user.UpdatedBy = "system";
+                        user.Updated = now;
 
-                    user.Active = "Y";
-                    user.CreatedBy = "system";
-                    user.Created = now;
-                    user.UpdatedBy = "system";
-                    user.Updated = now;
+                        db.MobileUsers.Add(user);
+                        db.SaveChanges();
 
-                    db.MobileUsers.Add(user);
-                    db.SaveChanges();
+                        string token = UserDAL.CreateLoginToken(user.Id);
 
-                    string token = UserDAL.CreateLoginToken(user.Id);
-
-                    response.Success = true;
-                    response.Data = token;
-                    return Ok(response);
+                        response.Success = true;
+                        response.Data = token;
+                        return Ok(response);
+                    }
                 }
             }
             catch(Exception ex) 

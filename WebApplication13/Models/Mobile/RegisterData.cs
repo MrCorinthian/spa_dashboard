@@ -8,6 +8,7 @@ namespace WebApplication13.Models.Mobile
     public class RegisterData
     {
         public string Token { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
         public string TitleName { get; set; }
         public string FirstName { get; set; }

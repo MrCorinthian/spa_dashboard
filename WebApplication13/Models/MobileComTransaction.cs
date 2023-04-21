@@ -15,9 +15,9 @@ namespace WebApplication13.Models
     public partial class MobileComTransaction
     {
         public int Id { get; set; }
-        public Nullable<int> MobileUserId { get; set; }
-        public Nullable<double> TotalBaht { get; set; }
-        public Nullable<System.DateTime> Created { get; set; }
+        public int MobileUserId { get; set; }
+        public double TotalBaht { get; set; }
+        public System.DateTime Created { get; set; }
         public string CreatedBy { get; set; }
     }
 }

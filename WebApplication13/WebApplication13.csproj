@@ -228,6 +228,7 @@
     <Content Include="Models\SpaDataModel.edmx.diagram">
       <DependentUpon>SpaDataModel.edmx</DependentUpon>
     </Content>
+    <Content Include=".env" />
     <None Include="Properties\PublishProfiles\spabackoffice - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP.pubxml" />
@@ -401,9 +402,13 @@
     <Compile Include="Controllers\APIController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Mobile\BaseApiController.cs" />
+    <Compile Include="Controllers\Mobile\DataController.cs" />
     <Compile Include="Controllers\Mobile\FileController.cs" />
     <Compile Include="Controllers\Mobile\RegisterController.cs" />
+    <Compile Include="Controllers\Mobile\ReportController.cs" />
     <Compile Include="Controllers\Mobile\UserController.cs" />
+    <Compile Include="DAL\EncryptionDAL.cs" />
+    <Compile Include="DAL\EnvDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -479,6 +484,8 @@
     </Compile>
     <Compile Include="Models\Mobile\MobileUserInfo.cs" />
     <Compile Include="Models\Mobile\RegisterData.cs" />
+    <Compile Include="Models\Mobile\ReportParams.cs" />
+    <Compile Include="Models\Mobile\ReportTransaction.cs" />
     <Compile Include="Models\Mobile\ResponseData.cs" />
     <Compile Include="Models\OrderRecord.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>

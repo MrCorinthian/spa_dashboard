@@ -8,6 +8,31 @@ namespace WebApplication13.DAL
 {
     public class UserDAL
     {
+        public static User GetUserByToken(string token)
+        {
+            try
+            {
+                if (token != null && !string.IsNullOrEmpty(token))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token);
+                        if (loginToken != null)
+                        {
+                            User user = db.Users.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
+                            if (user != null)
+                            {
+                                return user;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
         public static string CreateLoginToken(int mobileUserId)
         {
             string token = "";

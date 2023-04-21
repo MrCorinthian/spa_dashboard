@@ -28,5 +28,9 @@ namespace WebApplication13.Models.Mobile {
         public string BankAccountNumber { get; set; }
         public string ProfilePath { get; set; }
         public string Active { get; set; }
+        public string TierName { get; set; }
+        public string TierColor { get; set; }
+        public double TotalBaht { get; set; }
+        public double MaxBaht { get; set; }
     }
 }

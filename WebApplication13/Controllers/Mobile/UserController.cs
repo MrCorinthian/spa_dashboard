@@ -25,9 +25,10 @@ namespace WebApplication13.Controllers.Mobile
             string token = "";
             try
             {
+                string enPassword = EncryptionDAL.EncryptString(data.Password);
                 using (var db = new spasystemdbEntities())
                 {
-                    MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username && c.Password == data.Password);
+                    MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username && c.Password == enPassword);
                     if (user != null)
                     {
                         token = UserDAL.CreateLoginToken(user.Id);
@@ -108,6 +109,23 @@ namespace WebApplication13.Controllers.Mobile
                                 mobileUserInfo.BankAccount = user.BankAccount;
                                 mobileUserInfo.BankAccountNumber = user.BankAccountNumber;
 
+                                List<MobileComTier> comTiers = db.MobileComTiers.ToList();
+                                List<double> userComs = db.MobileComTransactions.Where(c => c.MobileUserId == user.Id).Select(s => s.TotalBaht).ToList();
+                                double comTotal = userComs.Sum();
+                                foreach(MobileComTier comTier in comTiers)
+                                {
+                                    if ((comTotal >= comTier.ComBahtFrom && comTotal < comTier.ComBahtTo) || comTier.ComBahtTo == null)
+                                    {
+                                        comTotal -= Math.Round(comTier.ComBahtFrom, 0);
+                                        mobileUserInfo.TierName = comTier.TierName;
+                                        mobileUserInfo.TierColor = comTier.TierColor;
+                                        mobileUserInfo.TotalBaht = comTier.ComBahtTo == null ? Math.Round(comTier.ComBahtFrom, 0) : comTotal;
+                                        mobileUserInfo.MaxBaht = comTier.ComBahtTo ?? comTier.ComBahtFrom;
+                                        mobileUserInfo.MaxBaht = comTier.ComBahtTo == null ? Math.Round(comTier.ComBahtFrom, 0) : Math.Round(mobileUserInfo.MaxBaht, 0) - Math.Round(comTier.ComBahtFrom, 0);
+                                        break;
+                                    }
+                                }
+
                                 return Ok(mobileUserInfo);
                             }
                         }
@@ -120,7 +138,7 @@ namespace WebApplication13.Controllers.Mobile
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> CheckUsername(ResponseData username)
+        public async Task<IHttpActionResult> Username(ResponseData username)
         {
             ResponseData response = new ResponseData();
             try

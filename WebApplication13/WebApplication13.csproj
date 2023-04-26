@@ -401,6 +401,7 @@
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\APIController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MobileController.cs" />
     <Compile Include="Controllers\Mobile\BaseApiController.cs" />
     <Compile Include="Controllers\Mobile\DataController.cs" />
     <Compile Include="Controllers\Mobile\FileController.cs" />
@@ -565,6 +566,7 @@
     <Content Include="Views\Home\ManageMemberType.cshtml" />
     <Content Include="Views\Home\ManagePriviledge.cshtml" />
     <Content Include="Views\Home\EditMemberDetail.cshtml" />
+    <Content Include="Views\Mobile\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SPA COM MOBILE</title>
+    <base href="@Url.Action("Index", new { controller = "Mobile" })">
+    <script>
+        var bases = document.getElementsByTagName('base');
+        var base_api = (bases.length && bases[0] && bases[0].href) || '';
+        base_api = base_api + 'Api';
+        ws_api = base_api;
+    </script>
+</head>
+<body>
+    <app-root></app-root>
+    <script src="~/AngularViews/runtime.js"></script>
+    <script src="~/AngularViews/polyfills.js"></script>
+    <script src="~/AngularViews/styles.js"></script>
+    <script src="~/AngularViews/vendor.js"></script>
+    <script src="~/AngularViews/main.js"></script>
+</body>
+</html>

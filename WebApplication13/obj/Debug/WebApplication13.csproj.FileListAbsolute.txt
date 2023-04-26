@@ -408,8 +408,8 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Syste
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Helpers.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.AssemblyReference.cache
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.CoreCompileInputs.cache
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.CopyComplete
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.pdb
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.AssemblyReference.cache

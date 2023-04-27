@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using WebApplication13.Models;
+using WebApplication13.Models.Mobile;
 
 namespace WebApplication13.DAL
 {
@@ -64,6 +66,61 @@ namespace WebApplication13.DAL
             catch { }
 
             return token;
+        }
+
+        public static MobileUserInfo GetMoblieUserInfo(int id)
+        {
+            string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
+            MobileUserInfo mobileUserInfo = new MobileUserInfo();
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    var user = db.MobileUsers.FirstOrDefault(c => c.Id == id);
+                    if (user != null)
+                    {
+                        mobileUserInfo.Username = user.Username;
+                        mobileUserInfo.TitleName = user.TitleName;
+                        mobileUserInfo.FirstName = user.FirstName;
+                        mobileUserInfo.LastName = user.LastName;
+                        mobileUserInfo.IdCardNumber = user.IdCardNumber;
+                        mobileUserInfo.Nationality = user.Nationality;
+                        mobileUserInfo.Birthday = user.Birthday;
+                        mobileUserInfo.Address = user.Address;
+                        mobileUserInfo.Province = user.Province;
+                        mobileUserInfo.Occupation = user.Occupation;
+                        mobileUserInfo.PhoneNumber = user.PhoneNumber;
+                        mobileUserInfo.Email = user.Email;
+                        mobileUserInfo.LineId = user.LineId;
+                        mobileUserInfo.WhatsAppId = user.WhatsAppId;
+                        mobileUserInfo.CompanyName = user.CompanyName;
+                        mobileUserInfo.CompanyTexId = user.CompanyTexId;
+                        mobileUserInfo.BankAccount = user.BankAccount;
+                        mobileUserInfo.BankAccountNumber = user.BankAccountNumber;
+                        if (!string.IsNullOrEmpty(user.ProfilePath)) mobileUserInfo.ProfilePath = $"File/ProfileImageWeb/{user.Id}";
+
+                        List<MobileComTier> comTiers = db.MobileComTiers.ToList();
+                        List<double> userComs = db.MobileComTransactions.Where(c => c.MobileUserId == user.Id).Select(s => s.TotalBaht).ToList();
+                        double comTotal = userComs.Sum();
+                        foreach (MobileComTier comTier in comTiers)
+                        {
+                            if ((comTotal >= comTier.ComBahtFrom && comTotal < comTier.ComBahtTo) || comTier.ComBahtTo == null)
+                            {
+                                comTotal -= Math.Round(comTier.ComBahtFrom, 0);
+                                mobileUserInfo.TierName = comTier.TierName;
+                                mobileUserInfo.TierColor = comTier.TierColor;
+                                mobileUserInfo.TotalBaht = comTier.ComBahtTo == null ? Math.Round(comTier.ComBahtFrom, 0) : comTotal;
+                                mobileUserInfo.MaxBaht = comTier.ComBahtTo ?? comTier.ComBahtFrom;
+                                mobileUserInfo.MaxBaht = comTier.ComBahtTo == null ? Math.Round(comTier.ComBahtFrom, 0) : Math.Round(mobileUserInfo.MaxBaht, 0) - Math.Round(comTier.ComBahtFrom, 0);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return mobileUserInfo;
         }
     }
 }

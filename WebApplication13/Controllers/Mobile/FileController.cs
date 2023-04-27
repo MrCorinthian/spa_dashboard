@@ -105,6 +105,40 @@ namespace WebApplication13.Controllers.Mobile
             return NotFound();
         }
 
+        [HttpGet]
+        public async Task<IHttpActionResult> ProfileImageWeb(int id)
+        {
+            var response = new HttpResponseMessage();
+            string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null)
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == id && c.Active == "Y");
+                        if (user != null && !string.IsNullOrEmpty(user.ProfilePath))
+                        {
+                            string imagePath = $"{webRootPath}{user.ProfilePath}";
+                            string extension = user.ProfilePath.Split('.').LastOrDefault();
+
+                            var stream = File.OpenRead(imagePath);
+                            response.Content = new StreamContent(stream);
+                            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                            response.Content.Headers.ContentLength = stream.Length;
+
+                            return ResponseMessage(response);
+                        }
+                    
+                    }
+                }
+            }
+            catch { }
+
+            return NotFound();
+        }
+
         private string GenerateID()
         {
             return DateTime.Now.ToString("yyyyMMddHHmmssfffffff");

@@ -89,46 +89,40 @@ namespace WebApplication13.Controllers.Mobile
                             var user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
                             if (user != null)
                             {
-                                mobileUserInfo.Token = token.Data;
-                                mobileUserInfo.Username = user.Username;
-                                mobileUserInfo.TitleName = user.TitleName;
-                                mobileUserInfo.FirstName = user.FirstName;
-                                mobileUserInfo.LastName = user.LastName;
-                                mobileUserInfo.IdCardNumber = user.IdCardNumber;
-                                mobileUserInfo.Nationality = user.Nationality;
-                                mobileUserInfo.Birthday = user.Birthday;
-                                mobileUserInfo.Address = user.Address;
-                                mobileUserInfo.Province = user.Province;
-                                mobileUserInfo.Occupation = user.Occupation;
-                                mobileUserInfo.PhoneNumber = user.PhoneNumber;
-                                mobileUserInfo.Email = user.Email;
-                                mobileUserInfo.LineId = user.LineId;
-                                mobileUserInfo.WhatsAppId = user.WhatsAppId;
-                                mobileUserInfo.CompanyName = user.CompanyName;
-                                mobileUserInfo.CompanyTexId = user.CompanyTexId;
-                                mobileUserInfo.BankAccount = user.BankAccount;
-                                mobileUserInfo.BankAccountNumber = user.BankAccountNumber;
+                                MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
 
-                                List<MobileComTier> comTiers = db.MobileComTiers.ToList();
-                                List<double> userComs = db.MobileComTransactions.Where(c => c.MobileUserId == user.Id).Select(s => s.TotalBaht).ToList();
-                                double comTotal = userComs.Sum();
-                                foreach(MobileComTier comTier in comTiers)
-                                {
-                                    if ((comTotal >= comTier.ComBahtFrom && comTotal < comTier.ComBahtTo) || comTier.ComBahtTo == null)
-                                    {
-                                        comTotal -= Math.Round(comTier.ComBahtFrom, 0);
-                                        mobileUserInfo.TierName = comTier.TierName;
-                                        mobileUserInfo.TierColor = comTier.TierColor;
-                                        mobileUserInfo.TotalBaht = comTier.ComBahtTo == null ? Math.Round(comTier.ComBahtFrom, 0) : comTotal;
-                                        mobileUserInfo.MaxBaht = comTier.ComBahtTo ?? comTier.ComBahtFrom;
-                                        mobileUserInfo.MaxBaht = comTier.ComBahtTo == null ? Math.Round(comTier.ComBahtFrom, 0) : Math.Round(mobileUserInfo.MaxBaht, 0) - Math.Round(comTier.ComBahtFrom, 0);
-                                        break;
-                                    }
-                                }
-
-                                return Ok(mobileUserInfo);
+                                if (!string.IsNullOrEmpty(uInfo.Username)) return Ok(mobileUserInfo);
                             }
                         }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> GetMoblieUser(ReportParams parms)
+        {
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null)
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        List<MobileUserInfo> result = new List<MobileUserInfo>();
+                        var users = db.MobileUsers.ToList();
+                        foreach(MobileUser user in users)
+                        {
+                            MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
+                            if (!string.IsNullOrEmpty(uInfo.Username))
+                            {
+                                result.Add(uInfo);
+                            }
+                        }
+                        return Ok(result);
                     }
                 }
             }

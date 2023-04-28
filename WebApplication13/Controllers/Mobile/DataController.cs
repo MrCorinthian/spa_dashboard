@@ -43,5 +43,28 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetCommissionTierSetting()
+        {
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null) {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        var comTiers = db.MobileComTiers.ToList();
+                        if (comTiers.Count > 0)
+                        {
+                            return Ok(comTiers);
+                        }
+                    }
+                }
+                    
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
     }
 }

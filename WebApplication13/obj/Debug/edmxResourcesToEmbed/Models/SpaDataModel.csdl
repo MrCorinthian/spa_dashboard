@@ -409,5 +409,6 @@
     <Property Name="ComBahtFrom" Type="Double" Nullable="false" />
     <Property Name="ComBahtTo" Type="Double" />
     <Property Name="ComPercentage" Type="Double" Nullable="false" />
+    <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

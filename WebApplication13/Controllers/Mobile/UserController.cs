@@ -112,15 +112,41 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
+                        List<MobileUser> result = new List<MobileUser>();
+                        var users = db.MobileUsers.ToList();
+                        foreach (MobileUser user in users)
+                        {
+                            if (!string.IsNullOrEmpty(user.ProfilePath))
+                            {
+                                user.ProfilePath = $"File/ProfileImageWeb/{user.Id}";
+                            }
+                            result.Add(user);
+                        }
+                        return Ok(result);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> GetMoblieUserOverview(ReportParams parms)
+        {
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null)
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
                         List<MobileUserInfo> result = new List<MobileUserInfo>();
                         var users = db.MobileUsers.ToList();
                         foreach(MobileUser user in users)
                         {
                             MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
-                            if (!string.IsNullOrEmpty(uInfo.Username))
-                            {
-                                result.Add(uInfo);
-                            }
+                            result.Add(uInfo);
                         }
                         return Ok(result);
                     }

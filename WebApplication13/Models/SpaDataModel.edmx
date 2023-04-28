@@ -211,6 +211,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTier' does not have a pri
           <Property Name="ComBahtFrom" Type="float" Nullable="false" />
           <Property Name="ComBahtTo" Type="float" />
           <Property Name="ComPercentage" Type="float" Nullable="false" />
+          <Property Name="Active" Type="nvarchar" MaxLength="1" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -432,7 +433,8 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     [MobileComTier].[TierColor] AS [TierColor], 
     [MobileComTier].[ComBahtFrom] AS [ComBahtFrom], 
     [MobileComTier].[ComBahtTo] AS [ComBahtTo], 
-    [MobileComTier].[ComPercentage] AS [ComPercentage]
+    [MobileComTier].[ComPercentage] AS [ComPercentage], 
+    [MobileComTier].[Active] AS [Active]
     FROM [dbo].[MobileComTier] AS [MobileComTier]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" store:Type="Tables" store:Schema="dbo">
@@ -858,6 +860,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
           <Property Name="ComBahtFrom" Type="Double" Nullable="false" />
           <Property Name="ComBahtTo" Type="Double" />
           <Property Name="ComPercentage" Type="Double" Nullable="false" />
+          <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1245,6 +1248,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
           <EntitySetMapping Name="MobileComTiers">
             <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
               <MappingFragment StoreEntitySet="MobileComTier">
+                <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="ComPercentage" ColumnName="ComPercentage" />
                 <ScalarProperty Name="ComBahtTo" ColumnName="ComBahtTo" />
                 <ScalarProperty Name="ComBahtFrom" ColumnName="ComBahtFrom" />

@@ -412,4 +412,3 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.CopyComplete
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.pdb
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.AssemblyReference.cache

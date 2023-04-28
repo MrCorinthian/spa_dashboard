@@ -381,6 +381,7 @@
     <EntitySetMapping Name="MobileComTiers">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
         <MappingFragment StoreEntitySet="MobileComTier">
+          <ScalarProperty Name="Active" ColumnName="Active" />
           <ScalarProperty Name="ComPercentage" ColumnName="ComPercentage" />
           <ScalarProperty Name="ComBahtTo" ColumnName="ComBahtTo" />
           <ScalarProperty Name="ComBahtFrom" ColumnName="ComBahtFrom" />

@@ -408,6 +408,7 @@
     <Compile Include="Controllers\Mobile\RegisterController.cs" />
     <Compile Include="Controllers\Mobile\ReportController.cs" />
     <Compile Include="Controllers\Mobile\UserController.cs" />
+    <Compile Include="DAL\DataDAL.cs" />
     <Compile Include="DAL\EncryptionDAL.cs" />
     <Compile Include="DAL\EnvDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
@@ -475,6 +476,9 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MobileComTransaction.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MobileSetting.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MobileUser.cs">

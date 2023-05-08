@@ -122,5 +122,22 @@ namespace WebApplication13.DAL
 
             return mobileUserInfo;
         }
+
+        public static string UserLoginAuth()
+        {
+            string userAuth = null;
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null)
+                {
+                    userAuth = noms.ToString();
+                }
+
+            }
+            catch { }
+
+            return userAuth;
+        }
     }
 }

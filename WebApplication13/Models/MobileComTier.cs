@@ -21,5 +21,9 @@ namespace WebApplication13.Models
         public Nullable<double> ComBahtTo { get; set; }
         public double ComPercentage { get; set; }
         public string Active { get; set; }
+        public Nullable<System.DateTime> Created { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> Updated { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

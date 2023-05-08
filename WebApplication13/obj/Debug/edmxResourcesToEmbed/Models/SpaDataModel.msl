@@ -381,6 +381,10 @@
     <EntitySetMapping Name="MobileComTiers">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
         <MappingFragment StoreEntitySet="MobileComTier">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="Updated" ColumnName="Updated" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
           <ScalarProperty Name="Active" ColumnName="Active" />
           <ScalarProperty Name="ComPercentage" ColumnName="ComPercentage" />
           <ScalarProperty Name="ComBahtTo" ColumnName="ComBahtTo" />
@@ -388,6 +392,14 @@
           <ScalarProperty Name="TierColor" ColumnName="TierColor" />
           <ScalarProperty Name="TierName" ColumnName="TierName" />
           <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileSettings">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileSetting">
+        <MappingFragment StoreEntitySet="MobileSetting">
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

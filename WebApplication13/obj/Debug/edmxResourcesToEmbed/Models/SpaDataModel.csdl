@@ -108,6 +108,7 @@
     <EntitySet Name="MobileComPaymentStatus" EntityType="spasystemdbModel.MobileComPaymentStatu" />
     <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
     <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
+    <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -400,8 +401,6 @@
   <EntityType Name="MobileComTier">
     <Key>
       <PropertyRef Name="Id" />
-      <PropertyRef Name="ComBahtFrom" />
-      <PropertyRef Name="ComPercentage" />
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="TierName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -409,6 +408,17 @@
     <Property Name="ComBahtFrom" Type="Double" Nullable="false" />
     <Property Name="ComBahtTo" Type="Double" />
     <Property Name="ComPercentage" Type="Double" Nullable="false" />
-    <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Updated" Type="DateTime" Precision="7" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileSetting">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

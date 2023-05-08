@@ -139,6 +139,35 @@ namespace WebApplication13.Controllers.Mobile
             return NotFound();
         }
 
+        [HttpGet]
+        public async Task<IHttpActionResult> ProfileImageWebUpload(string fileName)
+        {
+            var response = new HttpResponseMessage();
+            string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null)
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
+                        string imagePath = $"{webRootPath}{subPath}{fileName}";
+
+                        var stream = File.OpenRead(imagePath);
+                        response.Content = new StreamContent(stream);
+                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                        response.Content.Headers.ContentLength = stream.Length;
+
+                        return ResponseMessage(response);
+                    }
+                }
+            }
+            catch { }
+
+            return NotFound();
+        }
+
         private string GenerateID()
         {
             return DateTime.Now.ToString("yyyyMMddHHmmssfffffff");

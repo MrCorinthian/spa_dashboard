@@ -30,7 +30,7 @@ namespace WebApplication13.Controllers.Mobile
                         MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token.Data);
                         if (loginToken != null)
                         {
-                            var comTier = db.MobileComTiers.ToList();
+                            var comTier = db.MobileComTiers.OrderBy(o => o.ComBahtFrom).ToList();
                             if (comTier.Count > 0)
                             {
                                 return Ok(comTier);
@@ -50,7 +50,8 @@ namespace WebApplication13.Controllers.Mobile
             try
             {
                 var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-                if (noms != null) {
+                if (noms != null)
+                {
                     using (var db = new spasystemdbEntities())
                     {
                         var comTiers = db.MobileComTiers.ToList();
@@ -60,9 +61,63 @@ namespace WebApplication13.Controllers.Mobile
                         }
                     }
                 }
-                    
+
             }
             catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateTierCommission(MobileComTier data)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        MobileComTier tier = db.MobileComTiers.FirstOrDefault(c => c.Id == data.Id); 
+                        if (tier != null)
+                        {
+                            if (!string.IsNullOrEmpty(data.TierName)) tier.TierName = data.TierName;
+                            if (!string.IsNullOrEmpty(data.TierName)) tier.TierColor = data.TierColor.Replace("#", "ff").ToUpper();
+                            if (!string.IsNullOrEmpty(data.TierName)) tier.ComPercentage = data.ComPercentage;
+                            if (!string.IsNullOrEmpty(data.TierName)) tier.ComBahtFrom = data.ComBahtFrom;
+                            if (!string.IsNullOrEmpty(data.TierName)) tier.ComBahtTo = data.ComBahtTo;
+                            if (!string.IsNullOrEmpty(data.Active)) tier.Active = data.Active;
+                            tier.Updated = now;
+                            tier.UpdatedBy = userAuth;
+
+                            db.SaveChanges();
+
+                            return Ok(tier);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex) { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetSetting(string code)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        return Ok(DataDAL.GetMobileSetting(code));
+                    }
+                }
+            }
+            catch (Exception ex) { }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }

@@ -52,5 +52,6 @@ namespace WebApplication13.Models
         public virtual DbSet<MobileComPaymentStatu> MobileComPaymentStatus { get; set; }
         public virtual DbSet<MobileComTransaction> MobileComTransactions { get; set; }
         public virtual DbSet<MobileComTier> MobileComTiers { get; set; }
+        public virtual DbSet<MobileSetting> MobileSettings { get; set; }
     }
 }

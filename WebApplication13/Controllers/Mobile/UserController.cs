@@ -57,7 +57,7 @@ namespace WebApplication13.Controllers.Mobile
                         if (loginToken != null)
                         {
                             List<MobileUserLoginToken> allToken = db.MobileUserLoginTokens.Where(c => c.MobileUserId == loginToken.MobileUserId && c.Active == "Y").ToList();
-                            foreach(MobileUserLoginToken _t in allToken)
+                            foreach (MobileUserLoginToken _t in allToken)
                             {
                                 _t.Active = "N";
                             }
@@ -72,6 +72,23 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
+        
+        [HttpPost]
+        public async Task<IHttpActionResult> WebLogout()
+        {
+            try
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+                return Ok();
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
 
         [HttpPost]
         public async Task<IHttpActionResult> GetMoblieUserInfo(ResponseData token)
@@ -102,8 +119,8 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> GetMoblieUser(ReportParams parms)
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMoblieUserIndex()
         {
             try
             {
@@ -112,13 +129,47 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
+                        List<int> indexTable = new List<int>();
+                        decimal tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        decimal rowCount = db.MobileUsers.Count();
+                        decimal rowPerPage = rowCount / tableMaxRow;
+                        if (rowPerPage > 0)
+                        {
+                            for(int i = 0; i < rowPerPage; i++)
+                            {
+                                indexTable.Add(i+1);
+                            }
+                            return Ok(indexTable);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMoblieUser(int page)
+        {
+            try
+            {
+                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                if (noms != null)
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        page--;
                         List<MobileUser> result = new List<MobileUser>();
-                        var users = db.MobileUsers.ToList();
+                        int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        var users = db.MobileUsers.OrderBy(o => o.Id).Skip(tableMaxRow * page).Take(tableMaxRow).ToList();
                         foreach (MobileUser user in users)
                         {
                             if (!string.IsNullOrEmpty(user.ProfilePath))
                             {
-                                user.ProfilePath = $"File/ProfileImageWeb/{user.Id}";
+                                List<string> file = new List<string>();
+                                if(!string.IsNullOrEmpty(user.ProfilePath)) file = user.ProfilePath.Split(new[] { "\\" }, StringSplitOptions.None).ToList();
+                                if(file.Count > 0) user.ProfilePath = $"File/ProfileImageWebUpload?fileName={file.LastOrDefault()}";
                             }
                             result.Add(user);
                         }
@@ -131,8 +182,8 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> GetMoblieUserOverview(ReportParams parms)
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMoblieUserOverview(int page)
         {
             try
             {
@@ -141,8 +192,10 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
+                        page--;
                         List<MobileUserInfo> result = new List<MobileUserInfo>();
-                        var users = db.MobileUsers.ToList();
+                        int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        var users = db.MobileUsers.OrderBy(o => o.Id).Skip(tableMaxRow*page).Take(tableMaxRow).ToList();
                         foreach(MobileUser user in users)
                         {
                             MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
@@ -153,6 +206,55 @@ namespace WebApplication13.Controllers.Mobile
                 }
             }
             catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateUserInformation(MobileUser data)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == data.Id);
+                        if (user != null)
+                        {
+                            if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
+                            if (!string.IsNullOrEmpty(data.LastName)) user.FirstName = data.LastName;
+                            if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
+                            if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
+                            if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
+                            if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
+                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
+                            if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
+                            if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
+                            if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
+                            if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                            if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
+                            if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
+                            if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
+                            if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
+                            if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
+                            if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;
+                            user.Updated = now;
+                            user.UpdatedBy = userAuth;
+
+                            db.SaveChanges();
+
+                            user.ProfilePath = $"File/ProfileImageWebUpload?fileName={data.ProfilePath}";
+
+                            return Ok(user);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }

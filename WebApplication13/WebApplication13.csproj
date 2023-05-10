@@ -403,6 +403,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MobileController.cs" />
     <Compile Include="Controllers\Mobile\BaseApiController.cs" />
+    <Compile Include="Controllers\Mobile\CommissionController.cs" />
     <Compile Include="Controllers\Mobile\DataController.cs" />
     <Compile Include="Controllers\Mobile\FileController.cs" />
     <Compile Include="Controllers\Mobile\RegisterController.cs" />
@@ -529,6 +530,9 @@
     <Compile Include="Models\SpaDataModel1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SystemSetting.cs">

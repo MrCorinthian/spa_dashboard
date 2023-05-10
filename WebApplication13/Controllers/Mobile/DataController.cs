@@ -18,6 +18,7 @@ namespace WebApplication13.Controllers.Mobile
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class DataController : ApiController
     {
+        #region mobile app
         [HttpPost]
         public async Task<IHttpActionResult> GetCommissionTier(ResponseData token)
         {
@@ -43,6 +44,7 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
+        #endregion
 
         [HttpGet]
         public async Task<IHttpActionResult> GetCommissionTierSetting()
@@ -64,6 +66,42 @@ namespace WebApplication13.Controllers.Mobile
 
             }
             catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> CreateTier(MobileComTier data)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        MobileComTier newTier = new MobileComTier();
+                        if (!string.IsNullOrEmpty(data.TierName)) newTier.TierName = data.TierName;
+                        if (!string.IsNullOrEmpty(data.TierColor)) newTier.TierColor = data.TierColor.Replace("#", "ff").ToUpper();
+                        if (data.ComPercentage != null) newTier.ComPercentage = data.ComPercentage;
+                        if (data.ComBahtFrom!= null) newTier.ComBahtFrom = data.ComBahtFrom;
+                        if (data.ComBahtTo != null) newTier.ComBahtTo = data.ComBahtTo;
+                        if (!string.IsNullOrEmpty(data.Active)) newTier.Active = data.Active;
+                        newTier.Updated = now;
+                        newTier.UpdatedBy = userAuth;
+                        newTier.Created = now;
+                        newTier.CreatedBy = userAuth;
+
+                        db.MobileComTiers.Add(newTier);
+
+                        db.SaveChanges();
+
+                        return Ok(newTier);
+                    }
+                }
+            }
+            catch (Exception ex) { }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
@@ -99,6 +137,33 @@ namespace WebApplication13.Controllers.Mobile
                 }
             }
             catch(Exception ex) { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> DeleteTier(MobileComTier data)
+        {
+            try
+            {
+
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MobileComTier tier = db.MobileComTiers.FirstOrDefault(c => c.Id == data.Id);
+                        if (tier != null)
+                        {
+                            db.MobileComTiers.Remove(tier);
+                            db.SaveChanges();
+
+                            return Ok("SUCCESS !!");
+                        }
+                    }
+                }
+            }
+            catch { }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }

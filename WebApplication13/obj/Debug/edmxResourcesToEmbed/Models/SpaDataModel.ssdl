@@ -214,11 +214,13 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <Key>
       <PropertyRef Name="Id" />
       <PropertyRef Name="MobileUserId" />
+      <PropertyRef Name="BranchId" />
       <PropertyRef Name="TotalBaht" />
       <PropertyRef Name="Created" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MobileUserId" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
     <Property Name="TotalBaht" Type="float" Nullable="false" />
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
@@ -358,6 +360,16 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <Property Name="Updated" Type="datetime2" Precision="7" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
   <EntityType Name="SystemSetting">
     <Key>
       <PropertyRef Name="Id" />
@@ -419,6 +431,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <EntitySet Name="OtherSaleRecord" EntityType="Self.OtherSaleRecord" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="PriviledgeType" EntityType="Self.PriviledgeType" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Receipt" EntityType="Self.Receipt" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />
@@ -434,6 +447,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
       <DefiningQuery>SELECT 
     [MobileComTransaction].[Id] AS [Id], 
     [MobileComTransaction].[MobileUserId] AS [MobileUserId], 
+    [MobileComTransaction].[BranchId] AS [BranchId], 
     [MobileComTransaction].[TotalBaht] AS [TotalBaht], 
     [MobileComTransaction].[Created] AS [Created], 
     [MobileComTransaction].[CreatedBy] AS [CreatedBy]

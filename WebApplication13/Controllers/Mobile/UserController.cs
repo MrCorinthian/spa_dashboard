@@ -18,6 +18,7 @@ namespace WebApplication13.Controllers.Mobile
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UserController : ApiController
     {
+        #region mobile app
         [HttpPost]
         public async Task<IHttpActionResult> Login(UserLogin data)
         {
@@ -72,22 +73,6 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
-        
-        [HttpPost]
-        public async Task<IHttpActionResult> WebLogout()
-        {
-            try
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-                return Ok();
-            }
-            catch { }
-
-            return Content(HttpStatusCode.NoContent, "No content.");
-        }
 
 
         [HttpPost]
@@ -108,11 +93,29 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
 
-                                if (!string.IsNullOrEmpty(uInfo.Username)) return Ok(mobileUserInfo);
+                                if (!string.IsNullOrEmpty(uInfo.Username)) return Ok(uInfo);
                             }
                         }
                     }
                 }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        #endregion
+
+        [HttpPost]
+        public async Task<IHttpActionResult> WebLogout()
+        {
+            try
+            {
+                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                {
+                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                }
+                return Ok();
             }
             catch { }
 
@@ -160,7 +163,7 @@ namespace WebApplication13.Controllers.Mobile
                     using (var db = new spasystemdbEntities())
                     {
                         page--;
-                        List<MobileUser> result = new List<MobileUser>();
+                        List<MobileUser> mUsers = new List<MobileUser>();
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
                         var users = db.MobileUsers.OrderBy(o => o.Id).Skip(tableMaxRow * page).Take(tableMaxRow).ToList();
                         foreach (MobileUser user in users)
@@ -171,8 +174,35 @@ namespace WebApplication13.Controllers.Mobile
                                 if(!string.IsNullOrEmpty(user.ProfilePath)) file = user.ProfilePath.Split(new[] { "\\" }, StringSplitOptions.None).ToList();
                                 if(file.Count > 0) user.ProfilePath = $"File/ProfileImageWebUpload?fileName={file.LastOrDefault()}";
                             }
-                            result.Add(user);
+                            mUsers.Add(user);
                         }
+
+                        var result = (from s in mUsers
+                                      select new { 
+                                          Id = s.Id,
+                                          Username = s.Username,
+                                          TitleName = s.TitleName,
+                                          FirstName = s.FirstName,
+                                          LastName = s.LastName,
+                                          IdCardNumber = s.IdCardNumber,
+                                          Nationality = s.Nationality,
+                                          Birthday = s.Birthday,
+                                          Address = s.Address,
+                                          Province = s.Province,
+                                          Occupation = s.Occupation,
+                                          PhoneNumber = s.PhoneNumber,
+                                          Email = s.Email,
+                                          LineId = s.LineId,
+                                          WhatsAppId = s.WhatsAppId,
+                                          CompanyName = s.CompanyName,
+                                          CompanyTexId = s.CompanyTexId,
+                                          BankAccount = s.BankAccount,
+                                          BankAccountNumber = s.BankAccountNumber,
+                                          ProfilePath = s.ProfilePath,
+                                          Created = s.Created,
+                                          Updated = s.Updated,
+                                          Active = s.Active,
+                                      });
                         return Ok(result);
                     }
                 }
@@ -210,6 +240,60 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
+        [HttpPost]
+        public async Task<IHttpActionResult> CreateUser(MobileUser data)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username);
+                        if (user == null)
+                        {
+                            MobileUser newUser = new MobileUser();
+                            if (!string.IsNullOrEmpty(data.Username)) newUser.Username = data.Username;
+                            if (!string.IsNullOrEmpty(data.Password)) newUser.Password = EncryptionDAL.EncryptString(data.Password);
+                            if (!string.IsNullOrEmpty(data.FirstName)) newUser.FirstName = data.FirstName;
+                            if (!string.IsNullOrEmpty(data.LastName)) newUser.LastName = data.LastName;
+                            if (!string.IsNullOrEmpty(data.IdCardNumber)) newUser.IdCardNumber = data.IdCardNumber;
+                            if (!string.IsNullOrEmpty(data.Nationality)) newUser.Nationality = data.Nationality;
+                            if (!string.IsNullOrEmpty(data.Address)) newUser.Address = data.Address;
+                            if (!string.IsNullOrEmpty(data.Province)) newUser.Province = data.Province;
+                            if (!string.IsNullOrEmpty(data.Occupation)) newUser.Occupation = data.Occupation;
+                            if (!string.IsNullOrEmpty(data.PhoneNumber)) newUser.PhoneNumber = data.PhoneNumber;
+                            if (!string.IsNullOrEmpty(data.Email)) newUser.Email = data.Email;
+                            if (!string.IsNullOrEmpty(data.LineId)) newUser.LineId = data.LineId;
+                            if (!string.IsNullOrEmpty(data.WhatsAppId)) newUser.WhatsAppId = data.WhatsAppId;
+                            if (!string.IsNullOrEmpty(data.CompanyName)) newUser.CompanyName = data.CompanyName;
+                            if (!string.IsNullOrEmpty(data.CompanyTexId)) newUser.CompanyTexId = data.CompanyTexId;
+                            if (!string.IsNullOrEmpty(data.BankAccount)) newUser.BankAccount = data.BankAccount;
+                            if (!string.IsNullOrEmpty(data.BankAccountNumber)) newUser.BankAccountNumber = data.BankAccountNumber;
+                            if (!string.IsNullOrEmpty(data.ProfilePath)) newUser.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
+                            if (!string.IsNullOrEmpty(data.Active)) newUser.Active = data.Active;
+                            newUser.Created = now;
+                            newUser.CreatedBy = userAuth;
+                            newUser.Updated = now;
+                            newUser.UpdatedBy = userAuth;
+
+                            db.MobileUsers.Add(newUser);
+
+                            db.SaveChanges();
+
+                            newUser.ProfilePath = $"File/ProfileImageWebUpload?fileName={data.ProfilePath}";
+
+                            return Ok(newUser);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
 
         [HttpPost]
         public async Task<IHttpActionResult> UpdateUserInformation(MobileUser data)
@@ -255,6 +339,33 @@ namespace WebApplication13.Controllers.Mobile
                 }
             }
             catch (Exception ex) { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> DeleteUser(MobileUser data)
+        {
+            try
+            {
+
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == data.Id);
+                        if (user != null)
+                        {
+                            db.MobileUsers.Remove(user);
+                            db.SaveChanges();
+
+                            return Ok("SUCCESS !!");
+                        }
+                    }
+                }
+            }
+            catch { }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }

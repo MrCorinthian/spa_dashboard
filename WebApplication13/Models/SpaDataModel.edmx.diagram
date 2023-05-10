@@ -30,9 +30,10 @@
         <EntityTypeShape EntityType="spasystemdbModel.MobileUser" Width="1.5" PointX="7.375" PointY="14.75" />
         <EntityTypeShape EntityType="spasystemdbModel.Receipt" Width="1.5" PointX="13.375" PointY="0.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileComPaymentStatu" Width="1.5" PointX="9.375" PointY="14.75" />
-        <EntityTypeShape EntityType="spasystemdbModel.MobileComTransaction" Width="1.5" PointX="13.375" PointY="14.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileComTier" Width="1.5" PointX="15.375" PointY="0.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileSetting" Width="1.5" PointX="0.75" PointY="15.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.sysdiagram" Width="1.5" PointX="11.375" PointY="14.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MobileComTransaction" Width="1.5" PointX="13.375" PointY="14.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

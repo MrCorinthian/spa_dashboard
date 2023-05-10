@@ -12,13 +12,12 @@ namespace WebApplication13.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MobileComTransaction
+    public partial class sysdiagram
     {
-        public int Id { get; set; }
-        public int MobileUserId { get; set; }
-        public int BranchId { get; set; }
-        public double TotalBaht { get; set; }
-        public System.DateTime Created { get; set; }
-        public string CreatedBy { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

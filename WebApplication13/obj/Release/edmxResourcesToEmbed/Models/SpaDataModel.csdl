@@ -106,8 +106,10 @@
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
     <EntitySet Name="MobileComPaymentStatus" EntityType="spasystemdbModel.MobileComPaymentStatu" />
-    <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
     <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
+    <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
+    <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
+    <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -384,24 +386,9 @@
     <Property Name="Created" Type="DateTime" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
-  <EntityType Name="MobileComTransaction">
-    <Key>
-      <PropertyRef Name="Id" />
-      <PropertyRef Name="MobileUserId" />
-      <PropertyRef Name="TotalBaht" />
-      <PropertyRef Name="Created" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
-    <Property Name="TotalBaht" Type="Double" Nullable="false" />
-    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
-    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityType Name="MobileComTier">
     <Key>
       <PropertyRef Name="Id" />
-      <PropertyRef Name="ComBahtFrom" />
-      <PropertyRef Name="ComPercentage" />
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="TierName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -409,6 +396,42 @@
     <Property Name="ComBahtFrom" Type="Double" Nullable="false" />
     <Property Name="ComBahtTo" Type="Double" />
     <Property Name="ComPercentage" Type="Double" Nullable="false" />
-    <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Updated" Type="DateTime" Precision="7" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileSetting">
+    <Key>
+      <PropertyRef Name="Code" />
+    </Key>
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="MobileComTransaction">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="MobileUserId" />
+      <PropertyRef Name="BranchId" />
+      <PropertyRef Name="TotalBaht" />
+      <PropertyRef Name="Created" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="TotalBaht" Type="Double" Nullable="false" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

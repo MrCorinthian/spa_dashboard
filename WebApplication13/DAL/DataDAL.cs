@@ -22,5 +22,40 @@ namespace WebApplication13.DAL
             catch { }
             return null;
         }
+
+        public static string GetActiveFlag(string value)
+        {
+            try
+            {
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    if (value.ToLower() == "enable" || value.ToLower() == "completed")
+                    {
+                        value = "Y";
+                    }
+                    else if (value.ToLower() == "disable" || value.ToLower() == "not completed")
+                    {
+                        value = "N";
+                    }
+                    else
+                    {
+                        value = null;
+                    }
+                }
+            }
+            catch { }
+
+            return value;
+        }
+
+        public static string GetProfilePath(string path)
+        {
+            string result = null;
+            List<string> file = new List<string>();
+            if (!string.IsNullOrEmpty(path)) file = path.Split(new[] { "\\" }, StringSplitOptions.None).ToList();
+            if (file.Count > 0) result = $"File/ProfileImageWebUpload?fileName={file.LastOrDefault()}";
+            return result;
+        }
     }
 }

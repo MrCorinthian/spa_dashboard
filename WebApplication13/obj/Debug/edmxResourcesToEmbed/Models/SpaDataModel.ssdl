@@ -181,14 +181,13 @@
     <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
     <Property Name="UpdatedBy" Type="varchar" MaxLength="50" />
   </EntityType>
-  <!--Errors Found During Generation:
-warning 6002: The table/view 'spasystemdb.dbo.MobileComPaymentStatus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-  <EntityType Name="MobileComPaymentStatus">
+  <EntityType Name="MobileComPayment">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="PaymentMonth" Type="datetime2" Precision="7" />
+    <Property Name="MobileUserId" Type="int" Nullable="false" />
+    <Property Name="PaymentMonth" Type="date" Nullable="false" />
     <Property Name="Created" Type="datetime2" Precision="7" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
@@ -421,6 +420,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <EntitySet Name="MemberGroup" EntityType="Self.MemberGroup" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MemberGroupPriviledge" EntityType="Self.MemberGroupPriviledge" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MemberPriviledge" EntityType="Self.MemberPriviledge" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileComPayment" EntityType="Self.MobileComPayment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
@@ -435,14 +435,6 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="MobileComPaymentStatus" EntityType="Self.MobileComPaymentStatus" store:Type="Tables" store:Schema="dbo">
-      <DefiningQuery>SELECT 
-    [MobileComPaymentStatus].[Id] AS [Id], 
-    [MobileComPaymentStatus].[PaymentMonth] AS [PaymentMonth], 
-    [MobileComPaymentStatus].[Created] AS [Created], 
-    [MobileComPaymentStatus].[CreatedBy] AS [CreatedBy]
-    FROM [dbo].[MobileComPaymentStatus] AS [MobileComPaymentStatus]</DefiningQuery>
-    </EntitySet>
     <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" store:Type="Tables" store:Schema="dbo">
       <DefiningQuery>SELECT 
     [MobileComTransaction].[Id] AS [Id], 

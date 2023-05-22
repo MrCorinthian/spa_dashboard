@@ -46,8 +46,8 @@ namespace WebApplication13.Controllers.Mobile
         }
         #endregion
 
-        [HttpGet]
-        public async Task<IHttpActionResult> GetCommissionTierSetting()
+        [HttpPost]
+        public async Task<IHttpActionResult> GetCommissionTierSetting(FilterParams filter)
         {
             try
             {
@@ -56,7 +56,11 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        var comTiers = db.MobileComTiers.ToList();
+                        filter.status = DataDAL.GetActiveFlag(filter.status);
+                        var comTiers = db.MobileComTiers.Where(c =>
+                        !string.IsNullOrEmpty(filter.tierName) ? c.TierName.ToLower().Contains(filter.tierName) : true
+                        && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status : true
+                        ).ToList();
                         if (comTiers.Count > 0)
                         {
                             return Ok(comTiers);

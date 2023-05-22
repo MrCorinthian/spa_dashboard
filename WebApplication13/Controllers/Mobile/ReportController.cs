@@ -36,11 +36,11 @@ namespace WebApplication13.Controllers.Mobile
                             List<ReportTransaction> reportTrans = new List<ReportTransaction>();
                             foreach (MobileComTransaction comTtran in comTtrans)
                             {
-                                MobileComPaymentStatu paymentStatus = db.MobileComPaymentStatus.FirstOrDefault(c => c.PaymentMonth >= comTtran.Created);
+                                MobileComPayment payments = db.MobileComPayments.FirstOrDefault(c => c.PaymentMonth >= comTtran.Created);
                                 ReportTransaction report = new ReportTransaction();
                                 report.TotalBaht = comTtran.TotalBaht;
                                 report.Created = comTtran.Created;
-                                report.PaymentStatus = paymentStatus != null ? "Y" : "N";
+                                report.PaymentStatus = payments != null ? "Y" : "N";
                                 reportTrans.Add(report);
                             }
                             return Ok(reportTrans);

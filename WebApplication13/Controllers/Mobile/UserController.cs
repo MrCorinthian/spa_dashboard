@@ -122,8 +122,8 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
-        [HttpGet]
-        public async Task<IHttpActionResult> GetMoblieUserIndex()
+        [HttpPost]
+        public async Task<IHttpActionResult> GetMoblieUserIndex(FilterParams filter)
         {
             try
             {
@@ -132,9 +132,15 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
+                        filter.status = DataDAL.GetActiveFlag(filter.status);
                         List<int> indexTable = new List<int>();
                         decimal tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
-                        decimal rowCount = db.MobileUsers.Count();
+                        decimal rowCount = db.MobileUsers.Where(c =>
+                        !string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true
+                        && !string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true
+                        && !string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true
+                        && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status : true
+                        ).Count();
                         decimal rowPerPage = rowCount / tableMaxRow;
                         if (rowPerPage > 0)
                         {
@@ -152,8 +158,8 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
-        [HttpGet]
-        public async Task<IHttpActionResult> GetMoblieUser(int page)
+        [HttpPost]
+        public async Task<IHttpActionResult> GetMoblieUser(FilterParams filter)
         {
             try
             {
@@ -162,10 +168,16 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        page--;
+                        filter.page = filter.page > 0? filter.page - 1 : 0;
+                        filter.status = DataDAL.GetActiveFlag(filter.status);
                         List<MobileUser> mUsers = new List<MobileUser>();
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
-                        var users = db.MobileUsers.OrderBy(o => o.Id).Skip(tableMaxRow * page).Take(tableMaxRow).ToList();
+                        var users = db.MobileUsers.Where(c => 
+                        !string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true
+                        && !string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true
+                        && !string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true
+                        && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status : true
+                        ).OrderBy(o => o.Id).Skip(tableMaxRow * filter.page).Take(tableMaxRow).ToList();
                         foreach (MobileUser user in users)
                         {
                             if (!string.IsNullOrEmpty(user.ProfilePath))

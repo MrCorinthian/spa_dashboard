@@ -12,10 +12,11 @@ namespace WebApplication13.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MobileComPaymentStatu
+    public partial class MobileComPayment
     {
         public int Id { get; set; }
-        public Nullable<System.DateTime> PaymentMonth { get; set; }
+        public int MobileUserId { get; set; }
+        public System.DateTime PaymentMonth { get; set; }
         public Nullable<System.DateTime> Created { get; set; }
         public string CreatedBy { get; set; }
     }

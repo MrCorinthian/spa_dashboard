@@ -1,0 +1,27 @@
+<div>
+  <nav-menu></nav-menu>
+  <div class="main_layout">
+    <div class="side__1">
+      <side-bar
+        [options]="menuOptions"
+        [selected]="menuSelected"
+        (changeSelect)="onChangeMenu($event)"
+      ></side-bar>
+    </div>
+    <div class="side__2">
+      <div class="container">
+        <commission-dashboard
+          *ngIf="menuOptions[0].index === menuSelected"
+        ></commission-dashboard>
+        <payment *ngIf="menuOptions[1].index === menuSelected"></payment>
+        <report *ngIf="menuOptions[2].index === menuSelected"></report>
+        <user-management
+          *ngIf="menuOptions[3].index === menuSelected"
+        ></user-management>
+        <commission-setting
+          *ngIf="menuOptions[4].index === menuSelected"
+        ></commission-setting>
+      </div>
+    </div>
+  </div>
+</div>

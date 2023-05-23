@@ -1,0 +1,47 @@
+@import "./assets/css/material-theme.css";
+
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  background: url(./assets/images/bg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+  margin: 0;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 100;
+  padding-bottom: 1rem;
+  border-bottom: 1px #eeeeee solid;
+}
+
+.mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: #4fd3a9 !important;
+}
+
+.mat-date-range-input-container {
+  display: none !important;
+}
+
+mdb-date-picker .md-form label.active {
+  font-size: 1rem;
+  color: red;
+  transform: translateY(-14px) scale(0.9) !important;
+}
+mdb-date-picker .md-form input[type="text"]:focus:not([readonly]) + label {
+  color: #00c853;
+  transform: translateY(-14px) scale(0.9) !important;
+}
+
+input mdb-date-picker .md-form input[type="text"]:focus:not([readonly]) {
+  box-shadow: 0 1px 0 0 green !important;
+  border-bottom: 1px solid green !important;
+}

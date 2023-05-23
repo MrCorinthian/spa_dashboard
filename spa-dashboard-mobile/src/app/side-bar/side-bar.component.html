@@ -1,0 +1,12 @@
+<div class="container">
+  <ul>
+    <li
+      *ngFor="let item of options"
+      [style.color]="colors.greenPrimary"
+      [style.backgroundColor]="item.index === selected ? '#eeeeee' : ''"
+      (click)="onChangeSelect(item.index)"
+    >
+      {{ item.name }}
+    </li>
+  </ul>
+</div>

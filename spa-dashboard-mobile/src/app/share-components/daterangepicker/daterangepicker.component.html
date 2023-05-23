@@ -1,0 +1,36 @@
+<div class="input__container">
+  <div [style.display]="'flex'" [style.flexDirection]="'row'">
+    <input
+      type="text"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [value]="value ?? ''"
+      [style.minWidth]="'200px'"
+      (input)="inputOnChange(null)"
+      (click)="picker.open()"
+    />
+    <!-- <img
+      *ngIf="value"
+      class="popup__close"
+      src="../../assets/images/xmark.png"
+      [height]="15"
+      [style.marginLeft]="'5px'"
+      (click)="inputOnChange(null)"
+    /> -->
+  </div>
+  <mat-date-range-input [rangePicker]="picker">
+    <input
+      matStartDate
+      matInput
+      (dateChange)="onChanceDate('from', $event)"
+      [style.display]="'none'"
+    />
+    <input
+      matEndDate
+      matInput
+      (dateChange)="onChanceDate('to', $event)"
+      [style.display]="'none'"
+    />
+  </mat-date-range-input>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</div>

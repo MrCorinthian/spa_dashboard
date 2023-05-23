@@ -1,0 +1,156 @@
+.flex__column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.flex__row__end {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  padding-bottom: 1rem;
+  button {
+    min-width: 100px;
+    margin-left: 1rem;
+  }
+}
+
+.input__container {
+  width: 100%;
+}
+
+.column__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.filter__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1rem 0 2rem 0;
+  button,
+  input-text,
+  autocomplete,
+  daterangepicker {
+    margin: 0 1rem 0 1rem;
+  }
+  button {
+    min-width: 100px;
+  }
+}
+
+input {
+  width: 100%;
+  font-size: 1rem;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 1px #666666 solid;
+  border-left: 0;
+  &:focus {
+    outline: none;
+  }
+}
+
+button {
+  padding: 0.8rem;
+  font-size: 1rem;
+  color: white;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.img__icon {
+  cursor: pointer;
+}
+
+.side__container {
+  width: calc(100vw - 300px);
+  max-height: calc(100vh - 180px);
+  overflow: scroll;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.side__container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.popup__container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 1rem 0;
+  overflow: auto;
+}
+
+table,
+th,
+td {
+  border: 1.2px #bbbbbb solid;
+  border-collapse: collapse;
+}
+
+table {
+  white-space: nowrap;
+  thead {
+    tr {
+      th {
+        padding: 1rem;
+        background-color: #e7e7e7;
+      }
+    }
+  }
+  tbody {
+    .tr__option {
+      cursor: pointer;
+      &:hover {
+        background-color: #eeeeee !important;
+      }
+    }
+    tr {
+      td {
+        padding: 1rem;
+      }
+      .td__center {
+        text-align: center;
+      }
+      .td__right {
+        text-align: right;
+      }
+      .td__profile__img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+      }
+      .td__topic {
+        background-color: #e7e7e7;
+        font-weight: bold;
+      }
+      .td__data {
+        width: 100%;
+      }
+      .td__img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.table__pagination {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem 0 1rem 0;
+  .page__skip {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0 0.5rem 0 0.5rem;
+  }
+  .page__index {
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 1rem 0 1rem;
+  }
+}

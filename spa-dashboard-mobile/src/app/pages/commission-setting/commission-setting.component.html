@@ -1,0 +1,206 @@
+<h1>Commission setting</h1>
+<div class="flex__column">
+  <div class="side__container">
+    <div class="column__container">
+      <div class="filter__container">
+        <input-text
+          placeholder="Tier name"
+          [value]="filter.tierName"
+          (onChange)="onChangeFilter('filterTierName', $event)"
+        ></input-text>
+        <autocomplete
+          placeholder="Active status"
+          [value]="filter.status"
+          [options]="status"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterStatus', $event)"
+        ></autocomplete>
+      </div>
+      <div class="filter__container">
+        <button
+          [style.backgroundColor]="colors.greenPrimary"
+          (click)="getDataTable()"
+        >
+          Search
+        </button>
+        <button
+          [style.backgroundColor]="colors.bluePrimary"
+          (click)="openCreate()"
+        >
+          Create new tier
+        </button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Tier name</th>
+          <th>Tier color code</th>
+          <th>Tier commission rate (%)</th>
+          <th>Tier start</th>
+          <th>Tier end</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="dataTable.length > 0">
+        <tr
+          *ngFor="let item of dataTable; let i = index"
+          class="tr__option"
+          (click)="openPopup(item)"
+        >
+          <td class="td__center">{{ i + 1 }}</td>
+          <td class="td__center">{{ item.TierName }}</td>
+          <td class="td__center">
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                width: 70px;
+                margin: auto;
+              "
+            >
+              <div>{{ item.TierColor }}</div>
+              <div
+                [style.color]="item.TierColor"
+                [style.backgroundColor]="item.TierColor"
+              >
+                <p></p>
+              </div>
+            </div>
+          </td>
+          <td class="td__center">
+            {{ item.ComPercentage | number : "1.2-2" }}
+          </td>
+          <td class="td__center">{{ item.ComBahtFrom | number : "1.2-2" }}</td>
+          <td class="td__center">{{ item.ComBahtTo | number : "1.2-2" }}</td>
+          <td class="td__center">
+            {{ item.Active === "Y" ? "Enable" : "Disable" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<popup [openPopup]="showPopup" (closePopup)="closePopup()">
+  <div class="popup__container">
+    <div class="flex__row__end">
+      <button
+        *ngIf="!isEdit && !isCreate"
+        (click)="openEdit()"
+        [style.backgroundColor]="colors.greenPrimary"
+      >
+        Edit information
+      </button>
+      <button
+        *ngIf="isEdit && isCreate"
+        (click)="createTier()"
+        [style.backgroundColor]="colors.greenPrimary"
+      >
+        Create
+      </button>
+      <button
+        *ngIf="isEdit && !isCreate"
+        (click)="closeEdit()"
+        [style.backgroundColor]="colors.grayPrimary"
+        [style.color]="'black'"
+      >
+        Back
+      </button>
+      <button
+        *ngIf="isEdit && !isCreate"
+        (click)="updateTier()"
+        [style.backgroundColor]="colors.greenPrimary"
+      >
+        Save
+      </button>
+
+      <button
+        *ngIf="isEdit && !isCreate"
+        (click)="deleteTier()"
+        [style.backgroundColor]="colors.redPrimary"
+      >
+        Delete
+      </button>
+    </div>
+    <div>
+      <table>
+        <tbody>
+          <tr>
+            <td class="td__topic">Tier name</td>
+            <td *ngIf="!isEdit" class="td__data">{{ selected.TierName }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.TierName"
+                (onChange)="onChange('TierName', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Tier color code</td>
+            <td *ngIf="!isEdit">{{ selected.TierColor }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.TierColor"
+                (onChange)="onChange('TierColor', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Tier commission rate (%)</td>
+            <td *ngIf="!isEdit">
+              {{ selected.ComPercentage | number : "1.2-2" }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.ComPercentage"
+                (onChange)="onChange('ComPercentage', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Tier start</td>
+            <td *ngIf="!isEdit">
+              {{ selected.ComBahtFrom | number : "1.2-2" }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.ComBahtFrom"
+                (onChange)="onChange('ComBahtFrom', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Tier end</td>
+            <td *ngIf="!isEdit">
+              {{ selected.ComBahtTo | number : "1.2-2" }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.ComBahtTo"
+                (onChange)="onChange('ComBahtTo', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Status</td>
+            <td *ngIf="!isEdit">
+              {{ selected.Active === "Y" ? "Enable" : "Disable" }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <mat-slide-toggle
+                [checked]="selectedEdit.Active === 'Y' ? true : false"
+                (change)="onChange('Active', $event)"
+                >{{
+                  selectedEdit.Active === "Y" ? "Enable" : "Disable"
+                }}</mat-slide-toggle
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</popup>

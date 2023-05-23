@@ -1,0 +1,16 @@
+<div class="popup__container" *ngIf="openPopup">
+  <div class="popup__overlay"></div>
+  <div class="popup__body">
+    <div class="popup__header">
+      <img
+        class="popup__close"
+        src="../../assets/images/xmark.png"
+        [width]="20"
+        (click)="closePopup.emit()"
+      />
+    </div>
+    <div class="popup__content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

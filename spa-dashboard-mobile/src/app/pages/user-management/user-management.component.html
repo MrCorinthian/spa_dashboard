@@ -1,0 +1,442 @@
+<h1>User management</h1>
+<div class="flex__column">
+  <div class="side__container">
+    <div class="column__container">
+      <div class="filter__container">
+        <input-text
+          placeholder="First name"
+          [value]="filter.firstName"
+          (onChange)="onChangeFilter('filterFirstName', $event)"
+        ></input-text>
+        <input-text
+          placeholder="Last name"
+          [value]="filter.lastName"
+          (onChange)="onChangeFilter('filterLastName', $event)"
+        ></input-text>
+        <input-text
+          placeholder="Telephone no."
+          [value]="filter.lastName"
+          (onChange)="onChangeFilter('filterPhone', $event)"
+        ></input-text>
+        <autocomplete
+          placeholder="Active status"
+          [value]="filter.status"
+          [options]="status"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterStatus', $event)"
+        ></autocomplete>
+      </div>
+      <div class="filter__container">
+        <button
+          [style.backgroundColor]="colors.greenPrimary"
+          (click)="search()"
+        >
+          Search
+        </button>
+        <button
+          [style.backgroundColor]="colors.bluePrimary"
+          (click)="openCreate()"
+        >
+          Create new user
+        </button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Profile image</th>
+          <th>ID card number</th>
+          <th>First name</th>
+          <th>Family name</th>
+          <th>Occupation</th>
+          <th>Telephone number</th>
+          <th>Line id</th>
+          <th>Whatsapp id</th>
+          <th>Email</th>
+          <th>Bank account</th>
+          <th>Bank account number</th>
+          <th>Company name</th>
+          <th>Company tax ID</th>
+          <th>Nationality</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="dataTable.length > 0">
+        <tr
+          *ngFor="let item of dataTable; let i = index"
+          class="tr__option"
+          (click)="openPopup(item)"
+        >
+          <td class="td__center">{{ i + 1 }}</td>
+          <td class="td__center">
+            <img class="td__profile__img" src="{{ item.ProfilePath }}" />
+          </td>
+          <td class="td__center">{{ format("idCard", item.IdCardNumber) }}</td>
+          <td>{{ item.FirstName }}</td>
+          <td>{{ item.LastName }}</td>
+          <td>{{ item.Occupation }}</td>
+          <td class="td__center">{{ format("phone", item.PhoneNumber) }}</td>
+          <td class="td__center">{{ item.LineId }}</td>
+          <td class="td__center">{{ item.WhatsAppId }}</td>
+          <td class="td__center">{{ item.Email }}</td>
+          <td class="td__center">{{ item.BankAccount }}</td>
+          <td class="td__center">
+            {{ format("bank", item.BankAccountNumber) }}
+          </td>
+          <td class="td__center">{{ item.CompanyName }}</td>
+          <td class="td__center">{{ format("idCard", item.CompanyTexId) }}</td>
+          <td class="td__center">{{ item.Nationality }}</td>
+          <td class="td__center">
+            {{ item.Active === "Y" ? "Enable" : "Disable" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="table__pagination">
+      <img
+        class="img__icon"
+        src="../../assets/images/angle-left.png"
+        [width]="20"
+        (click)="previousPage()"
+      />
+      <div
+        *ngIf="currentIndex > 3"
+        class="page__index"
+        (click)="getDataTable(1)"
+      >
+        {{ 1 }}
+      </div>
+      <div *ngIf="currentIndex > 3" class="page__skip">. . .</div>
+      <div *ngIf="currentIndex"></div>
+      <div *ngFor="let item of indexTable">
+        <div
+          *ngIf="currentIndex === item; else pageOption"
+          class="page__index"
+          [style.color]="colors.greenPrimary"
+          [style.cursor]="'default'"
+          (click)="getDataTable(item)"
+        >
+          {{ item }}
+        </div>
+        <ng-template #pageOption>
+          <div
+            *ngIf="
+              (item >= currentIndex - 2 && item < currentIndex) ||
+              (item <= currentIndex + 2 && item > currentIndex)
+            "
+            class="page__index"
+            (click)="getDataTable(item)"
+          >
+            {{ item }}
+          </div>
+        </ng-template>
+      </div>
+      <div *ngIf="currentIndex < indexTable.length - 2" class="page__skip">
+        . . .
+      </div>
+      <div
+        *ngIf="currentIndex < indexTable.length - 2"
+        class="page__index"
+        (click)="getDataTable(indexTable[indexTable.length - 1])"
+      >
+        {{ indexTable[indexTable.length - 1] }}
+      </div>
+      <img
+        class="img__icon"
+        src="../../assets/images/angle-right.png"
+        [width]="20"
+        (click)="nextPage()"
+      />
+    </div>
+  </div>
+</div>
+<popup [openPopup]="showPopup" (closePopup)="closePopup()">
+  <div class="popup__container">
+    <div class="flex__row__end">
+      <button
+        *ngIf="!isEdit && !isCreate"
+        (click)="openEdit()"
+        [style.backgroundColor]="colors.greenPrimary"
+      >
+        Edit information
+      </button>
+      <button
+        *ngIf="isEdit && isCreate"
+        (click)="createUser()"
+        [style.backgroundColor]="colors.greenPrimary"
+      >
+        Create
+      </button>
+      <button
+        *ngIf="isEdit && !isCreate"
+        (click)="closeEdit()"
+        [style.backgroundColor]="colors.grayPrimary"
+        [style.color]="'black'"
+      >
+        Back
+      </button>
+      <button
+        *ngIf="isEdit && !isCreate"
+        (click)="updateUser()"
+        [style.backgroundColor]="colors.greenPrimary"
+      >
+        Save
+      </button>
+
+      <button
+        *ngIf="isEdit && !isCreate"
+        (click)="deleteUser()"
+        [style.backgroundColor]="colors.redPrimary"
+      >
+        Delete
+      </button>
+    </div>
+    <div>
+      <table>
+        <tbody>
+          <tr>
+            <td class="td__topic">Profile image</td>
+            <td *ngIf="!isEdit" class="td__data">
+              <img class="td__img" src="{{ selected.ProfilePath }}" />
+            </td>
+            <td
+              *ngIf="isEdit"
+              class="td__data"
+              [style.flexDirection]="'column'"
+            >
+              <img
+                *ngIf="selectedEdit.ProfilePath"
+                class="td__img"
+                src="{{ selectedEdit.ProfilePath }}"
+              />
+              <input
+                type="file"
+                [style.display]="'none'"
+                (change)="onFileSelected($event)"
+                #fileUpload
+              />
+              <div>
+                <button
+                  [style.backgroundColor]="colors.greenPrimary"
+                  [style.marginTop]="'0.5rem'"
+                  [style.padding]="'0.5rem'"
+                  [style.width]="'100px'"
+                  (click)="fileUpload.click()"
+                >
+                  Upload
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="isCreate" class="td__topic">Username</td>
+            <td *ngIf="isEdit && isCreate" class="td__data">
+              <input-text
+                [value]="selectedEdit.Username"
+                (onChange)="onChange('Username', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="isCreate" class="td__topic">Password</td>
+            <td *ngIf="isEdit && isCreate" class="td__data">
+              <input-text
+                [value]="selectedEdit.Password"
+                (onChange)="onChange('Password', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="isCreate" class="td__topic">Confirm password</td>
+            <td *ngIf="isEdit && isCreate" class="td__data">
+              <input-text
+                [value]="selectedEdit.ConfirmPassword"
+                (onChange)="onChange('ConfirmPassword', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">ID card number</td>
+            <td *ngIf="!isEdit">
+              {{ format("idCard", selected.IdCardNumber) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.IdCardNumber"
+                (onChange)="onChange('IdCardNumber', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">First name</td>
+            <td *ngIf="!isEdit">{{ selected.FirstName }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.FirstName"
+                (onChange)="onChange('FirstName', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Family name</td>
+            <td *ngIf="!isEdit">{{ selected.LastName }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.LastName"
+                (onChange)="onChange('LastName', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Occupation</td>
+            <td *ngIf="!isEdit">{{ selected.Occupation }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <autocomplete
+                [value]="selectedEdit.Occupation"
+                [options]="occupations"
+                [sortOption]="false"
+                (onChange)="onChange('Occupation', $event)"
+              ></autocomplete>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Telephone number</td>
+            <td *ngIf="!isEdit">
+              {{ format("phone", selected.PhoneNumber) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.PhoneNumber"
+                (onChange)="onChange('PhoneNumber', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Line ID</td>
+            <td *ngIf="!isEdit">{{ selected.LineId }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.LineId"
+                (onChange)="onChange('LineId', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Whatsapp ID</td>
+            <td *ngIf="!isEdit">{{ selected.WhatsAppId }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.WhatsAppId"
+                (onChange)="onChange('WhatsAppId', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Email</td>
+            <td *ngIf="!isEdit">{{ selected.Email }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.Email"
+                (onChange)="onChange('Email', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Bank account</td>
+            <td *ngIf="!isEdit">{{ selected.BankAccount }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <autocomplete
+                [value]="selectedEdit.BankAccount"
+                [options]="bankAccounts"
+                [sortOption]="false"
+                (onChange)="onChange('Occupation', $event)"
+              ></autocomplete>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Bank account number</td>
+            <td *ngIf="!isEdit">
+              {{ format("bank", selected.BankAccountNumber) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.BankAccountNumber"
+                (onChange)="onChange('BankAccountNumber', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Company name</td>
+            <td *ngIf="!isEdit">{{ selected.CompanyName }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.CompanyName"
+                (onChange)="onChange('CompanyName', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Company tax ID</td>
+            <td *ngIf="!isEdit">
+              {{ format("idCard", selected.CompanyTexId) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.CompanyTexId"
+                (onChange)="onChange('CompanyTexId', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Nationality</td>
+            <td *ngIf="!isEdit">{{ selected.Nationality }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.Nationality"
+                (onChange)="onChange('Nationality', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Address</td>
+            <td *ngIf="!isEdit">{{ selected.Address }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.Address"
+                (onChange)="onChange('Address', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Province</td>
+            <td *ngIf="!isEdit">{{ selected.Province }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <autocomplete
+                [value]="selectedEdit.Province"
+                [options]="provinces"
+                [sortOption]="false"
+                (onChange)="onChange('Occupation', $event)"
+              ></autocomplete>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Status</td>
+            <td *ngIf="!isEdit">
+              {{ selected.Active === "Y" ? "Enable" : "Disable" }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <mat-slide-toggle
+                [checked]="selectedEdit.Active === 'Y' ? true : false"
+                (change)="onChange('Active', $event)"
+                >{{
+                  selectedEdit.Active === "Y" ? "Enable" : "Disable"
+                }}</mat-slide-toggle
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</popup>

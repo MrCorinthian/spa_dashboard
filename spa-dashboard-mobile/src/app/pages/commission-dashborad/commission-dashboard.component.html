@@ -1,0 +1,123 @@
+<h1>Commission dashboard</h1>
+<div class="flex__column">
+  <div class="side__container">
+    <div class="column__container">
+      <div class="filter__container">
+        <autocomplete
+          placeholder="month"
+          [value]="filter.month"
+          [options]="months"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterMonth', $event)"
+        ></autocomplete>
+        <autocomplete
+          placeholder="year"
+          [value]="filter.year"
+          [options]="years"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterYear', $event)"
+        ></autocomplete>
+      </div>
+      <div class="filter__container">
+        <button
+          [style.backgroundColor]="colors.greenPrimary"
+          (click)="getData()"
+        >
+          Apply
+        </button>
+      </div>
+      <div class="column__container">
+        <div class="chart">
+          <canvas #chartCanvas></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="side__container">
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Profile image</th>
+          <th>First name</th>
+          <th>Family name</th>
+          <th>Occupation</th>
+          <th>Telephone no.</th>
+          <th>Company name</th>
+          <th>Commission tier</th>
+          <th>Commission mount</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="dataTable.length > 0">
+        <tr *ngFor="let item of dataTable; let i = index" class="tr__option">
+          <td class="td__center">{{ i + 1 }}</td>
+          <td class="td__center">
+            <img class="td__profile__img" src="{{ item.ProfilePath }}" />
+          </td>
+          <td>{{ item.FirstName }}</td>
+          <td>{{ item.LastName }}</td>
+          <td>{{ item.Occupation }}</td>
+          <td class="td__center">{{ format("phone", item.PhoneNumber) }}</td>
+          <td class="td__center">{{ item.CompanyName }}</td>
+          <td class="td__center">{{ item.TierName }}</td>
+          <td class="td__right">{{ item.TotalBaht | number : "1.2-2" }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="table__pagination">
+      <img
+        class="img__icon"
+        src="../../assets/images/angle-left.png"
+        [width]="20"
+        (click)="previousPage()"
+      />
+      <div
+        *ngIf="currentIndex > 3"
+        class="page__index"
+        (click)="getDataTable(1)"
+      >
+        {{ 1 }}
+      </div>
+      <div *ngIf="currentIndex > 3" class="page__skip">. . .</div>
+      <div *ngIf="currentIndex"></div>
+      <div *ngFor="let item of indexTable">
+        <div
+          *ngIf="currentIndex === item; else pageOption"
+          class="page__index"
+          [style.color]="colors.greenPrimary"
+          (click)="getDataTable(item)"
+        >
+          {{ item }}
+        </div>
+        <ng-template #pageOption>
+          <div
+            *ngIf="
+              (item >= currentIndex - 2 && item < currentIndex) ||
+              (item <= currentIndex + 2 && item > currentIndex)
+            "
+            class="page__index"
+            (click)="getDataTable(item)"
+          >
+            {{ item }}
+          </div>
+        </ng-template>
+      </div>
+      <div *ngIf="currentIndex < indexTable.length - 2" class="page__skip">
+        . . .
+      </div>
+      <div
+        *ngIf="currentIndex < indexTable.length - 2"
+        class="page__index"
+        (click)="getDataTable(indexTable[indexTable.length - 1])"
+      >
+        {{ indexTable[indexTable.length - 1] }}
+      </div>
+      <img
+        class="img__icon"
+        src="../../assets/images/angle-right.png"
+        [width]="20"
+        (click)="nextPage()"
+      />
+    </div>
+  </div> -->
+</div>

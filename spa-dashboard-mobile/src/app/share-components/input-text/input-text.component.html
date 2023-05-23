@@ -1,0 +1,10 @@
+<div class="input__container">
+  <input
+    type="text"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [value]="value ?? ''"
+    (input)="inputOnChange($event.target)"
+    (blur)="inputBlur()"
+  />
+</div>

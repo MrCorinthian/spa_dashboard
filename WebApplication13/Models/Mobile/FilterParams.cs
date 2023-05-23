@@ -17,5 +17,7 @@ namespace WebApplication13.Models.Mobile
         public string lastName { get; set; }
         public string phone { get; set; }
         public string status { get; set; }
+        public string periodFrom { get; set; }
+        public string periodTo { get; set; }
     }
 }

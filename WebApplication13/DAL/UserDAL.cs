@@ -139,5 +139,29 @@ namespace WebApplication13.DAL
 
             return userAuth;
         }
+
+        public static string GetUserTier(int id)
+        {
+            string tierName = null;
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    DateTime now = DateTime.Now;
+                    List<MobileComTransaction> comTrans = db.MobileComTransactions.Where(c =>
+                                c.MobileUserId == id
+                                && c.Created.Year == now.Year
+                                ).ToList();
+
+                    double sumCom = comTrans.Sum(s => s.TotalBaht);
+                    MobileComTier tier = db.MobileComTiers.FirstOrDefault(c => sumCom >= c.ComBahtFrom && c.ComBahtTo != null ? sumCom <= c.ComBahtTo : true);
+                    tierName = tier != null ? tier.TierName : null;
+                }
+
+            }
+            catch { }
+
+            return tierName;
+        }
     }
 }

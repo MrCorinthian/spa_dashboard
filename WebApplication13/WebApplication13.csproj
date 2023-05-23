@@ -488,6 +488,7 @@
     <Compile Include="Models\MobileUserLoginToken.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Mobile\CommissionReportData.cs" />
     <Compile Include="Models\Mobile\FilterParams.cs" />
     <Compile Include="Models\Mobile\MobileUserInfo.cs" />
     <Compile Include="Models\Mobile\PaymentData.cs" />

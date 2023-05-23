@@ -92,7 +92,9 @@ namespace WebApplication13.Controllers.Mobile
                         PaymentDataIndex dataIndex = new PaymentDataIndex();
                         dataIndex.Index = filter.page;
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
-                        List<int> userTransCompleted = db.MobileComPayments.Where(c => c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month).Select(s => s.MobileUserId).ToList();
+                        List<int> userTransCompleted = db.MobileComPayments
+                            .Where(c => c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month)
+                            .Select(s => s.MobileUserId).ToList();
                         decimal rowCount = db.MobileUsers.Where(c => filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true)).Count();
                         decimal rowPerPage = rowCount / tableMaxRow;
                         if (rowPerPage > 0)
@@ -125,10 +127,9 @@ namespace WebApplication13.Controllers.Mobile
                                 ).ToList();
 
                             double sumCom = comTrans.Sum(s => s.TotalBaht);
-                            MobileComTier tier = db.MobileComTiers.FirstOrDefault(c => sumCom >= c.ComBahtFrom && c.ComBahtTo != null ? sumCom <= c.ComBahtTo : true);
                             pData.ComTrans = comTrans;
                             pData.Commission = sumCom;
-                            pData.Tier = tier != null ? tier.TierName : "";
+                            pData.Tier = UserDAL.GetUserTier(user.Id);
                             dataIndex.Data.Add(pData);
                         }
 
@@ -166,6 +167,77 @@ namespace WebApplication13.Controllers.Mobile
 
                             return Ok(payment);
                         }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> GetCommissionReportIndex(FilterParams filter)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    filter.status = DataDAL.GetActiveFlag(filter.status);
+                    DateTime now = DateTime.Now;
+                    using (var db = new spasystemdbEntities())
+                    {
+                        CommissionReportDataIndex dataIndex = new CommissionReportDataIndex();
+                        dataIndex.Index = filter.page;
+                        int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        Nullable<DateTime> filterFrom = null;
+                        Nullable<DateTime> filterTo = null;
+                        if (!string.IsNullOrEmpty(filter.periodFrom) && !string.IsNullOrEmpty(filter.periodTo))
+                        {
+                            filterFrom = DateTime.ParseExact($"{filter.periodFrom}", "dd MMM yyyy", CultureInfo.InvariantCulture);
+                            filterTo = DateTime.ParseExact($"{filter.periodTo}", "dd MMM yyyy", CultureInfo.InvariantCulture).AddDays(1);
+                        }
+                        List<int> comTranIds = (from comTran in db.MobileComTransactions
+                                               join t2 in db.MobileUsers on comTran.MobileUserId equals t2.Id into g1
+                                               from user in g1.DefaultIfEmpty()
+                                               where !string.IsNullOrEmpty(filter.firstName) ? user.FirstName.Contains(filter.firstName):true
+                                               && !string.IsNullOrEmpty(filter.lastName) ? user.LastName.Contains(filter.lastName) : true
+                                               && !string.IsNullOrEmpty(filter.phone) ? user.PhoneNumber.Contains(filter.phone) : true
+                                               && (filterFrom != null && filterTo != null) ? comTran.Created >= filterFrom && comTran.Created < filterTo : true
+                                               select comTran.Id).ToList();
+                        decimal rowPerPage = comTranIds.Count / tableMaxRow;
+                        if (rowPerPage > 0)
+                        {
+                            for (int i = 0; i < rowPerPage; i++)
+                            {
+                                dataIndex.Indices.Add(i + 1);
+                            }
+                        }
+
+                        List<CommissionReportData> comTrans = (from comTran in db.MobileComTransactions.Where(c => comTranIds.Contains(c.Id))
+                                                               .OrderByDescending(o => o.Id).Skip(tableMaxRow * (filter.page - 1)).Take(tableMaxRow)
+                                                                join t2 in db.MobileUsers on comTran.MobileUserId equals t2.Id into g1
+                                                                from user in g1.DefaultIfEmpty()
+                                                                select new CommissionReportData
+                                                                {
+                                                                    Id = comTran.Id,
+                                                                    MobileUserId = user.Id,
+                                                                    FirstName = user.FirstName,
+                                                                    LastName = user.LastName,
+                                                                    PhoneNumber = user.PhoneNumber,
+                                                                    Commission = comTran.TotalBaht,
+                                                                    BranchId = comTran.BranchId,
+                                                                    Created = comTran.Created,
+                                                                    CreatedBy = comTran.CreatedBy
+                                                                }).ToList();
+                        foreach (CommissionReportData comTran in comTrans)
+                        {
+                            comTran.BranchName = db.Branches.FirstOrDefault(c => c.Id == comTran.BranchId).Name;
+                            comTran.Tier = UserDAL.GetUserTier(comTran.MobileUserId);
+                            dataIndex.Data.Add(comTran);
+                        }
+
+                        return Ok(dataIndex);
                     }
                 }
             }

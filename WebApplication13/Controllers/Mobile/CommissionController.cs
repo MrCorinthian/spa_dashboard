@@ -245,5 +245,54 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> CommissionReceipt(ReceiptParams receiptParams)
+        {
+            try
+            {
+                User user = UserDAL.GetUserByToken(receiptParams.Token);
+                if (user != null && !string.IsNullOrEmpty(receiptParams.ReceiptCode))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        DateTime expired = now.AddMinutes(10);
+                        Receipt receipt = db.Receipts.FirstOrDefault(c => 
+                        c.Code == receiptParams.ReceiptCode
+                        && c.UsedStatus != "Y"
+                        && c.Created <= expired);
+
+                        if (receipt != null)
+                        {
+                            List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();
+                            if (orders.Count > 0)
+                            {
+                                double totalBaht = orders.Sum(s => s.Commission);
+
+                                MobileComTransaction comTran = new MobileComTransaction();
+                                comTran.MobileUserId = user.Id;
+                                comTran.BranchId = orders.FirstOrDefault().BranchId;
+                                comTran.TotalBaht = totalBaht;
+                                comTran.Created = now;
+                                comTran.CreatedBy = "api.mobile";
+                                db.MobileComTransactions.Add(comTran);
+
+                                receipt.UsedStatus = "Y";
+                                receipt.Updated = now;
+                                receipt.UpdatedBy = "api.mobile";
+
+                                db.SaveChanges();
+
+                                return Ok(comTran);
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
     }
 }

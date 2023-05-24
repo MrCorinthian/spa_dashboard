@@ -104,6 +104,54 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateUserInfo(RegisterData data)
+        {
+            try
+            {
+                User userAuth = UserDAL.GetUserByToken(data.Token);
+                if (userAuth != null)
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == userAuth.Id);
+                        if (user != null)
+                        {
+                            if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
+                            if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
+                            if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
+                            if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
+                            if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
+                            if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
+                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
+                            if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
+                            if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
+                            if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
+                            if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                            if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
+                            if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
+                            if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
+                            if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
+                            if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
+                            //if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;
+                            user.Updated = now;
+                            user.UpdatedBy = userAuth.Username;
+
+                            db.SaveChanges();
+
+                            user.ProfilePath = $"File/ProfileImageWebUpload?fileName={data.ProfilePath}";
+                            user.Password = null;
+                            return Ok(user);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
         #endregion
 
         [HttpPost]
@@ -322,7 +370,7 @@ namespace WebApplication13.Controllers.Mobile
                         if (user != null)
                         {
                             if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
-                            if (!string.IsNullOrEmpty(data.LastName)) user.FirstName = data.LastName;
+                            if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
                             if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
                             if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
                             if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;

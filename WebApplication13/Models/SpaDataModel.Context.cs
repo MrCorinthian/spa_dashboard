@@ -52,7 +52,7 @@ namespace WebApplication13.Models
         public virtual DbSet<MobileComTier> MobileComTiers { get; set; }
         public virtual DbSet<MobileSetting> MobileSettings { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<MobileComTransaction> MobileComTransactions { get; set; }
         public virtual DbSet<MobileComPayment> MobileComPayments { get; set; }
+        public virtual DbSet<MobileComTransaction> MobileComTransactions { get; set; }
     }
 }

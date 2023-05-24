@@ -29,5 +29,6 @@ namespace WebApplication13.Models
         public string IsCreditCard { get; set; }
         public Nullable<int> MemberId { get; set; }
         public Nullable<short> MemberDiscountAmount { get; set; }
+        public Nullable<int> ReceiptId { get; set; }
     }
 }

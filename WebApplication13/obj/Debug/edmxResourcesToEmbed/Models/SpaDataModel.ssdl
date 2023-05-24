@@ -207,15 +207,9 @@
     <Property Name="Updated" Type="datetime2" Precision="7" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
-  <!--Errors Found During Generation:
-warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
   <EntityType Name="MobileComTransaction">
     <Key>
       <PropertyRef Name="Id" />
-      <PropertyRef Name="MobileUserId" />
-      <PropertyRef Name="BranchId" />
-      <PropertyRef Name="TotalBaht" />
-      <PropertyRef Name="Created" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MobileUserId" Type="int" Nullable="false" />
@@ -293,6 +287,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
     <Property Name="MemberId" Type="int" />
     <Property Name="MemberDiscountAmount" Type="smallint" />
+    <Property Name="ReceiptId" Type="int" />
   </EntityType>
   <EntityType Name="OrderRecordWithDiscount">
     <Key>
@@ -351,7 +346,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="Code" Type="nvarchar" MaxLength="64" />
     <Property Name="UsedStatus" Type="nvarchar" MaxLength="1" />
     <Property Name="Created" Type="datetime2" Precision="7" />
@@ -422,6 +417,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <EntitySet Name="MemberPriviledge" EntityType="Self.MemberPriviledge" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComPayment" EntityType="Self.MobileComPayment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileUserLoginToken" EntityType="Self.MobileUserLoginToken" Schema="dbo" store:Type="Tables" />
@@ -435,15 +431,5 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileComTransaction' does not hav
     <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" store:Type="Tables" store:Schema="dbo">
-      <DefiningQuery>SELECT 
-    [MobileComTransaction].[Id] AS [Id], 
-    [MobileComTransaction].[MobileUserId] AS [MobileUserId], 
-    [MobileComTransaction].[BranchId] AS [BranchId], 
-    [MobileComTransaction].[TotalBaht] AS [TotalBaht], 
-    [MobileComTransaction].[Created] AS [Created], 
-    [MobileComTransaction].[CreatedBy] AS [CreatedBy]
-    FROM [dbo].[MobileComTransaction] AS [MobileComTransaction]</DefiningQuery>
-    </EntitySet>
   </EntityContainer>
 </Schema>

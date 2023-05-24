@@ -64,6 +64,7 @@
     <EntitySetMapping Name="OrderRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.OrderRecord">
         <MappingFragment StoreEntitySet="OrderRecord">
+          <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
           <ScalarProperty Name="MemberDiscountAmount" ColumnName="MemberDiscountAmount" />
           <ScalarProperty Name="MemberId" ColumnName="MemberId" />
           <ScalarProperty Name="IsCreditCard" ColumnName="IsCreditCard" />
@@ -393,6 +394,17 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="MobileComPayments">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileComPayment">
+        <MappingFragment StoreEntitySet="MobileComPayment">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="PaymentMonth" ColumnName="PaymentMonth" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="MobileComTransactions">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
         <MappingFragment StoreEntitySet="MobileComTransaction">
@@ -400,17 +412,6 @@
           <ScalarProperty Name="Created" ColumnName="Created" />
           <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="MobileComPayments">
-      <EntityTypeMapping TypeName="spasystemdbModel.MobileComPayment">
-        <MappingFragment StoreEntitySet="MobileComPayment">
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="Created" ColumnName="Created" />
-          <ScalarProperty Name="PaymentMonth" ColumnName="PaymentMonth" />
           <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>

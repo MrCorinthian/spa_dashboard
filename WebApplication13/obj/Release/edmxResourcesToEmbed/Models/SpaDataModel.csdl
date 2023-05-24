@@ -79,6 +79,7 @@
     <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="MemberId" Type="Int32" />
     <Property Name="MemberDiscountAmount" Type="Int16" />
+    <Property Name="ReceiptId" Type="Int32" />
   </EntityType>
   <EntityContainer Name="spasystemdbEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Accounts" EntityType="Self.Account" />
@@ -105,10 +106,10 @@
     <EntitySet Name="MobileUserLoginTokens" EntityType="spasystemdbModel.MobileUserLoginToken" />
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
-    <EntitySet Name="MobileComPaymentStatus" EntityType="spasystemdbModel.MobileComPaymentStatu" />
     <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
     <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
     <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
+    <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
     <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
   </EntityContainer>
   <EntityType Name="User">
@@ -377,15 +378,6 @@
     <Property Name="Updated" Type="DateTime" Precision="7" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
-  <EntityType Name="MobileComPaymentStatu">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="PaymentMonth" Type="DateTime" Precision="7" />
-    <Property Name="Created" Type="DateTime" Precision="7" />
-    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityType Name="MobileComTier">
     <Key>
       <PropertyRef Name="Id" />
@@ -419,13 +411,19 @@
     <Property Name="version" Type="Int32" />
     <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
   </EntityType>
+  <EntityType Name="MobileComPayment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+    <Property Name="PaymentMonth" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Created" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
   <EntityType Name="MobileComTransaction">
     <Key>
       <PropertyRef Name="Id" />
-      <PropertyRef Name="MobileUserId" />
-      <PropertyRef Name="BranchId" />
-      <PropertyRef Name="TotalBaht" />
-      <PropertyRef Name="Created" />
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="MobileUserId" Type="Int32" Nullable="false" />

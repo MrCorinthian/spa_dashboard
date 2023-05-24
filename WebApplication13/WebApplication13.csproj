@@ -492,6 +492,7 @@
     <Compile Include="Models\Mobile\FilterParams.cs" />
     <Compile Include="Models\Mobile\MobileUserInfo.cs" />
     <Compile Include="Models\Mobile\PaymentData.cs" />
+    <Compile Include="Models\Mobile\ReceiptParams.cs" />
     <Compile Include="Models\Mobile\RegisterData.cs" />
     <Compile Include="Models\Mobile\ReportParams.cs" />
     <Compile Include="Models\Mobile\ReportTransaction.cs" />

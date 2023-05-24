@@ -79,6 +79,7 @@
     <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="MemberId" Type="Int32" />
     <Property Name="MemberDiscountAmount" Type="Int16" />
+    <Property Name="ReceiptId" Type="Int32" />
   </EntityType>
   <EntityContainer Name="spasystemdbEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Accounts" EntityType="Self.Account" />
@@ -108,8 +109,8 @@
     <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
     <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
     <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
-    <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
     <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
+    <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -410,21 +411,6 @@
     <Property Name="version" Type="Int32" />
     <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
   </EntityType>
-  <EntityType Name="MobileComTransaction">
-    <Key>
-      <PropertyRef Name="Id" />
-      <PropertyRef Name="MobileUserId" />
-      <PropertyRef Name="BranchId" />
-      <PropertyRef Name="TotalBaht" />
-      <PropertyRef Name="Created" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
-    <Property Name="BranchId" Type="Int32" Nullable="false" />
-    <Property Name="TotalBaht" Type="Double" Nullable="false" />
-    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
-    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityType Name="MobileComPayment">
     <Key>
       <PropertyRef Name="Id" />
@@ -433,6 +419,17 @@
     <Property Name="MobileUserId" Type="Int32" Nullable="false" />
     <Property Name="PaymentMonth" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="Created" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileComTransaction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="TotalBaht" Type="Double" Nullable="false" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

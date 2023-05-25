@@ -29,5 +29,6 @@ namespace WebApplication13.Models
         public string strInitMoney { get; set; }
         public string strOilIncome { get; set; }
         public string strBalanceNet { get; set; }
+        public string strVipCount { get; set; }
     }
 }

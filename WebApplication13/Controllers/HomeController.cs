@@ -78,7 +78,7 @@ namespace WebApplication13.Controllers
                 SqlCommand command;
                 SqlDataReader dataReader;
                 String sql = " ";
-                sql = "select sum(dbo.OrderRecord.Price) as 'Total Sales', count(dbo.OrderRecord.Id) as 'Total Pax', (select sum(dbo.Account.StaffAmount) from dbo.Account where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','9','99')) as 'Total Staff', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average per Pax' from dbo.OrderRecord left join dbo.Account on dbo.OrderRecord.AccountId = dbo.Account.Id and dbo.OrderRecord.BranchId = dbo.Account.BranchId where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','9','99')";
+                sql = "select sum(dbo.OrderRecord.Price) as 'Total Sales', count(dbo.OrderRecord.Id) as 'Total Pax', (select sum(dbo.Account.StaffAmount) from dbo.Account where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','9','99')) as 'Total Staff', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average per Pax',COUNT(CASE WHEN dbo.OrderRecord.MemberId != '0' THEN dbo.OrderRecord.MemberId ELSE NULL END) as 'Total VIP' from dbo.OrderRecord left join dbo.Account on dbo.OrderRecord.AccountId = dbo.Account.Id and dbo.OrderRecord.BranchId = dbo.Account.BranchId where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','9','99')";
 
                 connetionString = ConfigurationManager.AppSettings["cString"];
                 cnn = new SqlConnection(connetionString);
@@ -88,15 +88,15 @@ namespace WebApplication13.Controllers
                 dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    if(dataReader.GetValue(0).Equals(null)|| dataReader.GetValue(0).Equals("null"))
+                    if (dataReader.GetValue(0).Equals(null) || dataReader.GetValue(0).Equals("null"))
                     {
-                        hv = new HeaderValue() { strSales = "0", strPax = "0", strStaff = "0", strCommission = "0", strAverage = "0" };
+                        hv = new HeaderValue() { strSales = "0", strPax = "0", strStaff = "0", strCommission = "0", strAverage = "0", strVipCount = "0" };
                     }
                     else
                     {
-                        hv = new HeaderValue() { strSales = String.Format("{0:n0}", dataReader.GetValue(0)), strPax = String.Format("{0:n0}", dataReader.GetValue(1)), strStaff = String.Format("{0:n0}", dataReader.GetValue(2)), strCommission = String.Format("{0:n0}", dataReader.GetValue(3)), strAverage = String.Format("{0:n0}", dataReader.GetValue(4)) };
+                        hv = new HeaderValue() { strSales = String.Format("{0:n0}", dataReader.GetValue(0)), strPax = String.Format("{0:n0}", dataReader.GetValue(1)), strStaff = String.Format("{0:n0}", dataReader.GetValue(2)), strCommission = String.Format("{0:n0}", dataReader.GetValue(3)), strAverage = String.Format("{0:n0}", dataReader.GetValue(4)), strVipCount = String.Format("{0:n0}", dataReader.GetValue(5)) };
                     }
-                    
+
                 }
 
                 dataReader.Close();
@@ -1381,7 +1381,7 @@ namespace WebApplication13.Controllers
                                         .ToList();
                     }
 
-                    for(int m=0;m<listDiscount.Count();m++)
+                    for (int m = 0; m < listDiscount.Count(); m++)
                     {
                         sumDiscount += Int32.Parse(listDiscount[m].Value);
                     }
@@ -1490,7 +1490,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
                     };
 
 
@@ -1751,7 +1752,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
                     };
 
 
@@ -2478,7 +2480,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
                     };
 
 
@@ -2739,7 +2742,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
                     };
 
 
@@ -2885,7 +2889,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
                     };
 
 
@@ -3146,7 +3151,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
                     };
 
 
@@ -3154,7 +3160,6 @@ namespace WebApplication13.Controllers
                 }
             }
         }
-
 
         public ActionResult UrbanSix(string accountId, string monthNo, string yearNo, string cmd)
         {
@@ -3293,7 +3298,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
                     };
 
 
@@ -3554,7 +3560,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
                     };
 
 
@@ -3700,7 +3707,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
                     };
 
 
@@ -3963,7 +3971,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", convert_tOtherS),
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
                     };
 
 
@@ -6291,6 +6300,28 @@ namespace WebApplication13.Controllers
 
             return memGroupPriv;
 
+        }
+
+        public int getTotalVipAmount(int branchId, int accountId)
+        {
+            int totalVip = 0;
+
+            using (var context = new spasystemdbEntities())
+            {
+                // Query for all blogs with names starting with B 
+                //var blogs = from b in context.Accounts
+                //            where b.Date.Equals(2016-12-22)
+                //            select b;
+
+                //ac.Add((Account)blogs);
+                // Query for the Blog named ADO.NET Blog
+
+                totalVip = context.OrderRecords
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.MemberId != 0)
+                                .ToList().Count();
+            }
+
+            return totalVip;
         }
 
     }

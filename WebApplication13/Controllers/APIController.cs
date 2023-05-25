@@ -342,6 +342,38 @@ namespace WebApplication13.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult SendReceiptData(string data)
+        {
+            string status = "false";
+            string error = "-";
+            try
+            {
+                RootSingleReceipt rootObj = JsonConvert.DeserializeObject<RootSingleReceipt>(data);
+
+                //Insert Receipt
+                Receipt getReceiptRecord = rootObj.ReceiptData;
+                db.Receipts.Add(getReceiptRecord);
+
+                db.SaveChanges();
+                status = "true";
+            }
+            catch (Exception ie)
+            {
+                status = "false";
+                error = ie.ToString();
+            }
+
+            //int latestReceiptId = getLatestReceipt().Id;
+
+            var response = new
+            {
+                Status = status,
+                Error_Message = error
+            };
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
         public int getVersionNo(int branchId)
         {
             //List<OrderRecord> orderList = new List<OrderRecord>();
@@ -565,6 +597,23 @@ namespace WebApplication13.Controllers
 
         }
 
+        public Receipt getLatestReceipt()
+        {
+            Receipt latestReceipt = new Receipt();
+
+            using (var contexts = new spasystemdbEntities())
+            {
+
+                latestReceipt = contexts.Receipts
+                                .OrderByDescending(b => b.Created)
+                                .FirstOrDefault();
+            }
+
+
+            return latestReceipt;
+
+        }
+
         public class RootObject
         {
             public Account AccountData { get; set; }
@@ -598,6 +647,12 @@ namespace WebApplication13.Controllers
         public class RootSingleMassageSetRecord
         {
             public MassageSet MassageSetRecordData { get; set; }
+
+        }
+
+        public class RootSingleReceipt
+        {
+            public Receipt ReceiptData { get; set; }
 
         }
     }

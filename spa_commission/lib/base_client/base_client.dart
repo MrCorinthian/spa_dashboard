@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 const baseUrl = 'http://manage.urban-partners-group.com/api/';
 // const baseUrl = 'http://192.168.1.150/api/';
-// const baseUrl = 'http://192.168.1.150:49393/api/';
+// const baseUrl = 'http://localhost:49393/api/';
 
 class BaseClient {
   final client = http.Client();

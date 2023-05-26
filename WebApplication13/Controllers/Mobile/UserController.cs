@@ -114,7 +114,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
+                        DateTime now = DataDAL.GetDateTimeNow();
                         MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == userAuth.Id);
                         if (user != null)
                         {
@@ -310,7 +310,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
+                        DateTime now = DataDAL.GetDateTimeNow();
                         MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username);
                         if (user == null)
                         {
@@ -365,7 +365,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
+                        DateTime now = DataDAL.GetDateTimeNow();
                         MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == data.Id);
                         if (user != null)
                         {

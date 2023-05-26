@@ -170,7 +170,7 @@ namespace WebApplication13.Controllers.Mobile
 
         private string GenerateID()
         {
-            return DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+            return DataDAL.GetDateTimeNow().ToString("yyyyMMddHHmmssfffffff");
         }
     }
 }

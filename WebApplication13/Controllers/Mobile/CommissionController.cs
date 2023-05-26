@@ -27,7 +27,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
+                        DateTime now = DataDAL.GetDateTimeNow();
                         List<MobileComTransaction> comTrans = new List<MobileComTransaction>();
                         if (!string.IsNullOrEmpty(data.Year) && !string.IsNullOrEmpty(data.Month))
                         {
@@ -86,7 +86,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     filter.status = DataDAL.GetActiveFlag(filter.status);
                     DateTime monthYear = DateTime.ParseExact($"{filter.year} {filter.month} 01", "yyyy MMMM dd", CultureInfo.InvariantCulture);
-                    DateTime now = DateTime.Now;
+                    DateTime now = DataDAL.GetDateTimeNow();
                     using (var db = new spasystemdbEntities())
                     {
                         PaymentDataIndex dataIndex = new PaymentDataIndex();
@@ -151,7 +151,7 @@ namespace WebApplication13.Controllers.Mobile
                 if (!string.IsNullOrEmpty(userAuth) && !string.IsNullOrEmpty(filter.year) && !string.IsNullOrEmpty(filter.month))
                 {
                     DateTime monthYear = DateTime.ParseExact($"{filter.year} {filter.month} 01", "yyyy MMMM dd", CultureInfo.InvariantCulture);
-                    DateTime now = DateTime.Now;
+                    DateTime now = DataDAL.GetDateTimeNow();
                     if (monthYear.Year == now.Year && monthYear.Month < now.Month)
                     {
                         using (var db = new spasystemdbEntities())
@@ -184,7 +184,7 @@ namespace WebApplication13.Controllers.Mobile
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     filter.status = DataDAL.GetActiveFlag(filter.status);
-                    DateTime now = DateTime.Now;
+                    DateTime now = DataDAL.GetDateTimeNow();
                     using (var db = new spasystemdbEntities())
                     {
                         CommissionReportDataIndex dataIndex = new CommissionReportDataIndex();
@@ -256,13 +256,12 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
-                        DateTime expired = now.AddMinutes(10);
+                        DateTime now = DataDAL.GetDateTimeNow();
+                        DateTime expired = now.AddMinutes(15);
                         Receipt receipt = db.Receipts.FirstOrDefault(c => 
                         c.Code == receiptParams.ReceiptCode
                         && c.UsedStatus != "Y"
                         && c.Created <= expired);
-
                         if (receipt != null)
                         {
                             List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();

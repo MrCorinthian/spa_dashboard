@@ -84,7 +84,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
+                        DateTime now = DataDAL.GetDateTimeNow();
                         MobileComTier newTier = new MobileComTier();
                         if (!string.IsNullOrEmpty(data.TierName)) newTier.TierName = data.TierName;
                         if (!string.IsNullOrEmpty(data.TierColor)) newTier.TierColor = data.TierColor.Replace("#", "ff").ToUpper();
@@ -120,7 +120,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        DateTime now = DateTime.Now;
+                        DateTime now = DataDAL.GetDateTimeNow();
                         MobileComTier tier = db.MobileComTiers.FirstOrDefault(c => c.Id == data.Id); 
                         if (tier != null)
                         {

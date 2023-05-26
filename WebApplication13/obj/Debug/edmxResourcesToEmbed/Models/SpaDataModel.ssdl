@@ -346,7 +346,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Code" Type="nvarchar" MaxLength="64" />
     <Property Name="UsedStatus" Type="nvarchar" MaxLength="1" />
     <Property Name="Created" Type="datetime2" Precision="7" />

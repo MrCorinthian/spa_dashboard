@@ -24,7 +24,7 @@ namespace WebApplication13.Controllers.Mobile
             {
                 using (var db = new spasystemdbEntities())
                 {
-                    DateTime now = DateTime.Now;
+                    DateTime now = DataDAL.GetDateTimeNow();
                     MobileUser user = new MobileUser();
                     string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
                     var findUsername = db.MobileUsers.FirstOrDefault(c => c.Username.ToUpper() == user.Username.ToUpper());

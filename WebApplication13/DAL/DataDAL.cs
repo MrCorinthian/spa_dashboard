@@ -9,6 +9,20 @@ namespace WebApplication13.DAL
 {
     public class DataDAL
     {
+        public static DateTime GetDateTimeNow()
+        {
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Specify the time zone for Bangkok
+            TimeZoneInfo bangkokTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+            // Convert the UTC time to Bangkok's time zone
+            DateTime bangkokTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, bangkokTimeZone);
+
+            return bangkokTime;
+        }
+
         public static string GetMobileSetting(string code)
         {
             try

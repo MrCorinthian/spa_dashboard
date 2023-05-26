@@ -42,7 +42,7 @@ namespace WebApplication13.DAL
             {
                 using (var db = new spasystemdbEntities())
                 {
-                    DateTime now = DateTime.Now;
+                    DateTime now = DataDAL.GetDateTimeNow();
 
                     List<MobileUserLoginToken> allToken = db.MobileUserLoginTokens.Where(c => c.MobileUserId == mobileUserId && c.Active == "Y").ToList();
                     foreach (MobileUserLoginToken _t in allToken)
@@ -147,7 +147,7 @@ namespace WebApplication13.DAL
             {
                 using (var db = new spasystemdbEntities())
                 {
-                    DateTime now = DateTime.Now;
+                    DateTime now = DataDAL.GetDateTimeNow();
                     List<MobileComTransaction> comTrans = db.MobileComTransactions.Where(c =>
                                 c.MobileUserId == id
                                 && c.Created.Year == now.Year

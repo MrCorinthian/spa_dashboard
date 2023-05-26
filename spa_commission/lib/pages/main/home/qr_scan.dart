@@ -169,6 +169,8 @@ class _QrScanPageState extends State<QrScanPage> {
               },
             );
           });
+        } else {
+          Navigator.of(context).pop();
         }
       }
     });

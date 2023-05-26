@@ -351,7 +351,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Code" Type="nvarchar" MaxLength="64" />
           <Property Name="UsedStatus" Type="nvarchar" MaxLength="1" />
           <Property Name="Created" Type="datetime2" Precision="7" />
@@ -546,12 +546,12 @@
           <EntitySet Name="Members" EntityType="spasystemdbModel.Member" />
           <EntitySet Name="MobileUserLoginTokens" EntityType="spasystemdbModel.MobileUserLoginToken" />
           <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
-          <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
           <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
           <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
           <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
           <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
           <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
+          <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -807,18 +807,6 @@
           <Property Name="Updated" Type="DateTime" Precision="7" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Receipt">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
-          <Property Name="UsedStatus" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="Created" Type="DateTime" Precision="7" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Updated" Type="DateTime" Precision="7" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="MobileComTier">
           <Key>
             <PropertyRef Name="Id" />
@@ -872,6 +860,18 @@
           <Property Name="TotalBaht" Type="Double" Nullable="false" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Receipt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="UsedStatus" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Updated" Type="DateTime" Precision="7" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1223,19 +1223,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Receipts">
-            <EntityTypeMapping TypeName="spasystemdbModel.Receipt">
-              <MappingFragment StoreEntitySet="Receipt">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="Updated" ColumnName="Updated" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MobileComTiers">
             <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
               <MappingFragment StoreEntitySet="MobileComTier">
@@ -1291,6 +1278,19 @@
                 <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
                 <ScalarProperty Name="BranchId" ColumnName="BranchId" />
                 <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Receipts">
+            <EntityTypeMapping TypeName="spasystemdbModel.Receipt">
+              <MappingFragment StoreEntitySet="Receipt">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

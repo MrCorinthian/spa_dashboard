@@ -22,6 +22,7 @@ class RegisterData {
 
   RegisterData(
       {this.Password,
+      this.Username,
       this.Token,
       this.TitleName,
       this.FirstName,
@@ -43,6 +44,7 @@ class RegisterData {
 
   Map<String, dynamic> toJson() => {
         'Password': Password,
+        'Username': Username,
         'Token': Token,
         'TitleName': TitleName,
         'FirstName': FirstName,

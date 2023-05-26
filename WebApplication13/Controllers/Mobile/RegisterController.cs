@@ -27,7 +27,7 @@ namespace WebApplication13.Controllers.Mobile
                     DateTime now = DataDAL.GetDateTimeNow();
                     MobileUser user = new MobileUser();
                     string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
-                    var findUsername = db.MobileUsers.FirstOrDefault(c => c.Username.ToUpper() == user.Username.ToUpper());
+                    var findUsername = db.MobileUsers.FirstOrDefault(c => c.Username.ToUpper() == data.Username.ToUpper());
                     if (findUsername == null)
                     {
                         user.Username = data.Username;
@@ -69,8 +69,8 @@ namespace WebApplication13.Controllers.Mobile
                 }
             }
             catch(Exception ex) 
-            { 
-
+            {
+                return Ok(ex);
             }
 
             return Content(HttpStatusCode.NotFound, "Not found.");

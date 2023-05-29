@@ -29,7 +29,7 @@ namespace WebApplication13.Controllers.Mobile
                 string enPassword = EncryptionDAL.EncryptString(data.Password);
                 using (var db = new spasystemdbEntities())
                 {
-                    MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username && c.Password == enPassword);
+                    MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.Phone && c.Password == enPassword);
                     if (user != null)
                     {
                         token = UserDAL.CreateLoginToken(user.Id);
@@ -431,16 +431,16 @@ namespace WebApplication13.Controllers.Mobile
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> Username(ResponseData username)
+        public async Task<IHttpActionResult> Username(ResponseData phone)
         {
             ResponseData response = new ResponseData();
             try
             {
                 using (var db = new spasystemdbEntities())
                 {
-                    if (username != null && !string.IsNullOrEmpty(username.Data))
+                    if (phone != null && !string.IsNullOrEmpty(phone.Data))
                     {
-                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == username.Data);
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == phone.Data);
                         if (user != null)
                         {
                             response.Success = true;

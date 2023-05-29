@@ -6,7 +6,7 @@ class CustomDropdown extends StatefulWidget {
   final String text;
   final bool requiredField;
   final bool isExpanded;
-  final List<DropdownOption> options;
+  final List<String> options;
   final Function(String?) onChanged;
   final String? selected;
 
@@ -31,9 +31,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
   void initState() {
     super.initState();
     _dropdownOptions = widget.options
-        .map<DropdownMenuItem<String>>((DropdownOption option) =>
-            DropdownMenuItem<String>(
-                value: option.label, child: Text(option.label)))
+        .map<DropdownMenuItem<String>>((String option) =>
+            DropdownMenuItem<String>(value: option, child: Text(option)))
         .toList();
   }
 

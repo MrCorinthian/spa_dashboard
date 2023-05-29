@@ -12,6 +12,7 @@ using WebApplication13.Models;
 using WebApplication13.Models.Mobile;
 using System.Web.Http.Cors;
 using WebApplication13.DAL;
+using Newtonsoft.Json;
 
 namespace WebApplication13.Controllers.Mobile
 {
@@ -37,6 +38,26 @@ namespace WebApplication13.Controllers.Mobile
                                 return Ok(comTier);
                             }
                         }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMobileOptionSetting(string code)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    string jsonString = DataDAL.GetMobileSetting(code);
+                    if (!string.IsNullOrEmpty(jsonString))
+                    {
+                        List<string> stringList = JsonConvert.DeserializeObject<List<string>>(jsonString);
+                        return Ok(stringList);
                     }
                 }
             }

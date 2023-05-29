@@ -11,16 +11,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: true,
       toolbarHeight: 100,
+      centerTitle: true,
       backgroundColor: CustomTheme.darkGreyColor,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/images/urban-logo-crop.png',
-            fit: BoxFit.contain,
-            height: 60,
-          ),
-        ],
+      title: Image.asset(
+        'assets/images/urban-logo-crop.png',
+        fit: BoxFit.contain,
+        height: 60,
       ),
     );
   }

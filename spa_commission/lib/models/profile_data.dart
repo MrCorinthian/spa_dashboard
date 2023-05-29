@@ -1,5 +1,8 @@
-class RegisterData {
+class ProfileData {
+  String? Token;
+  String? Username;
   String? Password;
+  String? TitleName;
   String? FirstName;
   String? LastName;
   String? IdCardNumber;
@@ -17,8 +20,11 @@ class RegisterData {
   String? BankAccountNumber;
   String? ProfilePath;
 
-  RegisterData(
+  ProfileData(
       {this.Password,
+      this.Username,
+      this.Token,
+      this.TitleName,
       this.FirstName,
       this.LastName,
       this.IdCardNumber,
@@ -38,6 +44,9 @@ class RegisterData {
 
   Map<String, dynamic> toJson() => {
         'Password': Password,
+        'Username': Username,
+        'Token': Token,
+        'TitleName': TitleName,
         'FirstName': FirstName,
         'LastName': LastName,
         'IdCardNumber': IdCardNumber,

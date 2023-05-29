@@ -132,6 +132,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\AngularViews\3rdpartylicenses.txt" />
+    <Content Include="Content\AngularViews\assets\css\material-theme.css" />
+    <Content Include="Content\AngularViews\assets\images\angle-left.png" />
+    <Content Include="Content\AngularViews\assets\images\angle-right.png" />
+    <Content Include="Content\AngularViews\assets\images\bg.jpg" />
+    <Content Include="Content\AngularViews\assets\images\power-off.png" />
+    <Content Include="Content\AngularViews\assets\images\xmark.png" />
+    <Content Include="Content\AngularViews\bg.jpg" />
+    <Content Include="Content\AngularViews\favicon.ico" />
+    <Content Include="Content\AngularViews\index.html" />
+    <Content Include="Content\AngularViews\main.js" />
+    <Content Include="Content\AngularViews\polyfills.js" />
+    <Content Include="Content\AngularViews\runtime.js" />
+    <Content Include="Content\AngularViews\styles.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\myProgressRing.css" />
@@ -230,20 +244,6 @@
     </Content>
     <Content Include=".env" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP1.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP2.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP3.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP4.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP1.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP2.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy1.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy2.pubxml" />
-    <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy3.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy4.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />

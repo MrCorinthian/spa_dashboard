@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _loading = true;
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     var res = await BaseClient().post('User/Login', {
-      'username': _usernameController.text.trim(),
+      'username': _phoneController.text.trim(),
       'password': _passwordController.text.trim()
     });
     if (res != null) {
@@ -83,7 +83,10 @@ class _LoginPageState extends State<LoginPage> {
                   image: AssetImage('assets/images/urban-logo.png'),
                 ),
                 CustomTextField(
-                    text: 'Username', controller: _usernameController),
+                  text: 'Telephone no.',
+                  controller: _phoneController,
+                  keyboardType: 'number',
+                ),
                 CustomTextField(
                     text: 'Password',
                     obscureText: true,

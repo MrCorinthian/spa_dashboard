@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../base_client/base_client.dart';
-import '../../../models/register_data.dart';
+import '../../../models/profile_data.dart';
 import '../../../models/mobile_user_info.dart';
 import '../../../models/responsed_data.dart';
 import '../../../app_theme/app_theme.dart';
@@ -40,6 +41,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   String profileImagePath = '';
   File? _profileImage;
+  List<String> _province = [];
+  List<String> _bank = [];
+  List<String> _occupation = [];
 
   @override
   void dispose() {
@@ -56,6 +60,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
+      final resProvince =
+          await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+      if (resProvince != null) {
+        setState(() {
+          _province = List<String>.from(json.decode(resProvince));
+        });
+      }
+      final resBank =
+          await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+      if (resBank != null) {
+        setState(() {
+          _bank = List<String>.from(json.decode(resBank));
+        });
+      }
+      final resOccupation =
+          await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+      if (resOccupation != null) {
+        setState(() {
+          _occupation = List<String>.from(json.decode(resOccupation));
+        });
+      }
+
       var res =
           await BaseClient().post('User/GetMoblieUserInfo', {'data': _token});
       if (res != null) {
@@ -146,7 +172,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
-      RegisterData data = RegisterData();
+      ProfileData data = ProfileData();
       data.Token = _token;
       data.Password = '';
       data.TitleName = '';
@@ -200,22 +226,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   onImageSelected: _handleUpload,
                 ),
                 CustomTextField(
-                  text: 'Username',
-                  requiredField: true,
-                  controller: _usernameController,
-                ),
-                CustomTextField(
-                  text: 'First Name',
+                  text: 'First name',
                   requiredField: true,
                   controller: _firstNameController,
                 ),
                 CustomTextField(
-                  text: 'Family Name',
+                  text: 'Family name',
                   requiredField: true,
                   controller: _lastNameController,
                 ),
                 CustomTextField(
-                  text: 'ID Card number',
+                  text: 'ID card number',
                   requiredField: true,
                   controller: _idCardNumberController,
                 ),
@@ -227,54 +248,58 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   text: 'Address',
                   controller: _addressController,
                 ),
-                CustomDropdown(
-                  text: 'Province',
-                  requiredField: true,
-                  options: constent.PROVINCE,
-                  selected: _provinceController.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _provinceController.text = value ?? '';
-                    });
-                  },
-                ),
-                CustomDropdown(
-                  text: 'Occupation',
-                  requiredField: true,
-                  options: constent.OCCUPATION,
-                  selected: _occupationController.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _occupationController.text = value ?? '';
-                    });
-                  },
-                ),
+                _province.length > 0
+                    ? CustomDropdown(
+                        text: 'Province',
+                        requiredField: true,
+                        options: _province,
+                        selected: _provinceController.text,
+                        onChanged: (value) {
+                          setState(() {
+                            _provinceController.text = value ?? '';
+                          });
+                        },
+                      )
+                    : const SizedBox(),
+                _occupation.length > 0
+                    ? CustomDropdown(
+                        text: 'Occupation',
+                        requiredField: true,
+                        options: _occupation,
+                        selected: _occupationController.text,
+                        onChanged: (value) {
+                          setState(() {
+                            _occupationController.text = value ?? '';
+                          });
+                        },
+                      )
+                    : const SizedBox(),
                 CustomTextField(
-                    text: 'Telephone',
+                    text: 'Telephone no.',
                     requiredField: true,
                     controller: _phoneNumberController),
-                // CustomTextField(
-                //     text: 'Username', controller: _usernameController),
                 CustomTextField(
-                    text: 'Email Address', controller: _emailController),
+                    text: 'Email address', controller: _emailController),
                 CustomTextField(text: 'Line ID', controller: _lineController),
                 CustomTextField(
                     text: 'Whatsapp ID', controller: _whatsappController),
                 CustomTextField(
-                    text: 'Company Name', controller: _companyNameController),
+                    text: 'Company name', controller: _companyNameController),
                 CustomTextField(
-                    text: 'Company tex ID', controller: _companyTexController),
-                CustomDropdown(
-                  text: 'Bank account',
-                  requiredField: true,
-                  options: constent.BANK_ACCOUNT,
-                  selected: _bankAccountController.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _bankAccountController.text = value ?? '';
-                    });
-                  },
-                ),
+                    text: 'Company tax ID', controller: _companyTexController),
+                _bank.length > 0
+                    ? CustomDropdown(
+                        text: 'Bank name',
+                        requiredField: true,
+                        options: _bank,
+                        selected: _bankAccountController.text,
+                        onChanged: (value) {
+                          setState(() {
+                            _bankAccountController.text = value ?? '';
+                          });
+                        },
+                      )
+                    : const SizedBox(),
                 CustomTextField(
                     text: 'Bank account number',
                     requiredField: true,

@@ -27,12 +27,10 @@ namespace WebApplication13.Controllers.Mobile
                     DateTime now = DataDAL.GetDateTimeNow();
                     MobileUser user = new MobileUser();
                     string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
-                    var findUsername = db.MobileUsers.FirstOrDefault(c => c.Username.ToUpper() == data.Username.ToUpper());
+                    var findUsername = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
                     if (findUsername == null)
                     {
-                        user.Username = data.Username;
                         user.Password = EncryptionDAL.EncryptString(data.Password);
-                        //user.TitleName = data.TitleName;
                         user.FirstName = data.FirstName;
                         user.LastName = data.LastName;
                         user.IdCardNumber = data.IdCardNumber;

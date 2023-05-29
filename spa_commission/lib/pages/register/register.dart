@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ import '../../shared_widget/custom_app_bar.dart';
 import '../../shared_widget/custom_text_field.dart';
 import '../../shared_widget/custom_dropdown.dart';
 import '../../shared_widget/custom_upload_profile_image.dart';
-import '../../constant_value/constant_value.dart' as constent;
+import '../../shared_widget/custom_alert_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _idCardNumberController = TextEditingController();
@@ -43,6 +43,39 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String profileImagePath = '';
   File? _profileImage;
+  List<String> _province = [];
+  List<String> _bank = [];
+  List<String> _occupation = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadValue();
+  }
+
+  Future<void> _loadValue() async {
+    final resProvince =
+        await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+    if (resProvince != null) {
+      setState(() {
+        _province = List<String>.from(json.decode(resProvince));
+      });
+    }
+    final resBank =
+        await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+    if (resBank != null) {
+      setState(() {
+        _bank = List<String>.from(json.decode(resBank));
+      });
+    }
+    final resOccupation =
+        await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+    if (resOccupation != null) {
+      setState(() {
+        _occupation = List<String>.from(json.decode(resOccupation));
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -61,51 +94,59 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _validateData() async {
     var validate = true;
-
-    if (_profileImage != null) {
-      var res = await BaseClient().uploadImage(_profileImage);
-      if (res != null) {
-        ResponsedData response = ResponsedData.fromJson(res);
-        _profilePathController.text = response.data;
+    List<String> messages = [];
+    if (_phoneNumberController.text.isNotEmpty) {
+      var resPhoneNumber = await BaseClient()
+          .post('User/Username', {"data": _phoneNumberController.text});
+      if (resPhoneNumber != null && resPhoneNumber.Success == false) {
+        if (_profileImage != null) {
+          var res = await BaseClient().uploadImage(_profileImage);
+          if (res != null) {
+            ResponsedData response = ResponsedData.fromJson(res);
+            _profilePathController.text = response.data;
+          }
+        }
+        if (_firstNameController.text.isEmpty) {
+          validate = false;
+        } else if (_lastNameController.text.isEmpty) {
+          validate = false;
+        } else if (_idCardNumberController.text.isEmpty) {
+          validate = false;
+        } else if (_provinceController.text.isEmpty) {
+          validate = false;
+        } else if (_bankAccountController.text.isEmpty) {
+          validate = false;
+        } else if (_bankAccountNumberController.text.isEmpty) {
+          validate = false;
+        } else if (_passwordController.text.isEmpty) {
+          validate = false;
+        } else if (_confirmPasswordController.text.isEmpty) {
+          validate = false;
+        }
       }
-    }
-    if (_usernameController.text.isEmpty) {
+    } else {
       validate = false;
-    } else if (_firstNameController.text.isEmpty) {
-      validate = false;
-    } else if (_lastNameController.text.isEmpty) {
-      validate = false;
-    } else if (_idCardNumberController.text.isEmpty) {
-      validate = false;
-    } else if (_provinceController.text.isEmpty) {
-      validate = false;
-    } else if (_phoneNumberController.text.isEmpty) {
-      validate = false;
-    } else if (_bankAccountController.text.isEmpty) {
-      validate = false;
-    } else if (_bankAccountNumberController.text.isEmpty) {
-      validate = false;
-    } else if (_passwordController.text.isEmpty) {
-      validate = false;
-    } else if (_confirmPasswordController.text.isEmpty) {
-      validate = false;
+      messages.add("Telephone no.");
     }
 
     if (!validate) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Message'),
-            content: Text('Please check the information.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
+          return CustomAlertDialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Please check the information.',
+                  style: TextStyle(color: CustomTheme.fillColor),
+                ),
+                for (int i = 0; i < messages.length; i++)
+                  Text(' - ' + messages[i],
+                      style: TextStyle(color: CustomTheme.fillColor))
+              ],
+            ),
           );
         },
       );
@@ -116,10 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _register() async {
     RegisterData data = RegisterData();
-    data.Token = '';
-    data.Username = _usernameController.text;
     data.Password = _passwordController.text;
-    data.TitleName = '';
     data.FirstName = _firstNameController.text;
     data.LastName = _lastNameController.text;
     data.IdCardNumber = _idCardNumberController.text;
@@ -142,6 +180,24 @@ class _RegisterPageState extends State<RegisterPage> {
     if (res != null) {
       Navigator.pop(context);
       Provider.of<AuthProvider>(context, listen: false).login(res);
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Message'),
+            content: Text('Please check the information.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -169,24 +225,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   onImageSelected: _handleUpload,
                 ),
                 CustomTextField(
-                  text: 'Username',
-                  requiredField: true,
-                  controller: _usernameController,
-                ),
-                CustomTextField(
-                  text: 'First Name',
+                  text: 'First name',
                   requiredField: true,
                   controller: _firstNameController,
                 ),
                 CustomTextField(
-                  text: 'Family Name',
+                  text: 'Family name',
                   requiredField: true,
                   controller: _lastNameController,
                 ),
                 CustomTextField(
-                  text: 'ID Card number',
+                  text: 'ID card number',
                   requiredField: true,
                   controller: _idCardNumberController,
+                  keyboardType: 'number',
                 ),
                 CustomTextField(
                   text: 'Nationality',
@@ -196,65 +248,75 @@ class _RegisterPageState extends State<RegisterPage> {
                   text: 'Address',
                   controller: _addressController,
                 ),
-                CustomDropdown(
-                  text: 'Province',
+                _province.length > 0
+                    ? CustomDropdown(
+                        text: 'Province',
+                        requiredField: true,
+                        options: _province,
+                        selected: _provinceController.text,
+                        onChanged: (value) {
+                          setState(() {
+                            _provinceController.text = value ?? '';
+                          });
+                        },
+                      )
+                    : const SizedBox(),
+                _occupation.length > 0
+                    ? CustomDropdown(
+                        text: 'Occupation',
+                        requiredField: true,
+                        options: _occupation,
+                        selected: _occupationController.text,
+                        onChanged: (value) {
+                          setState(() {
+                            _occupationController.text = value ?? '';
+                          });
+                        },
+                      )
+                    : const SizedBox(),
+                CustomTextField(
+                  text: 'Telephone no.',
                   requiredField: true,
-                  options: constent.PROVINCE,
-                  selected: _provinceController.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _provinceController.text = value ?? '';
-                    });
-                  },
-                ),
-                CustomDropdown(
-                  text: 'Occupation',
-                  requiredField: true,
-                  options: constent.OCCUPATION,
-                  selected: _occupationController.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _occupationController.text = value ?? '';
-                    });
-                  },
+                  controller: _phoneNumberController,
+                  keyboardType: 'number',
                 ),
                 CustomTextField(
-                    text: 'Telephone',
-                    requiredField: true,
-                    controller: _phoneNumberController),
-                // CustomTextField(
-                //     text: 'Username', controller: _usernameController),
-                CustomTextField(
-                    text: 'Email Address', controller: _emailController),
+                    text: 'Email address', controller: _emailController),
                 CustomTextField(text: 'Line ID', controller: _lineController),
                 CustomTextField(
                     text: 'Whatsapp ID', controller: _whatsappController),
                 CustomTextField(
-                    text: 'Company Name', controller: _companyNameController),
+                    text: 'Company name', controller: _companyNameController),
                 CustomTextField(
-                    text: 'Company tex ID', controller: _companyTexController),
-                CustomDropdown(
-                  text: 'Bank account',
-                  requiredField: true,
-                  options: constent.BANK_ACCOUNT,
-                  selected: _bankAccountController.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _bankAccountController.text = value ?? '';
-                    });
-                  },
+                  text: 'Company tax ID',
+                  controller: _companyTexController,
+                  keyboardType: 'number',
                 ),
+                _bank.length > 0
+                    ? CustomDropdown(
+                        text: 'Bank name',
+                        requiredField: true,
+                        options: _bank,
+                        selected: _bankAccountController.text,
+                        onChanged: (value) {
+                          setState(() {
+                            _bankAccountController.text = value ?? '';
+                          });
+                        },
+                      )
+                    : const SizedBox(),
                 CustomTextField(
                     text: 'Bank account number',
                     requiredField: true,
-                    controller: _bankAccountNumberController),
+                    controller: _bankAccountNumberController,
+                    keyboardType: 'number'),
                 CustomTextField(
                     text: 'Password',
                     requiredField: true,
                     obscureText: true,
                     controller: _passwordController),
                 CustomTextField(
-                  text: 'Confirm Password',
+                  text: 'Confirm password',
                   requiredField: true,
                   obscureText: true,
                   controller: _confirmPasswordController,

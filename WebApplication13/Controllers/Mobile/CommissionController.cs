@@ -129,7 +129,7 @@ namespace WebApplication13.Controllers.Mobile
                             double sumCom = comTrans.Sum(s => s.TotalBaht);
                             pData.ComTrans = comTrans;
                             pData.Commission = sumCom;
-                            pData.Tier = UserDAL.GetUserTier(user.Id);
+                            pData.Tier = UserDAL.GetUserTier(user.Id)?.TierName;
                             dataIndex.Data.Add(pData);
                         }
 
@@ -233,7 +233,7 @@ namespace WebApplication13.Controllers.Mobile
                         foreach (CommissionReportData comTran in comTrans)
                         {
                             comTran.BranchName = db.Branches.FirstOrDefault(c => c.Id == comTran.BranchId).Name;
-                            comTran.Tier = UserDAL.GetUserTier(comTran.MobileUserId);
+                            comTran.Tier = UserDAL.GetUserTier(comTran.MobileUserId)?.TierName;
                             dataIndex.Data.Add(comTran);
                         }
 
@@ -258,16 +258,18 @@ namespace WebApplication13.Controllers.Mobile
                     {
                         DateTime now = DataDAL.GetDateTimeNow();
                         DateTime expired = now.AddMinutes(15);
+                        MobileComTier userTier = UserDAL.GetUserTier(user.Id);
                         Receipt receipt = db.Receipts.FirstOrDefault(c => 
-                        c.Code == receiptParams.ReceiptCode
-                        && c.UsedStatus != "Y"
-                        && c.Created <= expired);
-                        if (receipt != null)
+                                            c.Code == receiptParams.ReceiptCode
+                                            && c.UsedStatus != "Y"
+                                            && c.Created <= expired);
+                        if (userTier != null && receipt != null)
                         {
                             List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();
                             if (orders.Count > 0)
                             {
                                 double totalBaht = orders.Sum(s => s.Commission);
+                                totalBaht = totalBaht * (userTier.ComPercentage / 100);
 
                                 MobileComTransaction comTran = new MobileComTransaction();
                                 comTran.MobileUserId = user.Id;

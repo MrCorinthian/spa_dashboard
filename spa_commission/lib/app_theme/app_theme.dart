@@ -23,9 +23,9 @@ class CustomTheme {
         height: 30,
       );
   static const paddingPage = EdgeInsets.symmetric(horizontal: 30, vertical: 30);
+  static const primaryColor = Color(0xFFC69F49);
+  static const secondaryColor = Color(0xFFC4AC79);
   static const darkGreyColor = Color(0xFF131313);
-  static const primaryColor = Color(0xFFC5A048);
-  static const secondaryColor = Color(0xFFC3AC7A);
   static const backgroundColor = Colors.black;
   static const fillColor = Color(0xFFEEEEEE);
   static const greenColor = Color(0xFF1B5E20);
@@ -37,30 +37,6 @@ class CustomTheme {
       TextStyle(color: Color(0xFF128001), fontSize: 24);
   static final dropdownDecoration = BoxDecoration(
       color: CustomTheme.fillColor, borderRadius: BorderRadius.circular(5));
-  static const inputDecoration = InputDecoration(
-    filled: true,
-    fillColor: fillColor,
-    border: OutlineInputBorder(
-      borderSide: BorderSide.none,
-    ),
-  );
-  static const inputDecorationError = InputDecoration(
-    filled: true,
-    fillColor: fillColor,
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.red,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-      color: Colors.red,
-    )),
-    border: OutlineInputBorder(
-      borderSide: BorderSide.none,
-    ),
-  );
-
   static final buttonStyle_profileMenu = ElevatedButton.styleFrom(
     minimumSize: const Size.fromHeight(60),
     backgroundColor: Color(0xFF181818),
@@ -88,7 +64,7 @@ class CustomTheme {
     backgroundColor: fillColor,
   );
   static const buttonTextStyle_fillColor =
-      TextStyle(fontSize: 24, color: fillColor);
+      TextStyle(fontSize: 18, color: fillColor);
   static final buttonStyle_green = ElevatedButton.styleFrom(
     minimumSize: const Size.fromHeight(60),
     backgroundColor: Colors.green.shade900,

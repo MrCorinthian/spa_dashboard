@@ -3,14 +3,17 @@ import '../../app_theme/app_theme.dart';
 
 class CustomAlertDialog extends StatelessWidget implements PreferredSizeWidget {
   final Widget child;
+  final String title;
 
-  const CustomAlertDialog({Key? key, required this.child}) : super(key: key);
+  const CustomAlertDialog(
+      {Key? key, required this.child, this.title = 'Message'})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: CustomTheme.darkGreyColor,
-      title: Text('Message', style: TextStyle(color: CustomTheme.fillColor)),
+      title: Text(title, style: TextStyle(color: CustomTheme.fillColor)),
       content: Expanded(child: child),
       actions: [
         Center(

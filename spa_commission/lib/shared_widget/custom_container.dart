@@ -8,11 +8,13 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(20),
-      color: CustomTheme.darkGreyColor,
-      child: child,
+    return SingleChildScrollView(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(20),
+        color: CustomTheme.darkGreyColor,
+        child: child,
+      ),
     );
   }
 }

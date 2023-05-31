@@ -12,7 +12,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: true,
       toolbarHeight: 100,
       centerTitle: true,
-      backgroundColor: CustomTheme.darkGreyColor,
+      backgroundColor: Colors.black,
       title: Image.asset(
         'assets/images/urban-logo-crop.png',
         fit: BoxFit.contain,

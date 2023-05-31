@@ -40,7 +40,7 @@ class _CustomProfileMenuButtonState extends State<CustomProfileMenuButton> {
                     style: CustomTheme.buttonTextStyle_profileMenu),
               ],
             )),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
       ],
     );
   }

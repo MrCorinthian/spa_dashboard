@@ -4,6 +4,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
+import '../../../shared_widget//custom_alert_dialog.dart';
 
 class QrScanPage extends StatefulWidget {
   const QrScanPage({super.key});
@@ -97,7 +98,7 @@ class _QrScanPageState extends State<QrScanPage> {
                   ? const Text('')
                   : Center(
                       child: TextButton(
-                        child: const Text(
+                        child: Text(
                           'Ok',
                           style: TextStyle(
                               color: CustomTheme.fillColor, fontSize: 16),
@@ -108,7 +109,7 @@ class _QrScanPageState extends State<QrScanPage> {
                         onPressed: () {
                           this.barcode = null;
                           Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                         },
                       ),
                     ),
@@ -170,7 +171,43 @@ class _QrScanPageState extends State<QrScanPage> {
             );
           });
         } else {
-          Navigator.of(context).pop();
+          setState(() {
+            this._processing = false;
+            Navigator.of(context).pop();
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: CustomTheme.darkGreyColor,
+                  title: const Text('Message',
+                      style: TextStyle(color: CustomTheme.fillColor)),
+                  content: const Expanded(
+                      child: Text(
+                    'Please check the information.',
+                    style: TextStyle(color: CustomTheme.fillColor),
+                  )),
+                  actions: [
+                    Center(
+                      child: TextButton(
+                        child: Text(
+                          'Ok',
+                          style: TextStyle(
+                              color: CustomTheme.fillColor, fontSize: 16),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: CustomTheme.primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          this.controller!.resumeCamera();
+                        },
+                      ),
+                    )
+                  ],
+                );
+              },
+            );
+          });
         }
       }
     });

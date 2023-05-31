@@ -23,8 +23,29 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadValue();
+  }
+
+  Future<void> _loadValue() async {
+    await Future.delayed(
+        const Duration(seconds: 2),
+        () => setState(() {
+              _loading = false;
+            }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +57,44 @@ class MyApp extends StatelessWidget {
             title: 'SPA Commission',
             theme: themeNotifier.getTheme(),
             home: Consumer<AuthProvider>(
-              builder: (context, auth, _) =>
-                  auth.isLoggedIn ? const MainPage() : const LoginPage(),
+              builder: (context, auth, _) => _loading
+                  ? LandingPage()
+                  : (auth.isLoggedIn ? const MainPage() : const LoginPage()),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
+
+  final String title = 'SPA Commission';
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Image(
+            image: AssetImage('assets/images/urban-logo.png'),
+            width: 300.00,
+          ),
+          CircularProgressIndicator(
+            color: CustomTheme.primaryColor,
+          ),
+        ],
+      )),
     );
   }
 }
@@ -58,11 +111,21 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   String _token = '';
+  bool _loading = true;
   // MobileUserInfo _userInfo = MobileUserInfo();
 
   @override
   void initState() {
     super.initState();
+    _loadValue();
+  }
+
+  Future<void> _loadValue() async {
+    // await Future.delayed(
+    //     Duration(seconds: 1),
+    //     () => setState(() {
+    //           _loading = false;
+    //         }));
   }
 
   static final List<Widget> _widgetOptions = <Widget>[
@@ -79,20 +142,30 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  // Widget buildLoadingScreen() => const Scaffold(
+  //       body: Center(
+  //         child: CircularProgressIndicator(
+  //           color: CustomTheme.primaryColor,
+  //         ),
+  //       ),
+  //     );
+
   @override
   Widget build(BuildContext context) {
     //_widgetOptions.elementAt(_selectedIndex)
     return Scaffold(
       // backgroundColor: CustomTheme.backgroundColor,
       appBar: const CustomAppBar(),
-      body: Container(
-          padding: CustomTheme.paddingPage,
-          child: Column(
-            children: [
-              if (_selectedIndex != 1) const CustomProfileWidget(),
-              _widgetOptions.elementAt(_selectedIndex)
-            ],
-          )),
+      body: SingleChildScrollView(
+        child: Container(
+            padding: CustomTheme.paddingPage,
+            child: Column(
+              children: [
+                if (_selectedIndex != 1) const CustomProfileWidget(),
+                _widgetOptions.elementAt(_selectedIndex)
+              ],
+            )),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         backgroundColor: CustomTheme.darkGreyColor,
@@ -111,14 +184,6 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.qr_code),
-          //   label: 'QR Code',
-          // ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.qr_code_scanner),
-          //   label: 'QR Scan',
-          // ),
         ],
         onTap: _onItemTapped,
       ),

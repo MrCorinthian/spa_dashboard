@@ -22,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _idCardNumberController = TextEditingController();
+  final TextEditingController _birthdayController = TextEditingController();
   final TextEditingController _nationalityController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _provinceController = TextEditingController();
@@ -62,14 +63,14 @@ class _RegisterPageState extends State<RegisterPage> {
       });
     }
     final resBank =
-        await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+        await BaseClient().get('Data/GetMobileOptionSetting?code=BANK_ACCOUNT');
     if (resBank != null) {
       setState(() {
         _bank = List<String>.from(json.decode(resBank));
       });
     }
     final resOccupation =
-        await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+        await BaseClient().get('Data/GetMobileOptionSetting?code=OCCUPATION');
     if (resOccupation != null) {
       setState(() {
         _occupation = List<String>.from(json.decode(resOccupation));
@@ -96,32 +97,61 @@ class _RegisterPageState extends State<RegisterPage> {
     var validate = true;
     List<String> messages = [];
     if (_phoneNumberController.text.isNotEmpty) {
-      var resPhoneNumber = await BaseClient()
+      var response = await BaseClient()
           .post('User/Username', {"data": _phoneNumberController.text});
-      if (resPhoneNumber != null && resPhoneNumber.Success == false) {
-        if (_profileImage != null) {
-          var res = await BaseClient().uploadImage(_profileImage);
-          if (res != null) {
-            ResponsedData response = ResponsedData.fromJson(res);
-            _profilePathController.text = response.data;
+      if (response != null) {
+        ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
+        if (resPhoneNumber.success == false) {
+          if (_profileImage != null) {
+            var res = await BaseClient().uploadImage(_profileImage);
+            if (res != null) {
+              ResponsedData response = ResponsedData.fromJson(res);
+              _profilePathController.text = response.data;
+            } else {
+              validate = false;
+              messages.add("Profile image");
+            }
+          } else {
+            validate = false;
+            messages.add("Profile image");
           }
-        }
-        if (_firstNameController.text.isEmpty) {
+          if (_firstNameController.text.isEmpty) {
+            validate = false;
+            messages.add("First name");
+          }
+          if (_lastNameController.text.isEmpty) {
+            validate = false;
+            messages.add("Family name");
+          }
+          if (_idCardNumberController.text.isEmpty) {
+            validate = false;
+            messages.add("ID card number");
+          }
+          if (_provinceController.text.isEmpty) {
+            validate = false;
+            messages.add("Province");
+          }
+          if (_occupationController.text.isEmpty) {
+            validate = false;
+            messages.add("Occupation");
+          }
+          if (_bankAccountController.text.isEmpty) {
+            validate = false;
+            messages.add("Bank name");
+          }
+          if (_bankAccountNumberController.text.isEmpty) {
+            validate = false;
+            messages.add("Bank account number");
+          }
+          if (_passwordController.text.isEmpty ||
+              _confirmPasswordController.text.isEmpty ||
+              _passwordController.text != _confirmPasswordController.text) {
+            validate = false;
+            messages.add("Password");
+          }
+        } else {
           validate = false;
-        } else if (_lastNameController.text.isEmpty) {
-          validate = false;
-        } else if (_idCardNumberController.text.isEmpty) {
-          validate = false;
-        } else if (_provinceController.text.isEmpty) {
-          validate = false;
-        } else if (_bankAccountController.text.isEmpty) {
-          validate = false;
-        } else if (_bankAccountNumberController.text.isEmpty) {
-          validate = false;
-        } else if (_passwordController.text.isEmpty) {
-          validate = false;
-        } else if (_confirmPasswordController.text.isEmpty) {
-          validate = false;
+          messages.add("Telephone no. already exists");
         }
       }
     } else {
@@ -134,14 +164,11 @@ class _RegisterPageState extends State<RegisterPage> {
         context: context,
         builder: (BuildContext context) {
           return CustomAlertDialog(
+            title: 'Required fields is missing.',
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Please check the information.',
-                  style: TextStyle(color: CustomTheme.fillColor),
-                ),
                 for (int i = 0; i < messages.length; i++)
                   Text(' - ' + messages[i],
                       style: TextStyle(color: CustomTheme.fillColor))
@@ -161,11 +188,12 @@ class _RegisterPageState extends State<RegisterPage> {
     data.FirstName = _firstNameController.text;
     data.LastName = _lastNameController.text;
     data.IdCardNumber = _idCardNumberController.text;
+    data.Birthday = _birthdayController.text;
     data.Nationality = _nationalityController.text;
     data.Address = _addressController.text;
     data.Province = _provinceController.text;
     data.Occupation = _occupationController.text;
-    data.PhoneNunber = _phoneNumberController.text;
+    data.PhoneNumber = _phoneNumberController.text;
     data.Email = _emailController.text;
     data.LineId = _lineController.text;
     data.WhatsAppId = _whatsappController.text;
@@ -184,17 +212,12 @@ class _RegisterPageState extends State<RegisterPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Message'),
-            content: Text('Please check the information.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
+          return CustomAlertDialog(
+            title: 'Message',
+            child: Text(
+              'Please check the information.',
+              style: TextStyle(color: CustomTheme.fillColor),
+            ),
           );
         },
       );
@@ -239,6 +262,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   requiredField: true,
                   controller: _idCardNumberController,
                   keyboardType: 'number',
+                ),
+                CustomTextField(
+                  text: 'Birthday',
+                  controller: _birthdayController,
+                  keyboardType: 'date',
                 ),
                 CustomTextField(
                   text: 'Nationality',

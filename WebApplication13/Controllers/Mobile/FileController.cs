@@ -100,7 +100,7 @@ namespace WebApplication13.Controllers.Mobile
                     }
                 }
             }
-            catch { }
+            catch(Exception ex) {  }
 
             return NotFound();
         }
@@ -153,7 +153,7 @@ namespace WebApplication13.Controllers.Mobile
                     {
                         string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
                         string imagePath = $"{webRootPath}{subPath}{fileName}";
-
+                       
                         var stream = File.OpenRead(imagePath);
                         response.Content = new StreamContent(stream);
                         response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");

@@ -48,8 +48,9 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
     }
   }
 
-  void _handleImageSelection() async {
-    final result = await ImagePicker().pickImage(source: ImageSource.gallery);
+  void _handleImageSelection(String type) async {
+    final result = await ImagePicker().pickImage(
+        source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
 
     if (result != null) {
       setState(() {
@@ -72,20 +73,20 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
             Text(
               widget.text,
               style:
-                  const TextStyle(color: CustomTheme.fillColor, fontSize: 16),
+                  const TextStyle(color: CustomTheme.fillColor, fontSize: 18),
             ),
             const SizedBox(
               width: 5,
             ),
             widget.requiredField
                 ? const Text('*',
-                    style: TextStyle(color: Colors.red, fontSize: 16))
+                    style: TextStyle(color: Colors.red, fontSize: 18))
                 : const Text('')
           ],
         ),
         const SizedBox(height: 10),
         GestureDetector(
-          onTap: _handleImageSelection,
+          onTap: () => _handleImageSelection(''),
           child: _image == null
               ? CircleAvatar(
                   radius: 50.0,

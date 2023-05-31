@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import '../../app_theme/app_theme.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -29,6 +30,39 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   bool hidePassword = true;
 
+  void _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: CustomTheme.darkGreyColor,
+              onPrimary: CustomTheme.primaryColor,
+              onSurface: CustomTheme.primaryColor,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor:
+                    Color.fromARGB(255, 0, 0, 0), // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        widget.controller.text = DateFormat('dd MMMM yyyy').format(picked);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,7 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
             widget.requiredField
                 ? const Text('*',
-                    style: TextStyle(color: Colors.red, fontSize: 16))
+                    style: TextStyle(color: Colors.red, fontSize: 18))
                 : const Text('')
           ],
         ),
@@ -57,9 +91,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           controller: widget.controller,
           obscureText: widget.obscureText && hidePassword,
           cursorColor: CustomTheme.backgroundColor,
+          onTap: () {
+            widget.keyboardType == "date" ? _selectDate(context) : null;
+          },
           keyboardType: widget.keyboardType == "number"
               ? TextInputType.number
-              : TextInputType.text,
+              : (widget.keyboardType == "date"
+                  ? TextInputType.none
+                  : TextInputType.text),
           inputFormatters: widget.keyboardType == "number"
               ? [FilteringTextInputFormatter.digitsOnly]
               : [],

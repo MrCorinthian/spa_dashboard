@@ -73,5 +73,5 @@ class CustomTheme {
     minimumSize: const Size.fromHeight(60),
     backgroundColor: Colors.red.shade900,
   );
-  static const textStyle_lightText = TextStyle(fontSize: 16, color: fillColor);
+  static const textStyle_lightText = TextStyle(fontSize: 18, color: fillColor);
 }

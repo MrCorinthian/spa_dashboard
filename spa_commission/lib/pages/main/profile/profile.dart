@@ -61,21 +61,21 @@ class _ProfilePageState extends State<ProfilePage> {
                     CustomPageRouteBuilder.leftToRight(EditProfilePage())),
               ),
               CustomProfileMenuButton(
-                text: 'Commission tier information',
-                imageIconPath: 'assets/images/gear.png',
+                text: 'Commission tier',
+                imageIconPath: 'assets/images/com-tier.png',
                 onPressed: () => Navigator.push(
                     context,
                     CustomPageRouteBuilder.leftToRight(
                         CommisionTierInfoPage())),
               ),
-              CustomProfileMenuButton(
-                text: 'Setting',
-                imageIconPath: 'assets/images/gear.png',
-                onPressed: () {},
-              ),
+              // CustomProfileMenuButton(
+              //   text: 'Setting',
+              //   imageIconPath: 'assets/images/gear.png',
+              //   onPressed: () {},
+              // ),
               CustomProfileMenuButton(
                 text: 'Sign out',
-                imageIconPath: 'assets/images/gear.png',
+                imageIconPath: 'assets/images/sign-out.png',
                 onPressed: logout,
               ),
             ],

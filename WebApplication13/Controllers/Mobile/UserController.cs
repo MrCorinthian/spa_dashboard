@@ -93,7 +93,7 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
 
-                                if (!string.IsNullOrEmpty(uInfo.Username)) return Ok(uInfo);
+                                if (!string.IsNullOrEmpty(uInfo.PhoneNumber)) return Ok(uInfo);
                             }
                         }
                     }
@@ -109,7 +109,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                User userAuth = UserDAL.GetUserByToken(data.Token);
+                MobileUser userAuth = UserDAL.GetUserByToken(data.Token);
                 if (userAuth != null)
                 {
                     using (var db = new spasystemdbEntities())

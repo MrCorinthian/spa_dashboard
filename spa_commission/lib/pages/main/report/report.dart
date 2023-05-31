@@ -53,6 +53,9 @@ class _ReportPageState extends State<ReportPage> {
       'month': _monthController.text,
       'year': _yearController.text
     });
+    setState(() {
+      _userReport = [];
+    });
     if (res != null) {
       final jsonData = json.decode(res) as List;
       setState(() {
@@ -136,7 +139,7 @@ class _ReportPageState extends State<ReportPage> {
                       Text(
                         _userReport.isNotEmpty
                             ? '${formatter.format(_userReport.map((item) => item.TotalBath).reduce((a, b) => a + b))}'
-                            : '',
+                            : '0.00',
                         style: CustomTheme.headerPageName,
                       ),
                     ],
@@ -192,7 +195,9 @@ class _ReportPageState extends State<ReportPage> {
                               children: <Widget>[
                                 Text(
                                   '${DateFormat('dd/MM/yyyy HH:mm').format(_userReport[i].Created)}',
-                                  style: CustomTheme.textStyle_lightText,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: CustomTheme.fillColor),
                                 ),
                               ],
                             ),
@@ -204,7 +209,9 @@ class _ReportPageState extends State<ReportPage> {
                               children: <Widget>[
                                 Text(
                                   '${formatter.format(_userReport[i].TotalBath)} Baht',
-                                  style: CustomTheme.textStyle_lightText,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: CustomTheme.fillColor),
                                 ),
                               ],
                             ),

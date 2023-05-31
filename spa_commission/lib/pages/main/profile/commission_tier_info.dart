@@ -58,7 +58,7 @@ class _CommisionTierInfoState extends State<CommisionTierInfoPage> {
                 Row(
                   children: const <Widget>[
                     Text(
-                      'Commission tier information',
+                      'Commission tier',
                       style: CustomTheme.headerPageName,
                     )
                   ],

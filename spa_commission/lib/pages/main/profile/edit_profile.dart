@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../base_client/base_client.dart';
@@ -11,6 +12,7 @@ import '../../../shared_widget/custom_app_bar.dart';
 import '../../../shared_widget/custom_text_field.dart';
 import '../../../shared_widget/custom_dropdown.dart';
 import '../../../shared_widget/custom_upload_profile_image.dart';
+import '../../../shared_widget/custom_alert_dialog.dart';
 import '../../../constant_value/constant_value.dart' as constent;
 
 class EditProfilePage extends StatefulWidget {
@@ -24,6 +26,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _idCardNumberController = TextEditingController();
+  final TextEditingController _birthdayController = TextEditingController();
   final TextEditingController _nationalityController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _provinceController = TextEditingController();
@@ -67,15 +70,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _province = List<String>.from(json.decode(resProvince));
         });
       }
-      final resBank =
-          await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+      final resBank = await BaseClient()
+          .get('Data/GetMobileOptionSetting?code=BANK_ACCOUNT');
       if (resBank != null) {
         setState(() {
           _bank = List<String>.from(json.decode(resBank));
         });
       }
       final resOccupation =
-          await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
+          await BaseClient().get('Data/GetMobileOptionSetting?code=OCCUPATION');
       if (resOccupation != null) {
         setState(() {
           _occupation = List<String>.from(json.decode(resOccupation));
@@ -91,6 +94,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _firstNameController.text = userInfo.FirstName ?? '';
           _lastNameController.text = userInfo.LastName ?? '';
           _idCardNumberController.text = userInfo.IdCardNumber ?? '';
+          if (userInfo.Birthday != null) {
+            _birthdayController.text =
+                DateFormat('dd MMMM yyyy').format(userInfo.Birthday!);
+          }
           _nationalityController.text = userInfo.Nationality ?? '';
           _addressController.text = userInfo.Address ?? '';
           _provinceController.text = userInfo.Province ?? '';
@@ -118,48 +125,79 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   validateData() async {
     var validate = true;
-
-    if (_profileImage != null) {
-      var res = await BaseClient().uploadImage(_profileImage);
-      if (res != null) {
-        ResponsedData response = ResponsedData.fromJson(res);
-        _profilePathController.text = response.data;
+    List<String> messages = [];
+    if (_phoneNumberController.text.isNotEmpty) {
+      var response = await BaseClient()
+          .post('User/Username', {"data": _phoneNumberController.text});
+      if (response != null) {
+        ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
+        if (resPhoneNumber.success == false) {
+          if (_profileImage != null) {
+            var res = await BaseClient().uploadImage(_profileImage);
+            if (res != null) {
+              ResponsedData response = ResponsedData.fromJson(res);
+              _profilePathController.text = response.data;
+            } else {
+              validate = false;
+              messages.add("Profile image");
+            }
+          } else {
+            validate = false;
+            messages.add("Profile image");
+          }
+          if (_firstNameController.text.isEmpty) {
+            validate = false;
+            messages.add("First name");
+          }
+          if (_lastNameController.text.isEmpty) {
+            validate = false;
+            messages.add("Family name");
+          }
+          if (_idCardNumberController.text.isEmpty) {
+            validate = false;
+            messages.add("ID card number");
+          }
+          if (_provinceController.text.isEmpty) {
+            validate = false;
+            messages.add("Province");
+          }
+          if (_occupationController.text.isEmpty) {
+            validate = false;
+            messages.add("Occupation");
+          }
+          if (_bankAccountController.text.isEmpty) {
+            validate = false;
+            messages.add("Bank name");
+          }
+          if (_bankAccountNumberController.text.isEmpty) {
+            validate = false;
+            messages.add("Bank account number");
+          }
+        } else {
+          validate = false;
+          messages.add("Telephone no. already exists");
+        }
       }
-    }
-
-    if (_usernameController.text.isEmpty) {
+    } else {
       validate = false;
-    } else if (_firstNameController.text.isEmpty) {
-      validate = false;
-    } else if (_lastNameController.text.isEmpty) {
-      validate = false;
-    } else if (_idCardNumberController.text.isEmpty) {
-      validate = false;
-    } else if (_provinceController.text.isEmpty) {
-      validate = false;
-    } else if (_phoneNumberController.text.isEmpty) {
-      validate = false;
-    } else if (_bankAccountController.text.isEmpty) {
-      validate = false;
-    } else if (_bankAccountNumberController.text.isEmpty) {
-      validate = false;
+      messages.add("Telephone no.");
     }
 
     if (!validate) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Message'),
-            content: Text('Please check the information.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
+          return CustomAlertDialog(
+            title: 'Required fields is missing.',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (int i = 0; i < messages.length; i++)
+                  Text(' - ' + messages[i],
+                      style: TextStyle(color: CustomTheme.fillColor))
+              ],
+            ),
           );
         },
       );
@@ -239,6 +277,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   text: 'ID card number',
                   requiredField: true,
                   controller: _idCardNumberController,
+                ),
+                CustomTextField(
+                  text: 'Birthday',
+                  controller: _birthdayController,
+                  keyboardType: 'date',
                 ),
                 CustomTextField(
                   text: 'Nationality',

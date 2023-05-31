@@ -86,7 +86,6 @@ class _CustomProfileWidgetState extends State<CustomProfileWidget> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                   color: CustomTheme.fillColor,
-                  borderRadius: CustomTheme.borderRadius,
                 ),
                 child: _preload
                     ? Row(
@@ -112,7 +111,7 @@ class _CustomProfileWidgetState extends State<CustomProfileWidget> {
                                 Text(
                                   _userName ?? '',
                                   style: const TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 18,
                                       color: CustomTheme.primaryColor),
                                 ),
                                 const SizedBox(height: 5),
@@ -121,7 +120,7 @@ class _CustomProfileWidgetState extends State<CustomProfileWidget> {
                                     const Text(
                                       'Commission tier : ',
                                       style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 14,
                                           color: CustomTheme.darkGreyColor),
                                     ),
                                     Container(
@@ -133,7 +132,7 @@ class _CustomProfileWidgetState extends State<CustomProfileWidget> {
                                       child: Text(
                                         _tierName ?? '',
                                         style: const TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 14,
                                             color: CustomTheme.fillColor),
                                       ),
                                     )

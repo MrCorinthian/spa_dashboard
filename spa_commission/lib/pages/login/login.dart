@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     var res = await BaseClient().post('User/Login', {
-      'username': _phoneController.text.trim(),
+      'phone': _phoneController.text.trim(),
       'password': _passwordController.text.trim()
     });
     if (res != null) {

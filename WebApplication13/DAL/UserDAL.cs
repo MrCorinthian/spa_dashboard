@@ -10,7 +10,7 @@ namespace WebApplication13.DAL
 {
     public class UserDAL
     {
-        public static User GetUserByToken(string token)
+        public static MobileUser GetUserByToken(string token)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace WebApplication13.DAL
                         MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token);
                         if (loginToken != null)
                         {
-                            User user = db.Users.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
+                            MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
                             if (user != null)
                             {
                                 return user;

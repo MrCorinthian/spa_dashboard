@@ -10,6 +10,7 @@ using WebApplication13.Models.Mobile;
 using System.Web.Http.Cors;
 using System.Threading.Tasks;
 using WebApplication13.DAL;
+using System.Globalization;
 
 namespace WebApplication13.Controllers.Mobile
 {
@@ -27,8 +28,8 @@ namespace WebApplication13.Controllers.Mobile
                     DateTime now = DataDAL.GetDateTimeNow();
                     MobileUser user = new MobileUser();
                     string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
-                    var findUsername = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
-                    if (findUsername == null)
+                    var findPhoneNumber = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
+                    if (findPhoneNumber == null)
                     {
                         user.Password = EncryptionDAL.EncryptString(data.Password);
                         user.FirstName = data.FirstName;
@@ -40,6 +41,7 @@ namespace WebApplication13.Controllers.Mobile
                         user.BankAccount = data.BankAccount;
                         user.BankAccountNumber = data.BankAccountNumber;
 
+                        if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMM yyyy", CultureInfo.InvariantCulture);
                         if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{subPath}{data.ProfilePath}";
                         if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
                         if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
@@ -50,9 +52,9 @@ namespace WebApplication13.Controllers.Mobile
                         if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
 
                         user.Active = "Y";
-                        user.CreatedBy = "system";
+                        user.CreatedBy = data.PhoneNumber;
                         user.Created = now;
-                        user.UpdatedBy = "system";
+                        user.UpdatedBy = data.PhoneNumber;
                         user.Updated = now;
 
                         db.MobileUsers.Add(user);
@@ -66,10 +68,7 @@ namespace WebApplication13.Controllers.Mobile
                     }
                 }
             }
-            catch(Exception ex) 
-            {
-                return Ok(ex);
-            }
+            catch { }
 
             return Content(HttpStatusCode.NotFound, "Not found.");
         }

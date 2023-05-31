@@ -3,11 +3,12 @@ class RegisterData {
   String? FirstName;
   String? LastName;
   String? IdCardNumber;
+  String? Birthday;
   String? Nationality;
   String? Address;
   String? Province;
   String? Occupation;
-  String? PhoneNunber;
+  String? PhoneNumber;
   String? Email;
   String? LineId;
   String? WhatsAppId;
@@ -22,11 +23,12 @@ class RegisterData {
       this.FirstName,
       this.LastName,
       this.IdCardNumber,
+      this.Birthday,
       this.Nationality,
       this.Address,
       this.Province,
       this.Occupation,
-      this.PhoneNunber,
+      this.PhoneNumber,
       this.Email,
       this.LineId,
       this.WhatsAppId,
@@ -41,11 +43,12 @@ class RegisterData {
         'FirstName': FirstName,
         'LastName': LastName,
         'IdCardNumber': IdCardNumber,
+        'Birthday': Birthday,
         'Nationality': Nationality,
         'Address': Address,
         'Province': Province,
         'Occupation': Occupation,
-        'PhoneNunber': PhoneNunber,
+        'PhoneNumber': PhoneNumber,
         'Email': Email,
         'LineId': LineId,
         'WhatsAppId': WhatsAppId,

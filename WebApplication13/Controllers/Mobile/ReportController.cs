@@ -23,14 +23,14 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                User user = UserDAL.GetUserByToken(_params.Token);
+                MobileUser user = UserDAL.GetUserByToken(_params.Token);
                 if (user != null && !string.IsNullOrEmpty(_params.Month) && !string.IsNullOrEmpty(_params.Year))
                 {
                     using (var db = new spasystemdbEntities())
                     {
                         DateTime dateFrom = DateTime.ParseExact(_params.Month + " " + _params.Year, "MMMM yyyy", CultureInfo.InvariantCulture);
                         DateTime dateTo = dateFrom.AddMonths(1);
-                        List<MobileComTransaction> comTtrans = db.MobileComTransactions.Where(c => c.Created >= dateFrom && c.Created < dateTo).ToList();
+                        List<MobileComTransaction> comTtrans = db.MobileComTransactions.Where(c => c.MobileUserId == user.Id && c.Created >= dateFrom && c.Created < dateTo).ToList();
                         if(comTtrans.Count > 0)
                         {
                             List<ReportTransaction> reportTrans = new List<ReportTransaction>();

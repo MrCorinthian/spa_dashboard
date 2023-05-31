@@ -34,6 +34,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
         .map<DropdownMenuItem<String>>((String option) =>
             DropdownMenuItem<String>(value: option, child: Text(option)))
         .toList();
+    var gg = widget.options.where((c) => c == widget.selected);
   }
 
   @override
@@ -75,7 +76,10 @@ class _CustomDropdownState extends State<CustomDropdown> {
               fit: BoxFit.contain,
               height: 30,
             ),
-            value: widget.selected != '' ? widget.selected : null,
+            value: widget.selected != '' &&
+                    widget.options.where((c) => c == widget.selected).length > 0
+                ? widget.selected
+                : null,
             items: _dropdownOptions,
             onChanged: widget.onChanged,
             style:

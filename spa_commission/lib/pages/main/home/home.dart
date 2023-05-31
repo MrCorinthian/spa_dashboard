@@ -23,6 +23,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
   var formatter = NumberFormat('#,##0.00');
   DateTime now = DateTime.now();
   String _token = '';
@@ -68,9 +71,12 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
+              const Text(
                 'Period',
                 style: CustomTheme.textStyle_lightText,
+              ),
+              const SizedBox(
+                height: 4,
               ),
               Text(
                 DateFormat('MMMM yyyy').format(now),
@@ -79,9 +85,12 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 'Current period balance',
                 style: CustomTheme.textStyle_lightText,
+              ),
+              const SizedBox(
+                height: 4,
               ),
               Text(
                 _userReport.isNotEmpty
@@ -93,13 +102,23 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         const SizedBox(
-          height: 30,
+          height: 54,
         ),
         GestureDetector(
-            onTap: () => Navigator.push(
+            onTap: () async {
+              final result = await Navigator.push(
                 context,
-                CustomPageRouteBuilder.bottomToTop(
-                    const QrScanPage())), // Set the onTap event
+                CustomPageRouteBuilder.bottomToTop(const QrScanPage()),
+              );
+
+              if (result == true) {
+                _refreshIndicatorKey.currentState?.show();
+              }
+              // Navigator.push(
+              //   context,
+              //   CustomPageRouteBuilder.bottomToTop(
+              //       const QrScanPage()))
+            },
             child: Column(
               children: <Widget>[
                 Container(

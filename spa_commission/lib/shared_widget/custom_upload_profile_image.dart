@@ -61,6 +61,41 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
     }
   }
 
+  Widget buildChooseImageSource() => Scaffold(
+        backgroundColor: Color.fromRGBO(0, 0, 0, 0.2),
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  style: CustomTheme.buttonStyle_primaryColor,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _handleImageSelection('camera');
+                  },
+                  child: const Text('Camera',
+                      style: CustomTheme.buttonTextStyle_fillColor),
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                ElevatedButton(
+                  style: CustomTheme.buttonStyle_primaryColor,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _handleImageSelection('');
+                  },
+                  child: const Text('Gallery',
+                      style: CustomTheme.buttonTextStyle_fillColor),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -86,7 +121,13 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
         ),
         const SizedBox(height: 10),
         GestureDetector(
-          onTap: () => _handleImageSelection(''),
+          // onTap: () => showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return buildChooseImageSource();
+          //   },
+          // ),
+          onTap: () => _handleImageSelection('camera'),
           child: _image == null
               ? CircleAvatar(
                   radius: 50.0,

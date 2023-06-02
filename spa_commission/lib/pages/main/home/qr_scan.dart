@@ -109,7 +109,7 @@ class _QrScanPageState extends State<QrScanPage> {
                         onPressed: () {
                           this.barcode = null;
                           Navigator.of(context).pop();
-                          Navigator.pop(context);
+                          Navigator.of(context).pop(true);
                         },
                       ),
                     ),
@@ -181,11 +181,10 @@ class _QrScanPageState extends State<QrScanPage> {
                   backgroundColor: CustomTheme.darkGreyColor,
                   title: const Text('Message',
                       style: TextStyle(color: CustomTheme.fillColor)),
-                  content: const Expanded(
-                      child: Text(
+                  content: const Text(
                     'Please check the information.',
                     style: TextStyle(color: CustomTheme.fillColor),
-                  )),
+                  ),
                   actions: [
                     Center(
                       child: TextButton(

@@ -152,6 +152,36 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
+
+        [HttpPost]
+        public async Task<IHttpActionResult> ChangePassword(ChanegePasswordParams data)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    ResponseData response = new ResponseData();
+                    MobileUser user = UserDAL.GetUserByToken(data.Token);
+                    string enPassword = EncryptionDAL.EncryptString(data.Password);
+                    MobileUser userPassword = db.MobileUsers.FirstOrDefault(c => c.Id == user.Id && c.Password == enPassword);
+                    if (user != null && userPassword != null && data.NewPassword == data.ConfirmNewPassword)
+                    {
+                        userPassword.Password = EncryptionDAL.EncryptString(data.NewPassword);
+                        db.SaveChanges();
+
+                        string token = UserDAL.CreateLoginToken(userPassword.Id);
+
+                        response.Success = true;
+                        response.Data = token;
+                        return Ok(response);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
         #endregion
 
         [HttpPost]

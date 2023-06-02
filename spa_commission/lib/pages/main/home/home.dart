@@ -23,9 +23,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
-
   var formatter = NumberFormat('#,##0.00');
   DateTime now = DateTime.now();
   String _token = '';
@@ -95,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 _userReport.isNotEmpty
                     ? '${formatter.format(_userReport.map((item) => item.TotalBath).reduce((a, b) => a + b))} THB'
-                    : '',
+                    : '0.00 THB',
                 style: CustomTheme.headerPageName,
               ),
             ],
@@ -112,12 +109,8 @@ class _HomePageState extends State<HomePage> {
               );
 
               if (result == true) {
-                _refreshIndicatorKey.currentState?.show();
+                _getReport();
               }
-              // Navigator.push(
-              //   context,
-              //   CustomPageRouteBuilder.bottomToTop(
-              //       const QrScanPage()))
             },
             child: Column(
               children: <Widget>[

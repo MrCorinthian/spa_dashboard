@@ -9,6 +9,7 @@ import '../../../shared_widget/custom_profile_widget.dart';
 import '../../../shared_widget/custom_page_route_builder.dart';
 import './edit_profile.dart';
 import './commission_tier_info.dart';
+import './change_password.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -61,6 +62,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     CustomPageRouteBuilder.leftToRight(EditProfilePage())),
               ),
               CustomProfileMenuButton(
+                text: 'Change password',
+                imageIconPath: 'assets/images/change-password.png',
+                onPressed: () => Navigator.push(context,
+                    CustomPageRouteBuilder.leftToRight(ChangePasswordPage())),
+              ),
+              CustomProfileMenuButton(
                 text: 'Commission tier',
                 imageIconPath: 'assets/images/com-tier.png',
                 onPressed: () => Navigator.push(
@@ -68,11 +75,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     CustomPageRouteBuilder.leftToRight(
                         CommisionTierInfoPage())),
               ),
-              // CustomProfileMenuButton(
-              //   text: 'Setting',
-              //   imageIconPath: 'assets/images/gear.png',
-              //   onPressed: () {},
-              // ),
               CustomProfileMenuButton(
                 text: 'Sign out',
                 imageIconPath: 'assets/images/sign-out.png',

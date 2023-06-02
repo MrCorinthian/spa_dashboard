@@ -34,8 +34,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: DateTime(1930),
+      lastDate: DateTime(DateTime.now().year),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(

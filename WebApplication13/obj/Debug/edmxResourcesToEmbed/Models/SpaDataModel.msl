@@ -417,5 +417,29 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="MobileModules">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileModule">
+        <MappingFragment StoreEntitySet="MobileModule">
+          <ScalarProperty Name="Module" ColumnName="Module" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileOtps">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileOtp">
+        <MappingFragment StoreEntitySet="MobileOtp">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="Updated" ColumnName="Updated" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Used" ColumnName="Used" />
+          <ScalarProperty Name="Ref" ColumnName="Ref" />
+          <ScalarProperty Name="Otp" ColumnName="Otp" />
+          <ScalarProperty Name="Module" ColumnName="Module" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

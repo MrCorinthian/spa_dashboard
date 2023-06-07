@@ -27,13 +27,16 @@
         <EntityTypeShape EntityType="spasystemdbModel.PriviledgeType" Width="1.5" PointX="6.75" PointY="11.75" />
         <EntityTypeShape EntityType="spasystemdbModel.Member" Width="1.5" PointX="13.375" PointY="9.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileUserLoginToken" Width="1.5" PointX="11.375" PointY="0.75" />
-        <EntityTypeShape EntityType="spasystemdbModel.MobileUser" Width="1.5" PointX="7.375" PointY="14.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileComTier" Width="1.5" PointX="15.375" PointY="0.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileSetting" Width="1.5" PointX="0.75" PointY="15.75" />
         <EntityTypeShape EntityType="spasystemdbModel.sysdiagram" Width="1.5" PointX="11.375" PointY="14.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileComPayment" Width="1.5" PointX="3.375" PointY="15.75" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileComTransaction" Width="1.5" PointX="13.375" PointY="14.75" />
         <EntityTypeShape EntityType="spasystemdbModel.Receipt" Width="1.5" PointX="15.375" PointY="4.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MobileModule" Width="1.5" PointX="15.375" PointY="8.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MobileOtp" Width="1.5" PointX="15.375" PointY="11.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MobileUser" Width="1.5" PointX="7.375" PointY="14.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.MobileErrorLog" Width="1.5" PointX="15.375" PointY="15.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

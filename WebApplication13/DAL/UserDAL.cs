@@ -163,5 +163,94 @@ namespace WebApplication13.DAL
 
             return null;
         }
+
+        public static OtpData GenerateOTP(MobileUser user)
+        {
+            try
+            {
+                if (user != null)
+                {
+                    int length = 6;
+                    DateTime now = DataDAL.GetDateTimeNow();
+                    OtpData otpData = new OtpData();
+                    Random random = new Random();
+
+                    const string numbers = "0123456789";
+                    string alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                    char[] otpRefChars = new char[length];
+                    char[] otpChars = new char[length];
+                    for (int i = 0; i < length; i++)
+                    {
+                        otpRefChars[i] = alphabets[random.Next(alphabets.Length)];
+                        otpChars[i] = numbers[random.Next(numbers.Length)];
+                    }
+                    otpData.Ref = new string(otpRefChars);
+                    otpData.Otp = new string(otpChars);
+                    using (var db = new spasystemdbEntities())
+                    {
+                        List<MobileOtp> oldOtps = db.MobileOtps.Where(c => c.MobileUserId == user.Id && c.Used == "N" && c.Active == "Y").ToList();
+                        foreach (MobileOtp item in oldOtps)
+                        {
+                            item.Active = "N";
+                        }
+
+                        MobileOtp otp = new MobileOtp();
+                        otp.MobileUserId = user.Id;
+                        otp.Module = 1; //forgot password
+                        otp.Ref = otpData.Ref;
+                        otp.Otp = otpData.Otp;
+                        otp.Used = "N";
+                        otp.Active = "Y";
+                        otp.Created = now;
+                        otp.CreatedBy = DataDAL.GetUserName(user.Id);
+                        otp.Updated = now;
+                        otp.UpdatedBy = DataDAL.GetUserName(user.Id);
+
+                        db.MobileOtps.Add(otp);
+                        db.SaveChanges();
+                    }
+
+                    return otpData;
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
+        public static OtpData VerifyOtp(int module, string phoneNumber, string _ref, string _otp)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    DateTime now = DataDAL.GetDateTimeNow();
+                    if (!string.IsNullOrEmpty(phoneNumber) && !string.IsNullOrEmpty(_ref) && !string.IsNullOrEmpty(_otp))
+                    {
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == phoneNumber);
+                        if (user != null)
+                        {
+                            MobileOtp otp = db.MobileOtps.FirstOrDefault(c => c.MobileUserId == user.Id && c.Module == module && c.Ref == _ref && c.Otp == _otp && c.Used == "N" && c.Active == "Y");
+                            if (otp != null)
+                            {
+                                DateTime otpExpired = otp.Created.AddMinutes(5);
+                                if (otpExpired >= now)
+                                {
+                                    OtpData otpData = new OtpData();
+                                    otpData.Ref = otp.Ref;
+                                    otpData.Otp = otp.Otp;
+
+                                    return otpData;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return null;
+        }
     }
 }

@@ -267,7 +267,7 @@ namespace WebApplication13.Controllers.Mobile
                             List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();
                             if (orders.Count > 0)
                             {
-                                double totalBaht = orders.Sum(s => s.Commission);
+                                double totalBaht = orders.Sum(s => s.Price);
                                 totalBaht = totalBaht * (userTier.ComPercentage / 100);
 
                                 MobileComTransaction comTran = new MobileComTransaction();

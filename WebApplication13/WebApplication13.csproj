@@ -483,6 +483,15 @@
     <Compile Include="Models\MobileComTransaction.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MobileErrorLog.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MobileModule.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MobileOtp.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MobileSetting.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
@@ -495,7 +504,9 @@
     <Compile Include="Models\Mobile\ChanegePasswordParams.cs" />
     <Compile Include="Models\Mobile\CommissionReportData.cs" />
     <Compile Include="Models\Mobile\FilterParams.cs" />
+    <Compile Include="Models\Mobile\ForgotPasswordParams.cs" />
     <Compile Include="Models\Mobile\MobileUserInfo.cs" />
+    <Compile Include="Models\Mobile\OtpData.cs" />
     <Compile Include="Models\Mobile\PaymentData.cs" />
     <Compile Include="Models\Mobile\ReceiptParams.cs" />
     <Compile Include="Models\Mobile\RegisterData.cs" />

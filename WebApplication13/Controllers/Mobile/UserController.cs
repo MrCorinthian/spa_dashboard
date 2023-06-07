@@ -182,6 +182,96 @@ namespace WebApplication13.Controllers.Mobile
             return Content(HttpStatusCode.NoContent, "No content.");
         }
 
+        [HttpPost]
+        public async Task<IHttpActionResult> RequestOtpForgotPassword(ForgotPasswordParams data)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    DateTime now = DataDAL.GetDateTimeNow();
+                    if (!string.IsNullOrEmpty(data.PhoneNumber))
+                    {
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
+                        if (user != null)
+                        {
+                            OtpData otp = UserDAL.GenerateOTP(user);
+                            otp.Otp = "";
+                            return Ok(otp);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+
+        [HttpPost]
+        public async Task<IHttpActionResult> VerifyOtpForgotPassword(ForgotPasswordParams data)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    DateTime now = DataDAL.GetDateTimeNow();
+                    if (!string.IsNullOrEmpty(data.PhoneNumber) && !string.IsNullOrEmpty(data.Ref) && !string.IsNullOrEmpty(data.Otp))
+                    {
+                        OtpData verified = UserDAL.VerifyOtp(1, data.PhoneNumber, data.Ref, data.Otp);
+                        if (verified != null)
+                        {
+                            return Ok(verified);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> ForgotPassword(ForgotPasswordParams data)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    DateTime now = DataDAL.GetDateTimeNow();
+                    ResponseData response = new ResponseData();
+                    if (!string.IsNullOrEmpty(data.PhoneNumber) && !string.IsNullOrEmpty(data.Ref) && !string.IsNullOrEmpty(data.Otp))
+                    {
+                        OtpData verified = UserDAL.VerifyOtp(1, data.PhoneNumber, data.Ref, data.Otp);
+                        if (verified != null)
+                        {
+                            MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
+                            MobileOtp otp = db.MobileOtps.FirstOrDefault(c => c.Ref == verified.Ref && c.Otp == verified.Otp && c.Module == 1 && c.Used == "N" && c.Active == "Y");
+                            if (user != null && otp != null)
+                            {
+                                if (data.NewPassword == data.ConfirmNewPassword)
+                                {
+                                    user.Password = EncryptionDAL.EncryptString(data.NewPassword);
+                                    user.Updated = now;
+                                    user.UpdatedBy = DataDAL.GetUserName(user.Id);
+                                    otp.Used = "Y";
+
+                                    db.SaveChanges();
+
+                                    response.Success = true;
+                                    response.Data = "Success";
+                                    return Ok(response);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
         #endregion
 
         [HttpPost]
@@ -474,7 +564,7 @@ namespace WebApplication13.Controllers.Mobile
                         if (user != null)
                         {
                             response.Success = true;
-                            response.Data = user.Username;
+                            response.Data = user.PhoneNumber;
                         }
                         else
                         {

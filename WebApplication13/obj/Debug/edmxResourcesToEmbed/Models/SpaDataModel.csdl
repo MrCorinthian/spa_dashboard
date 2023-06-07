@@ -111,6 +111,8 @@
     <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
     <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
     <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
+    <EntitySet Name="MobileModules" EntityType="spasystemdbModel.MobileModule" />
+    <EntitySet Name="MobileOtps" EntityType="spasystemdbModel.MobileOtp" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -430,6 +432,28 @@
     <Property Name="Created" Type="DateTime" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Updated" Type="DateTime" Precision="7" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileModule">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileOtp">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+    <Property Name="Module" Type="Int32" Nullable="false" />
+    <Property Name="Otp" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="true" />
+    <Property Name="Ref" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="true" />
+    <Property Name="Used" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Updated" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

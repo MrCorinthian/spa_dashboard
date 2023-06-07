@@ -14,7 +14,7 @@ class CustomAlertDialog extends StatelessWidget implements PreferredSizeWidget {
     return AlertDialog(
       backgroundColor: CustomTheme.darkGreyColor,
       title: Text(title, style: TextStyle(color: CustomTheme.fillColor)),
-      content: Expanded(child: child),
+      content: child,
       actions: [
         Center(
           child: TextButton(

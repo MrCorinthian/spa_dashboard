@@ -223,6 +223,39 @@
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="MobileErrorLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Exception" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MobileModule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Module" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MobileOtp">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MobileUserId" Type="int" Nullable="false" />
+          <Property Name="Module" Type="int" Nullable="false" />
+          <Property Name="Otp" Type="nvarchar" MaxLength="6" Nullable="false" />
+          <Property Name="Ref" Type="nvarchar" MaxLength="6" Nullable="false" />
+          <Property Name="Used" Type="nvarchar" MaxLength="1" Nullable="false" />
+          <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
+          <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="Updated" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="MobileSetting">
           <Key>
             <PropertyRef Name="Code" />
@@ -241,18 +274,18 @@
           <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
           <Property Name="LastName" Type="nvarchar" MaxLength="100" />
           <Property Name="IdCardNumber" Type="nvarchar" MaxLength="100" />
-          <Property Name="Nationality" Type="nvarchar" MaxLength="50" />
+          <Property Name="Nationality" Type="nvarchar" MaxLength="100" />
           <Property Name="Birthday" Type="date" />
           <Property Name="Address" Type="nvarchar" MaxLength="300" />
-          <Property Name="Province" Type="nvarchar" MaxLength="50" />
-          <Property Name="Occupation" Type="nvarchar" MaxLength="50" />
+          <Property Name="Province" Type="nvarchar" MaxLength="100" />
+          <Property Name="Occupation" Type="nvarchar" MaxLength="100" />
           <Property Name="PhoneNumber" Type="varchar" MaxLength="20" />
           <Property Name="Email" Type="nvarchar" MaxLength="100" />
           <Property Name="LineId" Type="nvarchar" MaxLength="50" />
           <Property Name="WhatsAppId" Type="nvarchar" MaxLength="50" />
-          <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="200" />
           <Property Name="CompanyTexId" Type="nvarchar" MaxLength="50" />
-          <Property Name="BankAccount" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankAccount" Type="nvarchar" MaxLength="200" />
           <Property Name="BankAccountNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="ProfilePath" Type="nvarchar(max)" />
           <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
@@ -423,6 +456,9 @@
           <EntitySet Name="MobileComPayment" EntityType="Self.MobileComPayment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileErrorLog" EntityType="Self.MobileErrorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileModule" EntityType="Self.MobileModule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileOtp" EntityType="Self.MobileOtp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileUserLoginToken" EntityType="Self.MobileUserLoginToken" Schema="dbo" store:Type="Tables" />
@@ -545,13 +581,16 @@
           <EntitySet Name="PriviledgeTypes" EntityType="spasystemdbModel.PriviledgeType" />
           <EntitySet Name="Members" EntityType="spasystemdbModel.Member" />
           <EntitySet Name="MobileUserLoginTokens" EntityType="spasystemdbModel.MobileUserLoginToken" />
-          <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
           <EntitySet Name="MobileComTiers" EntityType="spasystemdbModel.MobileComTier" />
           <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
           <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
           <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
           <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
           <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
+          <EntitySet Name="MobileModules" EntityType="spasystemdbModel.MobileModule" />
+          <EntitySet Name="MobileOtps" EntityType="spasystemdbModel.MobileOtp" />
+          <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
+          <EntitySet Name="MobileErrorLogs" EntityType="spasystemdbModel.MobileErrorLog" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -776,37 +815,6 @@
           <Property Name="Created" Type="DateTime" Precision="7" />
           <Property Name="Expired" Type="DateTime" Precision="7" />
         </EntityType>
-        <EntityType Name="MobileUser">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TitleName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="IdCardNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Birthday" Type="DateTime" Precision="0" />
-          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Province" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Occupation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="LineId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="WhatsAppId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyTexId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BankAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BankAccountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="ProfilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="Created" Type="DateTime" Precision="7" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Updated" Type="DateTime" Precision="7" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="MobileComTier">
           <Key>
             <PropertyRef Name="Id" />
@@ -872,6 +880,70 @@
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Updated" Type="DateTime" Precision="7" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileModule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileOtp">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+          <Property Name="Module" Type="Int32" Nullable="false" />
+          <Property Name="Otp" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="Ref" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="Used" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Updated" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TitleName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IdCardNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Nationality" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Birthday" Type="DateTime" Precision="0" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Occupation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LineId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WhatsAppId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyTexId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccount" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ProfilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Updated" Type="DateTime" Precision="7" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileErrorLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Exception" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1191,38 +1263,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MobileUsers">
-            <EntityTypeMapping TypeName="spasystemdbModel.MobileUser">
-              <MappingFragment StoreEntitySet="MobileUser">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="Updated" ColumnName="Updated" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="ProfilePath" ColumnName="ProfilePath" />
-                <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
-                <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
-                <ScalarProperty Name="CompanyTexId" ColumnName="CompanyTexId" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="WhatsAppId" ColumnName="WhatsAppId" />
-                <ScalarProperty Name="LineId" ColumnName="LineId" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
-                <ScalarProperty Name="Province" ColumnName="Province" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
-                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
-                <ScalarProperty Name="IdCardNumber" ColumnName="IdCardNumber" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="TitleName" ColumnName="TitleName" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MobileComTiers">
             <EntityTypeMapping TypeName="spasystemdbModel.MobileComTier">
               <MappingFragment StoreEntitySet="MobileComTier">
@@ -1291,6 +1331,74 @@
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileModules">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileModule">
+              <MappingFragment StoreEntitySet="MobileModule">
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileOtps">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileOtp">
+              <MappingFragment StoreEntitySet="MobileOtp">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Used" ColumnName="Used" />
+                <ScalarProperty Name="Ref" ColumnName="Ref" />
+                <ScalarProperty Name="Otp" ColumnName="Otp" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileUsers">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileUser">
+              <MappingFragment StoreEntitySet="MobileUser">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ProfilePath" ColumnName="ProfilePath" />
+                <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
+                <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+                <ScalarProperty Name="CompanyTexId" ColumnName="CompanyTexId" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="WhatsAppId" ColumnName="WhatsAppId" />
+                <ScalarProperty Name="LineId" ColumnName="LineId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="IdCardNumber" ColumnName="IdCardNumber" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="TitleName" ColumnName="TitleName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileErrorLogs">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileErrorLog">
+              <MappingFragment StoreEntitySet="MobileErrorLog">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Exception" ColumnName="Exception" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

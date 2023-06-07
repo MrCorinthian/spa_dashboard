@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomPageRouteBuilder {
   static final leftToRight = (builder) => PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 500),
+        transitionDuration: const Duration(milliseconds: 100),
         transitionsBuilder: (context, animation, _, child) {
           return SlideTransition(
             position: Tween<Offset>(
@@ -16,7 +16,7 @@ class CustomPageRouteBuilder {
       );
 
   static final bottomToTop = (builder) => PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 500),
+        transitionDuration: const Duration(milliseconds: 100),
         transitionsBuilder: (context, animation, _, child) {
           return SlideTransition(
             position: Tween<Offset>(

@@ -6,7 +6,11 @@ import '../../base_client/base_client.dart';
 import '../../providers/AuthProvider/auth_provider.dart';
 import '../../app_theme/app_theme.dart';
 import '../register/register.dart';
+import 'otp_forgot_password.dart';
 import '../../shared_widget/custom_text_field.dart';
+import '../../shared_widget/custom_page_route_builder.dart';
+import '../../shared_widget/custom_loading.dart';
+import '../../shared_widget/custom_alert_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -35,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
       var res =
           await BaseClient().post('User/GetMoblieUserInfo', {'data': _token});
       if (res != null) {
-        await Future.delayed(Duration(seconds: 1));
         Provider.of<AuthProvider>(context, listen: false)
             .login(jsonEncode({'Success': true, 'Data': _token}));
       } else {
@@ -52,27 +55,39 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
+    setState(() {
+      _loading = true;
+    });
     var res = await BaseClient().post('User/Login', {
       'phone': _phoneController.text.trim(),
       'password': _passwordController.text.trim()
     });
     if (res != null) {
-      Provider.of<AuthProvider>(context, listen: false).login(res);
+      setState(() {
+        _loading = false;
+        Provider.of<AuthProvider>(context, listen: false).login(res);
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomAlertDialog(
+            title: 'Message',
+            child: Text('Please check the information.',
+                style: TextStyle(color: CustomTheme.fillColor)),
+          );
+        },
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _loading ? buildLoadingScreen() : buildLogin();
+    return CustomLoading(
+      isLoading: _loading,
+      child: buildLogin(),
+    );
   }
-
-  Widget buildLoadingScreen() => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            color: CustomTheme.primaryColor,
-          ),
-        ),
-      );
 
   Widget buildLogin() => Scaffold(
         body: Container(
@@ -98,7 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     ),
-                    onPressed: () {},
+                    onPressed: () => Navigator.push(
+                        context,
+                        CustomPageRouteBuilder.bottomToTop(
+                            OtpForgotPasswordPage())),
                     child: const Text(
                       'Forgot password',
                       style:

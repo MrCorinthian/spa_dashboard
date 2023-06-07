@@ -218,6 +218,28 @@
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="MobileModule">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Module" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MobileOtp">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MobileUserId" Type="int" Nullable="false" />
+    <Property Name="Module" Type="int" Nullable="false" />
+    <Property Name="Otp" Type="nvarchar" MaxLength="6" Nullable="false" />
+    <Property Name="Ref" Type="nvarchar" MaxLength="6" Nullable="false" />
+    <Property Name="Used" Type="nvarchar" MaxLength="1" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="Updated" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="MobileSetting">
     <Key>
       <PropertyRef Name="Code" />
@@ -418,6 +440,8 @@
     <EntitySet Name="MobileComPayment" EntityType="Self.MobileComPayment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileModule" EntityType="Self.MobileModule" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileOtp" EntityType="Self.MobileOtp" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileUserLoginToken" EntityType="Self.MobileUserLoginToken" Schema="dbo" store:Type="Tables" />

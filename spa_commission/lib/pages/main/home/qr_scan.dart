@@ -182,7 +182,7 @@ class _QrScanPageState extends State<QrScanPage> {
                   title: const Text('Message',
                       style: TextStyle(color: CustomTheme.fillColor)),
                   content: const Text(
-                    'Please check the information.',
+                    'QR Code is expired or invalid',
                     style: TextStyle(color: CustomTheme.fillColor),
                   ),
                   actions: [

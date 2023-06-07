@@ -35,7 +35,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1930),
-      lastDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 1),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -93,6 +93,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           cursorColor: CustomTheme.backgroundColor,
           onTap: () {
             widget.keyboardType == "date" ? _selectDate(context) : null;
+          },
+          onEditingComplete: () {
+            // Move focus to the next text field when "Done" button is pressed
+            FocusScope.of(context).nextFocus();
           },
           keyboardType: widget.keyboardType == "number"
               ? TextInputType.number

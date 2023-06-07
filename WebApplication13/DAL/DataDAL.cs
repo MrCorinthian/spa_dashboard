@@ -71,5 +71,41 @@ namespace WebApplication13.DAL
             if (file.Count > 0) result = $"File/ProfileImageWebUpload?fileName={file.LastOrDefault()}";
             return result;
         }
+
+        public static string GetUserName(int id)
+        {
+            using (var db = new spasystemdbEntities())
+            {
+                string name = null;
+                MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == id);
+                if (user != null && !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName))
+                {
+                    name = $"{user.LastName.ElementAt(0)}.{user.FirstName}".ToLower();
+                }
+                return name;
+            }
+        }
+
+        public static void ErrorLog(string exception, string message, string userName = "")
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    DateTime now = GetDateTimeNow();
+                    MobileErrorLog error = new MobileErrorLog();
+                    if (!string.IsNullOrEmpty(exception) && !string.IsNullOrEmpty(message))
+                    {
+                        error.Exception = exception;
+                        error.Message = message;
+                        error.Created = now;
+                        if(!string.IsNullOrEmpty(userName)) error.CreatedBy = userName;
+                        db.MobileErrorLogs.Add(error);
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch { }
+        }
     }
 }

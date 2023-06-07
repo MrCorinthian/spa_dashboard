@@ -13,6 +13,7 @@ import '../../../shared_widget/custom_text_field.dart';
 import '../../../shared_widget/custom_dropdown.dart';
 import '../../../shared_widget/custom_upload_profile_image.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
+import '../../../shared_widget/custom_loading.dart';
 import '../../../constant_value/constant_value.dart' as constent;
 
 class EditProfilePage extends StatefulWidget {
@@ -42,6 +43,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       TextEditingController();
   final TextEditingController _profilePathController = TextEditingController();
 
+  bool _loading = false;
   String profileImagePath = '';
   File? _profileImage;
   List<String> _province = [];
@@ -60,6 +62,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _loadValue() async {
+    setState(() {
+      _loading = true;
+    });
+
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
@@ -110,6 +116,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _companyTexController.text = userInfo.CompanyTexId ?? '';
           _bankAccountController.text = userInfo.BankAccount ?? '';
           _bankAccountNumberController.text = userInfo.BankAccountNumber ?? '';
+
+          _loading = false;
+        });
+      } else {
+        setState(() {
+          _loading = false;
         });
       }
     }
@@ -131,20 +143,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
           .post('User/Username', {"data": _phoneNumberController.text});
       if (response != null) {
         ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
-        if (resPhoneNumber.success == false) {
-          if (_profileImage != null) {
-            var res = await BaseClient().uploadImage(_profileImage);
-            if (res != null) {
-              ResponsedData response = ResponsedData.fromJson(res);
-              _profilePathController.text = response.data;
-            } else {
-              validate = false;
-              messages.add("Profile image");
-            }
-          } else {
-            validate = false;
-            messages.add("Profile image");
-          }
+        if (resPhoneNumber.success == true) {
+          // if (_profileImage != null) {
+          //   var res = await BaseClient().uploadImage(_profileImage);
+          //   if (res != null) {
+          //     ResponsedData response = ResponsedData.fromJson(res);
+          //     _profilePathController.text = response.data;
+          //   } else {
+          //     validate = false;
+          //     messages.add("Profile image");
+          //   }
+          // } else {
+          //   validate = false;
+          //   messages.add("Profile image");
+          // }
           if (_firstNameController.text.isEmpty) {
             validate = false;
             messages.add("First name");
@@ -207,6 +219,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   updateProfile() async {
+    setState(() {
+      _loading = true;
+    });
+
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
@@ -234,139 +250,158 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       final json = data.toJson();
       var res = await BaseClient().post('User/UpdateUserInfo', json);
+
+      setState(() {
+        _loading = false;
+      });
+
       if (res != null) {
         Navigator.pop(context);
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomAlertDialog(
+              title: 'Message',
+              child: Text('Please check the information.',
+                  style: TextStyle(color: CustomTheme.fillColor)),
+            );
+          },
+        );
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  children: const <Widget>[
-                    Text(
-                      'Edit personal information',
-                      style: CustomTheme.headerPageName,
-                    )
-                  ],
-                ),
-                CustomUploadProfileImage(
-                  requiredField: true,
-                  onImageSelected: _handleUpload,
-                ),
-                CustomTextField(
-                  text: 'First name',
-                  requiredField: true,
-                  controller: _firstNameController,
-                ),
-                CustomTextField(
-                  text: 'Family name',
-                  requiredField: true,
-                  controller: _lastNameController,
-                ),
-                CustomTextField(
-                  text: 'ID card number',
-                  requiredField: true,
-                  controller: _idCardNumberController,
-                ),
-                CustomTextField(
-                  text: 'Birthday',
-                  controller: _birthdayController,
-                  keyboardType: 'date',
-                ),
-                CustomTextField(
-                  text: 'Nationality',
-                  controller: _nationalityController,
-                ),
-                CustomTextField(
-                  text: 'Address',
-                  controller: _addressController,
-                ),
-                _province.length > 0
-                    ? CustomDropdown(
-                        text: 'Province',
-                        requiredField: true,
-                        options: _province,
-                        selected: _provinceController.text,
-                        onChanged: (value) {
-                          setState(() {
-                            _provinceController.text = value ?? '';
-                          });
-                        },
+    return CustomLoading(isLoading: _loading, child: buildEditProfile());
+  }
+
+  Widget buildEditProfile() => Scaffold(
+        appBar: const CustomAppBar(),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    children: const <Widget>[
+                      Text(
+                        'Edit personal information',
+                        style: CustomTheme.headerPageName,
                       )
-                    : const SizedBox(),
-                _occupation.length > 0
-                    ? CustomDropdown(
-                        text: 'Occupation',
-                        requiredField: true,
-                        options: _occupation,
-                        selected: _occupationController.text,
-                        onChanged: (value) {
-                          setState(() {
-                            _occupationController.text = value ?? '';
-                          });
-                        },
-                      )
-                    : const SizedBox(),
-                CustomTextField(
-                    text: 'Telephone no.',
+                    ],
+                  ),
+                  CustomUploadProfileImage(
                     requiredField: true,
-                    controller: _phoneNumberController),
-                CustomTextField(
-                    text: 'Email address', controller: _emailController),
-                CustomTextField(text: 'Line ID', controller: _lineController),
-                CustomTextField(
-                    text: 'Whatsapp ID', controller: _whatsappController),
-                CustomTextField(
-                    text: 'Company name', controller: _companyNameController),
-                CustomTextField(
-                    text: 'Company tax ID', controller: _companyTexController),
-                _bank.length > 0
-                    ? CustomDropdown(
-                        text: 'Bank name',
-                        requiredField: true,
-                        options: _bank,
-                        selected: _bankAccountController.text,
-                        onChanged: (value) {
-                          setState(() {
-                            _bankAccountController.text = value ?? '';
-                          });
-                        },
-                      )
-                    : const SizedBox(),
-                CustomTextField(
-                    text: 'Bank account number',
+                    onImageSelected: _handleUpload,
+                  ),
+                  CustomTextField(
+                    text: 'First name',
                     requiredField: true,
-                    controller: _bankAccountNumberController),
-                const SizedBox(height: 60),
-                ElevatedButton(
-                  style: CustomTheme.buttonStyle_primaryColor,
-                  onPressed: validateData,
-                  child: const Text('Update',
-                      style: CustomTheme.buttonTextStyle_fillColor),
-                ),
-                // const SizedBox(height: 30),
-                // ElevatedButton(
-                //   style: CustomTheme.buttonStyle_secondaryColor,
-                //   onPressed: () => {Navigator.pop(context)},
-                //   child: const Text('Back to Profile',
-                //       style: CustomTheme.buttonTextStyle_fillColor),
-                // ),
-                const SizedBox(height: 20),
-              ],
+                    controller: _firstNameController,
+                  ),
+                  CustomTextField(
+                    text: 'Family name',
+                    requiredField: true,
+                    controller: _lastNameController,
+                  ),
+                  CustomTextField(
+                    text: 'ID card number',
+                    requiredField: true,
+                    controller: _idCardNumberController,
+                  ),
+                  CustomTextField(
+                    text: 'Birthday',
+                    controller: _birthdayController,
+                    keyboardType: 'date',
+                  ),
+                  CustomTextField(
+                    text: 'Nationality',
+                    controller: _nationalityController,
+                  ),
+                  CustomTextField(
+                    text: 'Address',
+                    controller: _addressController,
+                  ),
+                  _province.length > 0
+                      ? CustomDropdown(
+                          text: 'Province',
+                          requiredField: true,
+                          options: _province,
+                          selected: _provinceController.text,
+                          onChanged: (value) {
+                            setState(() {
+                              _provinceController.text = value ?? '';
+                            });
+                          },
+                        )
+                      : const SizedBox(),
+                  _occupation.length > 0
+                      ? CustomDropdown(
+                          text: 'Occupation',
+                          requiredField: true,
+                          options: _occupation,
+                          selected: _occupationController.text,
+                          onChanged: (value) {
+                            setState(() {
+                              _occupationController.text = value ?? '';
+                            });
+                          },
+                        )
+                      : const SizedBox(),
+                  CustomTextField(
+                      text: 'Telephone no.',
+                      requiredField: true,
+                      controller: _phoneNumberController),
+                  CustomTextField(
+                      text: 'Email address', controller: _emailController),
+                  CustomTextField(text: 'Line ID', controller: _lineController),
+                  CustomTextField(
+                      text: 'Whatsapp ID', controller: _whatsappController),
+                  CustomTextField(
+                      text: 'Company name', controller: _companyNameController),
+                  CustomTextField(
+                      text: 'Company tax ID',
+                      controller: _companyTexController),
+                  _bank.length > 0
+                      ? CustomDropdown(
+                          text: 'Bank name',
+                          requiredField: true,
+                          options: _bank,
+                          selected: _bankAccountController.text,
+                          onChanged: (value) {
+                            setState(() {
+                              _bankAccountController.text = value ?? '';
+                            });
+                          },
+                        )
+                      : const SizedBox(),
+                  CustomTextField(
+                      text: 'Bank account number',
+                      requiredField: true,
+                      controller: _bankAccountNumberController),
+                  const SizedBox(height: 60),
+                  ElevatedButton(
+                    style: CustomTheme.buttonStyle_primaryColor,
+                    onPressed: validateData,
+                    child: const Text('Update',
+                        style: CustomTheme.buttonTextStyle_fillColor),
+                  ),
+                  // const SizedBox(height: 30),
+                  // ElevatedButton(
+                  //   style: CustomTheme.buttonStyle_secondaryColor,
+                  //   onPressed: () => {Navigator.pop(context)},
+                  //   child: const Text('Back to Profile',
+                  //       style: CustomTheme.buttonTextStyle_fillColor),
+                  // ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

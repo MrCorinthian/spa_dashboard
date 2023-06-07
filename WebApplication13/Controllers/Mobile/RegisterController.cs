@@ -41,7 +41,7 @@ namespace WebApplication13.Controllers.Mobile
                         user.BankAccount = data.BankAccount;
                         user.BankAccountNumber = data.BankAccountNumber;
 
-                        if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMM yyyy", CultureInfo.InvariantCulture);
+                        if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
                         if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{subPath}{data.ProfilePath}";
                         if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
                         if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
@@ -68,7 +68,10 @@ namespace WebApplication13.Controllers.Mobile
                     }
                 }
             }
-            catch { }
+            catch(Exception ex) 
+            { 
+                DataDAL.ErrorLog("register", ex.ToString()); 
+            }
 
             return Content(HttpStatusCode.NotFound, "Not found.");
         }

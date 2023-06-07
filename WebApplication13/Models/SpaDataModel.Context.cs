@@ -47,12 +47,15 @@ namespace WebApplication13.Models
         public virtual DbSet<PriviledgeType> PriviledgeTypes { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<MobileUserLoginToken> MobileUserLoginTokens { get; set; }
-        public virtual DbSet<MobileUser> MobileUsers { get; set; }
         public virtual DbSet<MobileComTier> MobileComTiers { get; set; }
         public virtual DbSet<MobileSetting> MobileSettings { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<MobileComPayment> MobileComPayments { get; set; }
         public virtual DbSet<MobileComTransaction> MobileComTransactions { get; set; }
         public virtual DbSet<Receipt> Receipts { get; set; }
+        public virtual DbSet<MobileModule> MobileModules { get; set; }
+        public virtual DbSet<MobileOtp> MobileOtps { get; set; }
+        public virtual DbSet<MobileUser> MobileUsers { get; set; }
+        public virtual DbSet<MobileErrorLog> MobileErrorLogs { get; set; }
     }
 }

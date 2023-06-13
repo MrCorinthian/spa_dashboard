@@ -218,6 +218,16 @@
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="MobileErrorLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Exception" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="MobileModule">
     <Key>
       <PropertyRef Name="Id" />
@@ -235,6 +245,7 @@
     <Property Name="Otp" Type="nvarchar" MaxLength="6" Nullable="false" />
     <Property Name="Ref" Type="nvarchar" MaxLength="6" Nullable="false" />
     <Property Name="Used" Type="nvarchar" MaxLength="1" Nullable="false" />
+    <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
     <Property Name="Updated" Type="datetime2" Precision="7" Nullable="false" />
@@ -258,18 +269,18 @@
     <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
     <Property Name="LastName" Type="nvarchar" MaxLength="100" />
     <Property Name="IdCardNumber" Type="nvarchar" MaxLength="100" />
-    <Property Name="Nationality" Type="nvarchar" MaxLength="50" />
+    <Property Name="Nationality" Type="nvarchar" MaxLength="100" />
     <Property Name="Birthday" Type="date" />
     <Property Name="Address" Type="nvarchar" MaxLength="300" />
-    <Property Name="Province" Type="nvarchar" MaxLength="50" />
-    <Property Name="Occupation" Type="nvarchar" MaxLength="50" />
+    <Property Name="Province" Type="nvarchar" MaxLength="100" />
+    <Property Name="Occupation" Type="nvarchar" MaxLength="100" />
     <Property Name="PhoneNumber" Type="varchar" MaxLength="20" />
     <Property Name="Email" Type="nvarchar" MaxLength="100" />
     <Property Name="LineId" Type="nvarchar" MaxLength="50" />
     <Property Name="WhatsAppId" Type="nvarchar" MaxLength="50" />
-    <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="200" />
     <Property Name="CompanyTexId" Type="nvarchar" MaxLength="50" />
-    <Property Name="BankAccount" Type="nvarchar" MaxLength="50" />
+    <Property Name="BankAccount" Type="nvarchar" MaxLength="200" />
     <Property Name="BankAccountNumber" Type="nvarchar" MaxLength="20" />
     <Property Name="ProfilePath" Type="nvarchar(max)" />
     <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
@@ -367,8 +378,10 @@
   <EntityType Name="Receipt">
     <Key>
       <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
     </Key>
     <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
     <Property Name="Code" Type="nvarchar" MaxLength="64" />
     <Property Name="UsedStatus" Type="nvarchar" MaxLength="1" />
     <Property Name="Created" Type="datetime2" Precision="7" />
@@ -440,6 +453,7 @@
     <EntitySet Name="MobileComPayment" EntityType="Self.MobileComPayment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileErrorLog" EntityType="Self.MobileErrorLog" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileModule" EntityType="Self.MobileModule" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileOtp" EntityType="Self.MobileOtp" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />

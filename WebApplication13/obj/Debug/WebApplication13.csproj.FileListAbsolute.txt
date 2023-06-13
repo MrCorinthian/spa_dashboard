@@ -413,6 +413,7 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.pdb
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.AssemblyReference.cache
+<<<<<<< HEAD
 C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\bin\roslyn\csc.exe
 C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
 C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
@@ -469,3 +470,25 @@ C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\obj\Debug\WebAppli
 C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.csproj.CopyComplete
 C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.dll
 C:\Users\Jaturong\Source\Repos\spa_dashboard\WebApplication13\obj\Debug\WebApplication13.pdb
+=======
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\RestSharp.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Buffers.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Memory.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Numerics.Vectors.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Encodings.Web.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Json.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Threading.Tasks.Extensions.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.ValueTuple.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\RestSharp.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Buffers.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Memory.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Numerics.Vectors.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Encodings.Web.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Json.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Threading.Tasks.Extensions.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.ValueTuple.xml
+>>>>>>> 688efdd (update send otp)

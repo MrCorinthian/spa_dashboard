@@ -193,9 +193,12 @@ namespace WebApplication13.Controllers.Mobile
                     if (!string.IsNullOrEmpty(data.PhoneNumber))
                     {
                         MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
-                        if (user != null)
+                        if (user != null && !string.IsNullOrEmpty(user.PhoneNumber))
                         {
                             OtpData otp = UserDAL.GenerateOTP(user);
+
+                            SmsDAL.SendOTP(user.PhoneNumber, $"Your OTP is {otp.Otp} (REF: {otp.Ref}) It will expire in 3 minutes.");
+
                             otp.Otp = "";
                             return Ok(otp);
                         }

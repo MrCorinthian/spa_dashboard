@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <IisApp path="C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\Package\PackageTmp" />
-  <setAcl path="C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
-  <setAcl path="C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+  <IisApp path="C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\Package\PackageTmp" />
+  <setAcl path="C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
 </sitemanifest>

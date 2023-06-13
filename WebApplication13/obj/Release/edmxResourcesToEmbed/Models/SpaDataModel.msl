@@ -372,19 +372,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Receipts">
-      <EntityTypeMapping TypeName="spasystemdbModel.Receipt">
-        <MappingFragment StoreEntitySet="Receipt">
-          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-          <ScalarProperty Name="Updated" ColumnName="Updated" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="Created" ColumnName="Created" />
-          <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
-          <ScalarProperty Name="Code" ColumnName="Code" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="MobileModules">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileModule">
         <MappingFragment StoreEntitySet="MobileModule">
@@ -449,6 +436,20 @@
           <ScalarProperty Name="Created" ColumnName="Created" />
           <ScalarProperty Name="Message" ColumnName="Message" />
           <ScalarProperty Name="Exception" ColumnName="Exception" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Receipts">
+      <EntityTypeMapping TypeName="spasystemdbModel.Receipt">
+        <MappingFragment StoreEntitySet="Receipt">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="Updated" ColumnName="Updated" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

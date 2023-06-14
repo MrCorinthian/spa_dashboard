@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="spasystemdbEntities-Web.config Connection String" description="spasystemdbEntities Connection String used in web.config by the application to access the database." defaultValue="metadata=res://*/Models.SpaDataModel.csdl|res://*/Models.SpaDataModel.ssdl|res://*/Models.SpaDataModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=spasystemdbserver.database.windows.net;initial catalog=spasystemdb;user id=myadmin;password=ABCD1234!!;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\Jaturong\\source\\repos\\spa_dashboard\\WebApplication13\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='spasystemdbEntities']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\pi\\Documents\\24DVLOP\\WORKSPACE\\spa_dashboard\\WebApplication13\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='spasystemdbEntities']/@connectionString" />
   </parameter>
 </parameters>

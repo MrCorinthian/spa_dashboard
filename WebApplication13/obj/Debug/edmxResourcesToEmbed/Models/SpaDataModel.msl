@@ -454,5 +454,22 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="MobileFileAttachments">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileFileAttachment">
+        <MappingFragment StoreEntitySet="MobileFileAttachment">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="Updated" ColumnName="Updated" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="FileExtension" ColumnName="FileExtension" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="FileSubPath" ColumnName="FileSubPath" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

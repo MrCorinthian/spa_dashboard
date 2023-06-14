@@ -21,6 +21,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  GlobalKey<CustomProfileWidgetState> childWidgetKey =
+      GlobalKey<CustomProfileWidgetState>();
+
   String _token = '';
 
   @override
@@ -50,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        CustomProfileWidget(key: childWidgetKey),
         SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,8 +62,18 @@ class _ProfilePageState extends State<ProfilePage> {
               CustomProfileMenuButton(
                 text: 'Edit personal information',
                 imageIconPath: 'assets/images/person-edit.png',
-                onPressed: () => Navigator.push(context,
-                    CustomPageRouteBuilder.leftToRight(EditProfilePage())),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    CustomPageRouteBuilder.leftToRight(EditProfilePage()),
+                  );
+
+                  if (result == true) {
+                    childWidgetKey.currentState?.loadValue();
+                  }
+                },
+                // onPressed: () => Navigator.push(context,
+                //     CustomPageRouteBuilder.leftToRight(EditProfilePage())),
               ),
               CustomProfileMenuButton(
                 text: 'Change password',

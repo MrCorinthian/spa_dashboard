@@ -17,6 +17,7 @@ class RegisterData {
   String? BankAccount;
   String? BankAccountNumber;
   String? ProfilePath;
+  String? IdCardPath;
 
   RegisterData(
       {this.Password,
@@ -36,7 +37,8 @@ class RegisterData {
       this.CompanyTexId,
       this.BankAccount,
       this.BankAccountNumber,
-      this.ProfilePath});
+      this.ProfilePath,
+      this.IdCardPath});
 
   Map<String, dynamic> toJson() => {
         'Password': Password,
@@ -57,5 +59,6 @@ class RegisterData {
         'BankAccount': BankAccount,
         'BankAccountNumber': BankAccountNumber,
         'ProfilePath': ProfilePath,
+        'IdCardPath': IdCardPath,
       };
 }

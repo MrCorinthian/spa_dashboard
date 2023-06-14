@@ -4,9 +4,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../base_client/base_client.dart';
-import '../../../providers/AuthProvider/auth_provider.dart';
 import '../../../app_theme/app_theme.dart';
-import '../../../shared_widget/custom_profile_menu_button.dart';
 import '../../../shared_widget/custom_profile_widget.dart';
 import '../../../shared_widget/custom_container.dart';
 import '../../../shared_widget/custom_page_route_builder.dart';
@@ -23,6 +21,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey<CustomProfileWidgetState> childWidgetKey =
+      GlobalKey<CustomProfileWidgetState>();
+
   var formatter = NumberFormat('#,##0.00');
   DateTime now = DateTime.now();
   String _token = '';
@@ -61,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        CustomProfileWidget(key: childWidgetKey),
         const SizedBox(
           height: 10,
         ),
@@ -110,6 +112,7 @@ class _HomePageState extends State<HomePage> {
 
               if (result == true) {
                 _getReport();
+                childWidgetKey.currentState?.loadValue();
               }
             },
             child: Column(

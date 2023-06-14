@@ -161,7 +161,7 @@ class _MainPageState extends State<MainPage> {
             padding: CustomTheme.paddingPage,
             child: Column(
               children: [
-                if (_selectedIndex != 1) const CustomProfileWidget(),
+                // if (_selectedIndex != 1) const CustomProfileWidget(),
                 _widgetOptions.elementAt(_selectedIndex)
               ],
             )),

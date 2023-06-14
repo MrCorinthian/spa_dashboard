@@ -57,5 +57,6 @@ namespace WebApplication13.Models
         public virtual DbSet<MobileUser> MobileUsers { get; set; }
         public virtual DbSet<MobileErrorLog> MobileErrorLogs { get; set; }
         public virtual DbSet<Receipt> Receipts { get; set; }
+        public virtual DbSet<MobileFileAttachment> MobileFileAttachments { get; set; }
     }
 }

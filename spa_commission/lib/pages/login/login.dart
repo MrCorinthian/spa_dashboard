@@ -8,6 +8,7 @@ import '../../app_theme/app_theme.dart';
 import '../register/register.dart';
 import 'otp_forgot_password.dart';
 import '../../shared_widget/custom_text_field.dart';
+import '../../models/responsed_data.dart';
 import '../../shared_widget/custom_page_route_builder.dart';
 import '../../shared_widget/custom_loading.dart';
 import '../../shared_widget/custom_alert_dialog.dart';
@@ -58,22 +59,51 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _loading = true;
     });
-    var res = await BaseClient().post('User/Login', {
-      'phone': _phoneController.text.trim(),
-      'password': _passwordController.text.trim()
-    });
-    if (res != null) {
+    bool phoneNumberVerified = false;
+    var response = await BaseClient()
+        .post('User/Username', {"data": _phoneController.text});
+    if (response != null) {
+      ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
+      if (resPhoneNumber.success) {
+        phoneNumberVerified = true;
+      }
+    }
+    if (phoneNumberVerified) {
+      var res = await BaseClient().post('User/Login', {
+        'phone': _phoneController.text.trim(),
+        'password': _passwordController.text.trim()
+      });
+      if (res != null) {
+        setState(() {
+          _loading = false;
+          Provider.of<AuthProvider>(context, listen: false).login(res);
+        });
+      } else {
+        setState(() {
+          _loading = false;
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomAlertDialog(
+              title: 'Message',
+              child: Text(
+                  'Password is incorrect. Please try again or click forgot password to reset.',
+                  style: TextStyle(color: CustomTheme.fillColor)),
+            );
+          },
+        );
+      }
+    } else {
       setState(() {
         _loading = false;
-        Provider.of<AuthProvider>(context, listen: false).login(res);
       });
-    } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomAlertDialog(
             title: 'Message',
-            child: Text('Please check the information.',
+            child: Text('Telephone no. does not exist',
                 style: TextStyle(color: CustomTheme.fillColor)),
           );
         },

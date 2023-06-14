@@ -55,4 +55,24 @@ class BaseClient {
       return responseBody;
     }
   }
+
+  Future<dynamic> uploadAttachment(File? imageFile) async {
+    if (imageFile != null) {
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${baseUrl}File/UploadAttachment'));
+
+      var multipartFile =
+          await http.MultipartFile.fromPath('image', imageFile.path);
+      request.files.add(multipartFile);
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        print('Image uploaded successfully');
+      } else {
+        print('Image upload failed with status code ${response.statusCode}');
+      }
+      var responseBody = await response.stream.bytesToString();
+      return responseBody;
+    }
+  }
 }

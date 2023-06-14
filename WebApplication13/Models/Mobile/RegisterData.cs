@@ -27,5 +27,6 @@ namespace WebApplication13.Models.Mobile
         public string BankAccount { get; set; }
         public string BankAccountNumber { get; set; }
         public string ProfilePath { get; set; }
+        public string IdCardPath { get; set; }
     }
 }

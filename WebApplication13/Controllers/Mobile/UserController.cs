@@ -12,6 +12,7 @@ using WebApplication13.Models;
 using WebApplication13.Models.Mobile;
 using System.Web.Http.Cors;
 using WebApplication13.DAL;
+using System.Globalization;
 
 namespace WebApplication13.Controllers.Mobile
 {
@@ -107,10 +108,10 @@ namespace WebApplication13.Controllers.Mobile
         [HttpPost]
         public async Task<IHttpActionResult> UpdateUserInfo(RegisterData data)
         {
-            try
+            MobileUser userAuth = UserDAL.GetUserByToken(data.Token);
+            if (userAuth != null)
             {
-                MobileUser userAuth = UserDAL.GetUserByToken(data.Token);
-                if (userAuth != null)
+                try
                 {
                     using (var db = new spasystemdbEntities())
                     {
@@ -121,6 +122,7 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
                             if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
                             if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
+                            if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
                             if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
                             if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
                             if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
@@ -136,9 +138,30 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
                             //if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;
                             user.Updated = now;
-                            user.UpdatedBy = userAuth.Username;
+                            user.UpdatedBy = DataDAL.GetUserName(userAuth.Id);
 
                             db.SaveChanges();
+
+                            ////attachment file
+                            //if (!string.IsNullOrEmpty(data.IdCardPath))
+                            //{
+                            //    string attachmentSubPath = "UPLOAD\\MOBILE_ATTACHMENT_IMAGES\\";
+                            //    MobileFileAttachment att = new MobileFileAttachment();
+                            //    att.FileSubPath = attachmentSubPath;
+                            //    att.FileName = data.IdCardPath;
+                            //    string[] exFileName = data.IdCardPath.Split('.');
+                            //    if (exFileName.Length == 2) att.FileExtension = $".{exFileName[1]}";
+                            //    att.MobileUserId = user.Id;
+                            //    att.Type = 1;
+                            //    att.Active = "Y";
+                            //    att.CreatedBy = data.PhoneNumber;
+                            //    att.Created = now;
+                            //    att.UpdatedBy = data.PhoneNumber;
+                            //    att.Updated = now;
+
+                            //    db.MobileFileAttachments.Add(att);
+                            //    db.SaveChanges();
+                            //}
 
                             user.ProfilePath = $"File/ProfileImageWebUpload?fileName={data.ProfilePath}";
                             user.Password = null;
@@ -146,8 +169,11 @@ namespace WebApplication13.Controllers.Mobile
                         }
                     }
                 }
+                catch (Exception ex)
+                {
+                    DataDAL.ErrorLog("UpdateUserInfo", ex.ToString(), DataDAL.GetUserName(userAuth.Id));
+                }
             }
-            catch (Exception ex) { }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
@@ -568,6 +594,76 @@ namespace WebApplication13.Controllers.Mobile
                         {
                             response.Success = true;
                             response.Data = user.PhoneNumber;
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Data = "";
+                        }
+
+                        return Ok(response);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> Telephone(ForgotPasswordParams data)
+        {
+            ResponseData response = new ResponseData();
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    if (data != null && !string.IsNullOrEmpty(data.PhoneNumber))
+                    {
+                        MobileUser userAuth = UserDAL.GetUserByToken(data.Token);
+                        if (userAuth != null)
+                        {
+                            MobileUser userFromPhoneNumber = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
+                            if (userFromPhoneNumber == null || (userAuth.Id == userFromPhoneNumber.Id && userAuth.PhoneNumber == userFromPhoneNumber.PhoneNumber))
+                            {
+                                response.Success = true;
+                                response.Data = userFromPhoneNumber.PhoneNumber;
+                            }
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Data = "";
+                        }
+
+                        return Ok(response);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> Password(ForgotPasswordParams data)
+        {
+            ResponseData response = new ResponseData();
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    if (data != null && !string.IsNullOrEmpty(data.Token) && !string.IsNullOrEmpty(data.Password))
+                    {
+                        MobileUser userAuth = UserDAL.GetUserByToken(data.Token);
+                        if (userAuth != null)
+                        {
+                            string enPassword = EncryptionDAL.EncryptString(data.Password);
+                            if (userAuth.Password == enPassword)
+                            {
+                                response.Success = true;
+                                response.Data = data.Password;
+                            }
                         }
                         else
                         {

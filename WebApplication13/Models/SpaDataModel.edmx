@@ -233,6 +233,22 @@
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="MobileFileAttachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MobileUserId" Type="int" />
+          <Property Name="Type" Type="int" />
+          <Property Name="FileSubPath" Type="nvarchar" MaxLength="200" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FileExtension" Type="nvarchar" MaxLength="10" />
+          <Property Name="Active" Type="nvarchar" MaxLength="1" />
+          <Property Name="Created" Type="datetime2" Precision="7" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="Updated" Type="datetime2" Precision="7" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="MobileModule">
           <Key>
             <PropertyRef Name="Id" />
@@ -459,6 +475,7 @@
           <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileErrorLog" EntityType="Self.MobileErrorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileFileAttachment" EntityType="Self.MobileFileAttachment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileModule" EntityType="Self.MobileModule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileOtp" EntityType="Self.MobileOtp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />
@@ -593,6 +610,7 @@
           <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
           <EntitySet Name="MobileErrorLogs" EntityType="spasystemdbModel.MobileErrorLog" />
           <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
+          <EntitySet Name="MobileFileAttachments" EntityType="spasystemdbModel.MobileFileAttachment" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -944,6 +962,22 @@
           <Property Name="BranchId" Type="Int32" Nullable="false" />
           <Property Name="Code" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="UsedStatus" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Updated" Type="DateTime" Precision="7" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileFileAttachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MobileUserId" Type="Int32" />
+          <Property Name="Type" Type="Int32" />
+          <Property Name="FileSubPath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FileExtension" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
           <Property Name="Created" Type="DateTime" Precision="7" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Updated" Type="DateTime" Precision="7" />
@@ -1404,6 +1438,23 @@
                 <ScalarProperty Name="UsedStatus" ColumnName="UsedStatus" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileFileAttachments">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileFileAttachment">
+              <MappingFragment StoreEntitySet="MobileFileAttachment">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="FileExtension" ColumnName="FileExtension" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="FileSubPath" ColumnName="FileSubPath" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

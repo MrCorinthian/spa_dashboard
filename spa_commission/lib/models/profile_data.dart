@@ -6,11 +6,12 @@ class ProfileData {
   String? FirstName;
   String? LastName;
   String? IdCardNumber;
+  String? Birthday;
   String? Nationality;
   String? Address;
   String? Province;
   String? Occupation;
-  String? PhoneNunber;
+  String? PhoneNumber;
   String? Email;
   String? LineId;
   String? WhatsAppId;
@@ -19,6 +20,7 @@ class ProfileData {
   String? BankAccount;
   String? BankAccountNumber;
   String? ProfilePath;
+  String? IdCardPath;
 
   ProfileData(
       {this.Password,
@@ -28,11 +30,12 @@ class ProfileData {
       this.FirstName,
       this.LastName,
       this.IdCardNumber,
+      this.Birthday,
       this.Nationality,
       this.Address,
       this.Province,
       this.Occupation,
-      this.PhoneNunber,
+      this.PhoneNumber,
       this.Email,
       this.LineId,
       this.WhatsAppId,
@@ -40,7 +43,8 @@ class ProfileData {
       this.CompanyTexId,
       this.BankAccount,
       this.BankAccountNumber,
-      this.ProfilePath});
+      this.ProfilePath,
+      this.IdCardPath});
 
   Map<String, dynamic> toJson() => {
         'Password': Password,
@@ -50,11 +54,12 @@ class ProfileData {
         'FirstName': FirstName,
         'LastName': LastName,
         'IdCardNumber': IdCardNumber,
+        'Birthday': Birthday,
         'Nationality': Nationality,
         'Address': Address,
         'Province': Province,
         'Occupation': Occupation,
-        'PhoneNunber': PhoneNunber,
+        'PhoneNumber': PhoneNumber,
         'Email': Email,
         'LineId': LineId,
         'WhatsAppId': WhatsAppId,
@@ -63,5 +68,6 @@ class ProfileData {
         'BankAccount': BankAccount,
         'BankAccountNumber': BankAccountNumber,
         'ProfilePath': ProfilePath,
+        'IdCardPath': IdCardPath,
       };
 }

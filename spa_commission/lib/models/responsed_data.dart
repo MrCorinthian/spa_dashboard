@@ -13,7 +13,7 @@ class ResponsedData {
     Map<String, dynamic> jsonMap = jsonDecode(json);
     return ResponsedData(
       success: jsonMap['Success'],
-      data: jsonMap['Data'],
+      data: jsonMap['Data'] ?? '',
     );
   }
 }

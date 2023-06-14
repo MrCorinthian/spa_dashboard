@@ -56,7 +56,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return buildPopup();
+          return buildPopup("Telephone no. does not exist");
         },
       );
     }
@@ -78,7 +78,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return buildPopup();
+          return buildPopup("OTP is invalid");
         },
       );
     }
@@ -118,7 +118,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return buildPopup();
+          return buildPopup("The confirm new password does not match");
         },
       );
     }
@@ -163,14 +163,14 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
     );
   }
 
-  Widget buildPopup() {
+  Widget buildPopup(String message) {
     return CustomAlertDialog(
       title: 'Message',
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text('Please check the information.',
+        children: [
+          Text(message.isNotEmpty ? message : 'Please check the information.',
               style: TextStyle(color: CustomTheme.fillColor))
         ],
       ),

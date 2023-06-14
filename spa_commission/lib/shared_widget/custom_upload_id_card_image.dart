@@ -5,28 +5,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../base_client/base_client.dart';
 import '../../app_theme/app_theme.dart';
 
-class CustomUploadProfileImage extends StatefulWidget {
+class CustomUploadIdCardImage extends StatefulWidget {
   final Function(File?) onImageSelected;
   final String text;
   final bool obscureText;
   final bool inputDecorationError;
   final bool requiredField;
 
-  const CustomUploadProfileImage({
+  const CustomUploadIdCardImage({
     Key? key,
     required this.onImageSelected,
-    this.text = 'Profile image',
+    this.text = 'ID card image',
     this.obscureText = false,
     this.inputDecorationError = true,
     this.requiredField = false,
   }) : super(key: key);
 
   @override
-  _CustomUploadProfileImageState createState() =>
-      _CustomUploadProfileImageState();
+  _CustomUploadIdCardImageState createState() =>
+      _CustomUploadIdCardImageState();
 }
 
-class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
+class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
   String _token = '';
   String _currentImagePath = '';
   File? _image;
@@ -43,7 +43,7 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
     if (_token != '') {
       setState(() {
         _currentImagePath =
-            '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
+            '${BaseClient().getBaseUrl}File/AttachmentImage?token=${_token}';
       });
     }
   }
@@ -121,37 +121,46 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
         ),
         const SizedBox(height: 10),
         GestureDetector(
-          // onTap: () => showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return buildChooseImageSource();
-          //   },
-          // ),
-          onTap: () => _handleImageSelection('camera'),
-          child: _image == null
-              ? CircleAvatar(
-                  radius: 50.0,
-                  backgroundColor: CustomTheme.secondaryColor,
-                  backgroundImage: _currentImagePath.isNotEmpty
-                      ? NetworkImage(_currentImagePath)
-                      : null,
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 30.0,
-                    color: CustomTheme.fillColor,
-                  ),
-                )
-              : CircleAvatar(
-                  radius: 50.0,
-                  backgroundColor: CustomTheme.secondaryColor,
-                  backgroundImage: _image != null ? FileImage(_image!) : null,
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 30.0,
-                    color: CustomTheme.fillColor,
-                  ),
-                ),
-        ),
+            // onTap: () => showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return buildChooseImageSource();
+            //   },
+            // ),
+            onTap: () => _handleImageSelection('camera'),
+            child: _image == null
+                ? Container(
+                    width: 200,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: CustomTheme.secondaryColor,
+                      image: _currentImagePath.isNotEmpty
+                          ? DecorationImage(
+                              image: NetworkImage(_currentImagePath),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 30.0,
+                      color: CustomTheme.fillColor,
+                    ))
+                : Container(
+                    width: 200,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: CustomTheme.secondaryColor,
+                      image: DecorationImage(
+                        image: FileImage(_image!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 30.0,
+                      color: CustomTheme.fillColor,
+                    ))),
       ],
     );
   }

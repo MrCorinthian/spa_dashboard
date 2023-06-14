@@ -14,6 +14,7 @@ import '../../../shared_widget/custom_dropdown.dart';
 import '../../../shared_widget/custom_upload_profile_image.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
 import '../../../shared_widget/custom_loading.dart';
+import '../../../shared_widget/custom_upload_id_card_image.dart';
 import '../../../constant_value/constant_value.dart' as constent;
 
 class EditProfilePage extends StatefulWidget {
@@ -42,10 +43,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _bankAccountNumberController =
       TextEditingController();
   final TextEditingController _profilePathController = TextEditingController();
+  final TextEditingController _idCardPathController = TextEditingController();
 
   bool _loading = false;
   String profileImagePath = '';
   File? _profileImage;
+  String _IdCardImagePath = '';
+  File? _IdCardImage;
   List<String> _province = [];
   List<String> _bank = [];
   List<String> _occupation = [];
@@ -127,10 +131,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void _handleUpload(File? file) {
+  void _handleUploadProfile(File? file) {
     if (file != null) {
       setState(() {
         _profileImage = file;
+      });
+    }
+  }
+
+  void _handleUploadIdCard(File? file) {
+    if (file != null) {
+      setState(() {
+        _IdCardImage = file;
       });
     }
   }
@@ -139,24 +151,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
     var validate = true;
     List<String> messages = [];
     if (_phoneNumberController.text.isNotEmpty) {
-      var response = await BaseClient()
-          .post('User/Username', {"data": _phoneNumberController.text});
+      var response = await BaseClient().post('User/Telephone',
+          {"Token": _token, "PhoneNumber": _phoneNumberController.text});
       if (response != null) {
         ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
         if (resPhoneNumber.success == true) {
-          // if (_profileImage != null) {
-          //   var res = await BaseClient().uploadImage(_profileImage);
-          //   if (res != null) {
-          //     ResponsedData response = ResponsedData.fromJson(res);
-          //     _profilePathController.text = response.data;
-          //   } else {
-          //     validate = false;
-          //     messages.add("Profile image");
-          //   }
-          // } else {
-          //   validate = false;
-          //   messages.add("Profile image");
-          // }
+          if (_profileImage != null) {
+            var res = await BaseClient().uploadImage(_profileImage);
+            if (res != null) {
+              ResponsedData response = ResponsedData.fromJson(res);
+              _profilePathController.text = response.data;
+            } else {
+              // validate = false;
+              // messages.add("Profile image");
+            }
+          } else {
+            // validate = false;
+            // messages.add("Profile image");
+          }
           if (_firstNameController.text.isEmpty) {
             validate = false;
             messages.add("First name");
@@ -234,11 +246,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
       data.FirstName = _firstNameController.text;
       data.LastName = _lastNameController.text;
       data.IdCardNumber = _idCardNumberController.text;
+      data.Birthday = _birthdayController.text;
       data.Nationality = _nationalityController.text;
       data.Address = _addressController.text;
       data.Province = _provinceController.text;
       data.Occupation = _occupationController.text;
-      data.PhoneNunber = _phoneNumberController.text;
+      data.PhoneNumber = _phoneNumberController.text;
       data.Email = _emailController.text;
       data.LineId = _lineController.text;
       data.WhatsAppId = _whatsappController.text;
@@ -247,6 +260,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       data.BankAccount = _bankAccountController.text;
       data.BankAccountNumber = _bankAccountNumberController.text;
       data.ProfilePath = _profilePathController.text;
+      data.IdCardPath = _idCardNumberController.text;
 
       final json = data.toJson();
       var res = await BaseClient().post('User/UpdateUserInfo', json);
@@ -256,7 +270,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
 
       if (res != null) {
-        Navigator.pop(context);
+        Navigator.of(context).pop(true);
       } else {
         showDialog(
           context: context,
@@ -296,7 +310,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   CustomUploadProfileImage(
                     requiredField: true,
-                    onImageSelected: _handleUpload,
+                    onImageSelected: _handleUploadProfile,
                   ),
                   CustomTextField(
                     text: 'First name',
@@ -312,7 +326,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     text: 'ID card number',
                     requiredField: true,
                     controller: _idCardNumberController,
+                    keyboardType: 'number',
                   ),
+                  // CustomUploadIdCardImage(
+                  //   requiredField: true,
+                  //   onImageSelected: _handleUploadIdCard,
+                  // ),
                   CustomTextField(
                     text: 'Birthday',
                     controller: _birthdayController,
@@ -353,9 +372,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         )
                       : const SizedBox(),
                   CustomTextField(
-                      text: 'Telephone no.',
-                      requiredField: true,
-                      controller: _phoneNumberController),
+                    text: 'Telephone no.',
+                    requiredField: true,
+                    controller: _phoneNumberController,
+                    keyboardType: 'number',
+                  ),
                   CustomTextField(
                       text: 'Email address', controller: _emailController),
                   CustomTextField(text: 'Line ID', controller: _lineController),
@@ -364,8 +385,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   CustomTextField(
                       text: 'Company name', controller: _companyNameController),
                   CustomTextField(
-                      text: 'Company tax ID',
-                      controller: _companyTexController),
+                    text: 'Company tax ID',
+                    controller: _companyTexController,
+                    keyboardType: 'number',
+                  ),
                   _bank.length > 0
                       ? CustomDropdown(
                           text: 'Bank name',
@@ -380,9 +403,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         )
                       : const SizedBox(),
                   CustomTextField(
-                      text: 'Bank account number',
-                      requiredField: true,
-                      controller: _bankAccountNumberController),
+                    text: 'Bank account number',
+                    requiredField: true,
+                    controller: _bankAccountNumberController,
+                    keyboardType: 'number',
+                  ),
                   const SizedBox(height: 60),
                   ElevatedButton(
                     style: CustomTheme.buttonStyle_primaryColor,

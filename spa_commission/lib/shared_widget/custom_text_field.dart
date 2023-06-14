@@ -31,9 +31,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
   bool hidePassword = true;
 
   void _selectDate(BuildContext context) async {
+    DateFormat format = DateFormat('dd MMMM yyyy');
+    DateTime initialDate = widget.controller.text.isNotEmpty
+        ? format.parse(widget.controller.text)
+        : DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime(1930),
       lastDate: DateTime(DateTime.now().year + 1),
       builder: (context, child) {

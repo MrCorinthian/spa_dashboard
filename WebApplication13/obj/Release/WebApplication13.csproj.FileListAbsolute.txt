@@ -1,397 +1,3 @@
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\csc.exe
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\vbc.exe
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\VBCSCompiler.exe
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\WebApplication13.dll.config
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\WebApplication13.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\WebApplication13.pdb
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Helpers.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Mvc.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Razor.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Webpages.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Webpages.Razor.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Razor.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Webpages.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Webpages.Razor.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Helpers.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\bin\System.Web.Mvc.xml
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\obj\Release\WebApplication13.csprojResolveAssemblyReference.cache
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\obj\Release\WebApplication13.dll
-c:\users\microsoft\documents\visual studio 2015\Projects\WebApplication13\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csprojResolveAssemblyReference.cache
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Microsoft\Documents\Visual Studio 2015\Projects\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Microsoft\Desktop\Spa Driver Setup and Latest code\Report Website\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\Jaturong\Downloads\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csprojAssemblyReference.cache
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Jaturong\Downloads\Lastest and final\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csprojAssemblyReference.cache
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\iHC\Downloads\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csprojAssemblyReference.cache
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Jaturong\Downloads\New folder (25)\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\iHC\Dropbox (Personal)\24DVLOP\Project\Spa System\Spa Driver Setup and Latest code\Report Website\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\iHC\Dropbox (Personal)\24DVLOP\Project\Spa System\Spa Driver Setup and Latest code\Report Website\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\csc.exe
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\WebApplication13.pdb
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\iHC\Downloads\28092022\web pascal_spa_26062019\WebApplication13 - Copy\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\csc.exe
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.pdb
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.pdb
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\roslyn\csc.exe
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
@@ -409,6 +15,7 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\WebAp
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\WebApplication13.pdb
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\EntityFramework.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Owin.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.dll
@@ -416,7 +23,16 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Micro
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Owin.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\RestSharp.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Buffers.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Memory.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Net.Http.Formatting.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Numerics.Vectors.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Encodings.Web.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Json.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Threading.Tasks.Extensions.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.ValueTuple.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Cors.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Helpers.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Http.Cors.dll
@@ -429,12 +45,22 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Syste
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\EntityFramework.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Owin.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.OAuth.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\RestSharp.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Buffers.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Memory.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Net.Http.Formatting.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Numerics.Vectors.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Encodings.Web.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Json.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Threading.Tasks.Extensions.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.ValueTuple.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Http.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Http.Cors.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Http.WebHost.xml
@@ -443,87 +69,8 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Syste
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Helpers.xml
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.pdb
-<<<<<<< HEAD
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\csc.exe
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\vbc.exe
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\VBCSCompiler.exe
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.dll.config
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\WebApplication13.pdb
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Owin.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.OAuth.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Owin.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Net.Http.Formatting.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Cors.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Helpers.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Http.Cors.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Http.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Http.WebHost.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Mvc.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Razor.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Deployment.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\EntityFramework.SqlServer.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Owin.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Microsoft.Owin.Security.OAuth.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\Newtonsoft.Json.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Net.Http.Formatting.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Http.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Http.Cors.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Http.WebHost.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Deployment.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Webpages.Razor.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Helpers.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\bin\System.Web.Mvc.xml
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CoreCompileInputs.cache
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.dll
-C:\Users\Jaturong\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.pdb
-=======
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\RestSharp.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Buffers.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Memory.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Numerics.Vectors.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Encodings.Web.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Json.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Threading.Tasks.Extensions.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.ValueTuple.dll
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Microsoft.Bcl.AsyncInterfaces.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\RestSharp.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Buffers.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Memory.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Numerics.Vectors.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Runtime.CompilerServices.Unsafe.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Encodings.Web.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Text.Json.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.Threading.Tasks.Extensions.xml
-C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\System.ValueTuple.xml
->>>>>>> 688efdd (update send otp)
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache

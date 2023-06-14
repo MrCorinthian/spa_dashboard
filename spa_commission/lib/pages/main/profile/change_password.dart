@@ -1,15 +1,15 @@
-import 'dart:convert';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/AuthProvider/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
+import '../../login/otp_forgot_password.dart';
 import '../../../shared_widget/custom_app_bar.dart';
 import '../../../shared_widget/custom_text_field.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
-import '../../../models/commistion_tier.dart';
+import '../../../shared_widget/custom_page_route_builder.dart';
+import '../../../models/responsed_data.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({
@@ -43,29 +43,58 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
   }
 
   ChangePassword() async {
-    var validate = true;
-    if (_newPasswordController.text.isEmpty ||
-        _confirmNewPasswordController.text.isEmpty ||
-        _newPasswordController.text != _confirmNewPasswordController.text) {
-      validate = false;
-    }
-
-    if (validate) {
-      var res = await BaseClient().post('User/ChangePassword', {
-        "Token": _token,
-        "Password": _passwordController.text,
-        "NewPassword": _newPasswordController.text,
-        "ConfirmNewPassword": _confirmNewPasswordController.text
-      });
-      if (res != null) {
-        Provider.of<AuthProvider>(context, listen: false).login(res);
-        Navigator.of(context).pop();
-      } else {
-        validate = false;
+    bool verifiedPassword = false;
+    var response = await BaseClient().post('User/Password',
+        {"Token": _token, "Password": _passwordController.text});
+    if (response != null) {
+      ResponsedData resPassword = ResponsedData.fromJson(response);
+      if (resPassword.success == true) {
+        verifiedPassword = true;
       }
     }
 
-    if (!validate) {
+    if (verifiedPassword) {
+      var validate = true;
+      if (_newPasswordController.text.isEmpty ||
+          _confirmNewPasswordController.text.isEmpty ||
+          _newPasswordController.text != _confirmNewPasswordController.text) {
+        validate = false;
+      }
+
+      if (validate) {
+        var res = await BaseClient().post('User/ChangePassword', {
+          "Token": _token,
+          "Password": _passwordController.text,
+          "NewPassword": _newPasswordController.text,
+          "ConfirmNewPassword": _confirmNewPasswordController.text
+        });
+        if (res != null) {
+          Provider.of<AuthProvider>(context, listen: false).login(res);
+          Navigator.of(context).pop();
+        } else {
+          validate = false;
+        }
+      }
+
+      if (!validate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomAlertDialog(
+              title: 'Message',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text('The confirm new password does not match.',
+                      style: TextStyle(color: CustomTheme.fillColor))
+                ],
+              ),
+            );
+          },
+        );
+      }
+    } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -75,7 +104,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text('Please check the information.',
+                Text('Please check your current password and try again.',
                     style: TextStyle(color: CustomTheme.fillColor))
               ],
             ),
@@ -119,7 +148,10 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     ),
-                    onPressed: () {},
+                    onPressed: () => Navigator.push(
+                        context,
+                        CustomPageRouteBuilder.bottomToTop(
+                            OtpForgotPasswordPage())),
                     child: const Text(
                       'Forgot password',
                       style:

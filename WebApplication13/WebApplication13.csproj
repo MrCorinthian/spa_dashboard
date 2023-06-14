@@ -522,6 +522,9 @@
     <Compile Include="Models\MobileErrorLog.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MobileFileAttachment.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MobileModule.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>

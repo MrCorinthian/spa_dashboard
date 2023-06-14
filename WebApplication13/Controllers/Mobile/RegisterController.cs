@@ -27,7 +27,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     DateTime now = DataDAL.GetDateTimeNow();
                     MobileUser user = new MobileUser();
-                    string subPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
+                    string profileSubPath = "UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\";
                     var findPhoneNumber = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
                     if (findPhoneNumber == null)
                     {
@@ -42,7 +42,7 @@ namespace WebApplication13.Controllers.Mobile
                         user.BankAccountNumber = data.BankAccountNumber;
 
                         if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
-                        if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{subPath}{data.ProfilePath}";
+                        if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{profileSubPath}{data.ProfilePath}";
                         if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
                         if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
                         if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
@@ -52,13 +52,34 @@ namespace WebApplication13.Controllers.Mobile
                         if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
 
                         user.Active = "Y";
-                        user.CreatedBy = data.PhoneNumber;
+                        user.CreatedBy = DataDAL.GetUserNameByName(user.FirstName, user.LastName);
                         user.Created = now;
-                        user.UpdatedBy = data.PhoneNumber;
+                        user.UpdatedBy = DataDAL.GetUserNameByName(user.FirstName, user.LastName);
                         user.Updated = now;
 
                         db.MobileUsers.Add(user);
                         db.SaveChanges();
+
+                        //attachment file
+                        if (!string.IsNullOrEmpty(data.IdCardPath))
+                        {
+                            string attachmentSubPath = "UPLOAD\\MOBILE_ATTACHMENT_IMAGES\\";
+                            MobileFileAttachment att = new MobileFileAttachment();
+                            att.FileSubPath = attachmentSubPath;
+                            att.FileName = data.IdCardPath;
+                            string[] exFileName = data.IdCardPath.Split('.');
+                            if (exFileName.Length == 2) att.FileExtension = $"{exFileName[1]}";
+                            att.MobileUserId = user.Id;
+                            att.Type = 1;
+                            att.Active = "Y";
+                            att.CreatedBy = data.PhoneNumber;
+                            att.Created = now;
+                            att.UpdatedBy = data.PhoneNumber;
+                            att.Updated = now;
+
+                            db.MobileFileAttachments.Add(att);
+                            db.SaveChanges();
+                        }
 
                         string token = UserDAL.CreateLoginToken(user.Id);
 

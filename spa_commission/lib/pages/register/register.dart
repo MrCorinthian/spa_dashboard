@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +13,7 @@ import '../../shared_widget/custom_dropdown.dart';
 import '../../shared_widget/custom_upload_profile_image.dart';
 import '../../shared_widget/custom_alert_dialog.dart';
 import '../../shared_widget/custom_loading.dart';
+import '../../shared_widget/custom_upload_id_card_image.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -43,10 +43,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _bankAccountNumberController =
       TextEditingController();
   final TextEditingController _profilePathController = TextEditingController();
+  final TextEditingController _idCardPathController = TextEditingController();
 
   bool _loading = false;
   String profileImagePath = '';
   File? _profileImage;
+  String _IdCardImagePath = '';
+  File? _IdCardImage;
   List<String> _province = [];
   List<String> _bank = [];
   List<String> _occupation = [];
@@ -96,10 +99,18 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _handleUpload(File? file) {
+  void _handleUploadProfile(File? file) {
     if (file != null) {
       setState(() {
         _profileImage = file;
+      });
+    }
+  }
+
+  void _handleUploadIdCard(File? file) {
+    if (file != null) {
+      setState(() {
+        _IdCardImage = file;
       });
     }
   }
@@ -125,6 +136,19 @@ class _RegisterPageState extends State<RegisterPage> {
           } else {
             validate = false;
             messages.add("Profile image");
+          }
+          if (_IdCardImage != null) {
+            var res = await BaseClient().uploadAttachment(_IdCardImage);
+            if (res != null) {
+              ResponsedData response = ResponsedData.fromJson(res);
+              _idCardPathController.text = response.data;
+            } else {
+              validate = false;
+              messages.add("ID card image");
+            }
+          } else {
+            validate = false;
+            messages.add("ID card image");
           }
           if (_firstNameController.text.isEmpty) {
             validate = false;
@@ -217,6 +241,7 @@ class _RegisterPageState extends State<RegisterPage> {
     data.BankAccount = _bankAccountController.text;
     data.BankAccountNumber = _bankAccountNumberController.text;
     data.ProfilePath = _profilePathController.text;
+    data.IdCardPath = _idCardPathController.text;
 
     final json = data.toJson();
     var res = await BaseClient().post('Register/Register', json);
@@ -266,7 +291,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   CustomUploadProfileImage(
                     requiredField: true,
-                    onImageSelected: _handleUpload,
+                    onImageSelected: _handleUploadProfile,
                   ),
                   CustomTextField(
                     text: 'First name',
@@ -283,6 +308,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     requiredField: true,
                     controller: _idCardNumberController,
                     keyboardType: 'number',
+                  ),
+                  CustomUploadIdCardImage(
+                    requiredField: true,
+                    onImageSelected: _handleUploadIdCard,
                   ),
                   CustomTextField(
                     text: 'Birthday',

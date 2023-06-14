@@ -85,6 +85,18 @@ namespace WebApplication13.DAL
                 return name;
             }
         }
+        public static string GetUserNameByName(string firstName, string lastName)
+        {
+            using (var db = new spasystemdbEntities())
+            {
+                string name = null;
+                if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
+                {
+                    name = $"{lastName.ElementAt(0)}.{firstName}".ToLower();
+                }
+                return name;
+            }
+        }
 
         public static void ErrorLog(string exception, string message, string userName = "")
         {

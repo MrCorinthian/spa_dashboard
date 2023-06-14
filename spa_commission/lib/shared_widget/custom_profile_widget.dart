@@ -9,15 +9,18 @@ import '../models/mobile_user_info.dart';
 import '../models/commistion_tier.dart';
 
 class CustomProfileWidget extends StatefulWidget {
+  final VoidCallback? onFunctionCall;
+
   const CustomProfileWidget({
     Key? key,
+    this.onFunctionCall,
   }) : super(key: key);
 
   @override
-  _CustomProfileWidgetState createState() => _CustomProfileWidgetState();
+  CustomProfileWidgetState createState() => CustomProfileWidgetState();
 }
 
-class _CustomProfileWidgetState extends State<CustomProfileWidget> {
+class CustomProfileWidgetState extends State<CustomProfileWidget> {
   var formatter = NumberFormat('#,##0.00');
   bool _preload = false;
   String _token = '';
@@ -34,10 +37,10 @@ class _CustomProfileWidgetState extends State<CustomProfileWidget> {
   @override
   void initState() {
     super.initState();
-    _loadValue();
+    loadValue();
   }
 
-  Future<void> _loadValue() async {
+  Future<void> loadValue() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
@@ -105,72 +108,77 @@ class _CustomProfileWidgetState extends State<CustomProfileWidget> {
                                 : null,
                           ),
                           const SizedBox(width: 20),
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  _userName ?? '',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      color: CustomTheme.primaryColor),
-                                ),
-                                const SizedBox(height: 5),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Commission tier : ',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: CustomTheme.darkGreyColor),
-                                    ),
-                                    Container(
-                                      width: 60,
-                                      alignment: Alignment.center,
-                                      color: Color(int.parse(
-                                          _tierColor ?? '000000',
-                                          radix: 16)),
-                                      child: Text(
-                                        _tierName ?? '',
-                                        style: const TextStyle(
+                          Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    _userName ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        color: CustomTheme.primaryColor),
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Commission tier : ',
+                                        style: TextStyle(
                                             fontSize: 14,
-                                            color: CustomTheme.fillColor),
+                                            color: CustomTheme.darkGreyColor),
                                       ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                                Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.55,
-                                    child: Stack(
-                                      children: [
-                                        LinearProgressIndicator(
-                                          minHeight: 12,
-                                          value: _totalPercentage,
-                                          backgroundColor:
-                                              CustomTheme.fillColor,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  CustomTheme.primaryColor),
+                                      Container(
+                                        width: 60,
+                                        alignment: Alignment.center,
+                                        color: Color(int.parse(
+                                            _tierColor ?? '000000',
+                                            radix: 16)),
+                                        child: Text(
+                                          _tierName ?? '',
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: CustomTheme.fillColor),
                                         ),
-                                        Positioned(
-                                          left: 0,
-                                          top: 0,
-                                          bottom: 0,
-                                          right: 0,
-                                          child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${formatter.format(_totalBaht)} / ${formatter.format(_maxBaht)}',
-                                                style: TextStyle(fontSize: 8),
-                                              )),
-                                        ),
-                                      ],
-                                    ))
-                              ]),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                      ),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.55,
+                                      child: Stack(
+                                        children: [
+                                          LinearProgressIndicator(
+                                            minHeight: 12,
+                                            value: _totalPercentage,
+                                            backgroundColor:
+                                                CustomTheme.fillColor,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    CustomTheme.primaryColor),
+                                          ),
+                                          Positioned(
+                                            left: 0,
+                                            top: 0,
+                                            bottom: 0,
+                                            right: 0,
+                                            child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${formatter.format(_totalBaht)} / ${formatter.format(_maxBaht)}',
+                                                  style: TextStyle(fontSize: 8),
+                                                )),
+                                          ),
+                                        ],
+                                      ))
+                                ]),
+                          )
                         ],
                       ),
               ),

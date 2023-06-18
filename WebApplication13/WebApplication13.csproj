@@ -634,6 +634,7 @@
     <Content Include="Views\Home\ManagePriviledge.cshtml" />
     <Content Include="Views\Home\EditMemberDetail.cshtml" />
     <Content Include="Views\Mobile\Index.cshtml" />
+    <Content Include="Views\Home\UrbanEight.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

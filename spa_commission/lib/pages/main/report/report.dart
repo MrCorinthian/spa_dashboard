@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spa_commission/models/user_report.dart';
+import '../../../models/user_report.dart';
 import '../../../base_client/base_client.dart';
 import '../../../constant_value/constant_value.dart' as constent;
 import '../../../app_theme/app_theme.dart';

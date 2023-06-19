@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
         return ChangeNotifierProvider(
           create: (context) => AuthProvider(),
           child: MaterialApp(
-            title: 'SPA Commission',
+            title: 'Urban Thai Spa',
             theme: themeNotifier.getTheme(),
             home: Consumer<AuthProvider>(
               builder: (context, auth, _) => _loading

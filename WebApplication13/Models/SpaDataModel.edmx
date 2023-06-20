@@ -220,6 +220,8 @@
           <Property Name="MobileUserId" Type="int" Nullable="false" />
           <Property Name="BranchId" Type="int" Nullable="false" />
           <Property Name="TotalBaht" Type="float" Nullable="false" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Longitude" Type="float" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -604,13 +606,13 @@
           <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
           <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
           <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
-          <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
           <EntitySet Name="MobileModules" EntityType="spasystemdbModel.MobileModule" />
           <EntitySet Name="MobileOtps" EntityType="spasystemdbModel.MobileOtp" />
           <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
           <EntitySet Name="MobileErrorLogs" EntityType="spasystemdbModel.MobileErrorLog" />
           <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
           <EntitySet Name="MobileFileAttachments" EntityType="spasystemdbModel.MobileFileAttachment" />
+          <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -878,17 +880,6 @@
           <Property Name="Created" Type="DateTime" Precision="7" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="MobileComTransaction">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MobileUserId" Type="Int32" Nullable="false" />
-          <Property Name="BranchId" Type="Int32" Nullable="false" />
-          <Property Name="TotalBaht" Type="Double" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="MobileModule">
           <Key>
             <PropertyRef Name="Id" />
@@ -982,6 +973,19 @@
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Updated" Type="DateTime" Precision="7" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileComTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+          <Property Name="BranchId" Type="Int32" Nullable="false" />
+          <Property Name="TotalBaht" Type="Double" Nullable="false" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1348,18 +1352,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MobileComTransactions">
-            <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
-              <MappingFragment StoreEntitySet="MobileComTransaction">
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
-                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MobileModules">
             <EntityTypeMapping TypeName="spasystemdbModel.MobileModule">
               <MappingFragment StoreEntitySet="MobileModule">
@@ -1454,6 +1446,20 @@
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="FileSubPath" ColumnName="FileSubPath" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileComTransactions">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
+              <MappingFragment StoreEntitySet="MobileComTransaction">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
                 <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

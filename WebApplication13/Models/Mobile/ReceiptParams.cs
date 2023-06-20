@@ -9,5 +9,7 @@ namespace WebApplication13.Models.Mobile
     {
         public string Token { get; set; }
         public string ReceiptCode { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

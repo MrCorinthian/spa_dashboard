@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
 import '../../../shared_widget//custom_alert_dialog.dart';
@@ -30,6 +31,16 @@ class _QrScanPageState extends State<QrScanPage> {
   Future<void> _loadValue() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (!(LocationPermission.always == permission ||
+        LocationPermission.whileInUse == permission)) {
+      LocationPermission requestPermission =
+          await Geolocator.requestPermission();
+      if (!(LocationPermission.always == requestPermission ||
+          LocationPermission.whileInUse == requestPermission)) {
+        Navigator.of(context).pop();
+      }
+    }
   }
 
   @override
@@ -157,8 +168,23 @@ class _QrScanPageState extends State<QrScanPage> {
 
         await Future.delayed(Duration(seconds: 1));
 
-        var res = await BaseClient().post('Commission/CommissionReceipt',
-            {'receiptCode': this.barcode!.code, 'token': this._token});
+        double? latitude = null;
+        double? longitude = null;
+
+        try {
+          Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          );
+          latitude = position.latitude;
+          longitude = position.longitude;
+        } catch (ex) {}
+
+        var res = await BaseClient().post('Commission/CommissionReceipt', {
+          'receiptCode': this.barcode!.code,
+          'token': this._token,
+          'latitude': "${latitude}",
+          'longitude': "${longitude}"
+        });
         if (res != null) {
           setState(() {
             this._processing = false;

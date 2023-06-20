@@ -274,6 +274,9 @@ namespace WebApplication13.Controllers.Mobile
                                 comTran.MobileUserId = user.Id;
                                 comTran.BranchId = orders.FirstOrDefault().BranchId;
                                 comTran.TotalBaht = totalBaht;
+                                if (receiptParams.Latitude != null) comTran.Latitude = double.Parse(receiptParams.Latitude);
+                                if (receiptParams.Longitude != null) comTran.Longitude = double.Parse(receiptParams.Longitude);
+                                comTran.TotalBaht = totalBaht;
                                 comTran.Created = now;
                                 comTran.CreatedBy = "api.mobile";
                                 db.MobileComTransactions.Add(comTran);

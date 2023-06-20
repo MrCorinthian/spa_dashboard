@@ -72,9 +72,9 @@ namespace WebApplication13.Controllers.Mobile
                             att.MobileUserId = user.Id;
                             att.Type = 1;
                             att.Active = "Y";
-                            att.CreatedBy = data.PhoneNumber;
+                            att.CreatedBy = DataDAL.GetUserName(user.Id);
                             att.Created = now;
-                            att.UpdatedBy = data.PhoneNumber;
+                            att.UpdatedBy = DataDAL.GetUserName(user.Id);
                             att.Updated = now;
 
                             db.MobileFileAttachments.Add(att);

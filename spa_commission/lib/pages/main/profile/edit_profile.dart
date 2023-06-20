@@ -169,6 +169,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
             // validate = false;
             // messages.add("Profile image");
           }
+          if (_IdCardImage != null) {
+            var res =
+                await BaseClient().uploadUserAttachment(_token, _IdCardImage);
+            if (res != null) {
+              ResponsedData response = ResponsedData.fromJson(res);
+              _idCardPathController.text = response.data;
+            } else {
+              // validate = false;
+              // messages.add("ID card image");
+            }
+          } else {
+            // validate = false;
+            // messages.add("ID card image");
+          }
           if (_firstNameController.text.isEmpty) {
             validate = false;
             messages.add("First name");
@@ -328,10 +342,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     controller: _idCardNumberController,
                     keyboardType: 'number',
                   ),
-                  // CustomUploadIdCardImage(
-                  //   requiredField: true,
-                  //   onImageSelected: _handleUploadIdCard,
-                  // ),
+                  CustomUploadIdCardImage(
+                    requiredField: true,
+                    onImageSelected: _handleUploadIdCard,
+                  ),
                   CustomTextField(
                     text: 'Birthday',
                     controller: _birthdayController,

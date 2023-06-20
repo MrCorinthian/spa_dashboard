@@ -44,10 +44,11 @@ class CustomProfileWidgetState extends State<CustomProfileWidget> {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
+      setState(() {
+        _profilePath = '';
+      });
       var res =
           await BaseClient().post('User/GetMoblieUserInfo', {'data': _token});
-      _profilePath =
-          '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
 
       if (res != null) {
         setState(() {
@@ -61,6 +62,8 @@ class CustomProfileWidgetState extends State<CustomProfileWidget> {
           _totalBaht = _userInfo.TotalBaht;
           _maxBaht = _userInfo.MaxBaht;
           _totalPercentage = (_totalBaht / _maxBaht);
+          _profilePath =
+              '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
         });
       }
     }

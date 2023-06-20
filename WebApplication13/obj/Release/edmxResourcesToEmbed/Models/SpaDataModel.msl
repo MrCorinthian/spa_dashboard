@@ -360,18 +360,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="MobileComTransactions">
-      <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
-        <MappingFragment StoreEntitySet="MobileComTransaction">
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="Created" ColumnName="Created" />
-          <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
-          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="MobileModules">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileModule">
         <MappingFragment StoreEntitySet="MobileModule">
@@ -466,6 +454,20 @@
           <ScalarProperty Name="FileName" ColumnName="FileName" />
           <ScalarProperty Name="FileSubPath" ColumnName="FileSubPath" />
           <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileComTransactions">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
+        <MappingFragment StoreEntitySet="MobileComTransaction">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+          <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+          <ScalarProperty Name="TotalBaht" ColumnName="TotalBaht" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>

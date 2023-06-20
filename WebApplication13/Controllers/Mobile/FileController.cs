@@ -217,6 +217,85 @@ namespace WebApplication13.Controllers.Mobile
             return BadRequest("No file uploaded");
         }
 
+        [HttpPost]
+        public async Task<IHttpActionResult> UploadUserAttachment(string token)
+        {
+            if (!string.IsNullOrEmpty(token))
+            {
+                MobileUser user = UserDAL.GetUserByToken(token);
+                if(user != null)
+                {
+                    try
+                    {
+                        using (var db = new spasystemdbEntities())
+                        {
+                            DateTime now = DataDAL.GetDateTimeNow();
+                            if (!Request.Content.IsMimeMultipartContent())
+                            {
+                                return BadRequest("Unsupported media type");
+                            }
+
+                            var provider = new MultipartMemoryStreamProvider();
+                            await Request.Content.ReadAsMultipartAsync(provider);
+
+                            foreach (var file in provider.Contents)
+                            {
+                                if (!string.IsNullOrEmpty(file.Headers.ContentDisposition.FileName))
+                                {
+                                    string subPath = $"UPLOAD\\MOBILE_ATTACHMENT_IMAGES\\";
+                                    string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}{subPath}";
+                                    string originalFileName = Path.GetFileName(file.Headers.ContentDisposition.FileName.Trim('"'));
+                                    string extension = originalFileName.Split('.').LastOrDefault();
+                                    string fileName = GenerateID();
+                                    string filePath = $"{webRootPath}{fileName}.{extension}";
+
+                                    System.IO.Directory.CreateDirectory(webRootPath);
+                                    using (var stream = System.IO.File.Create(filePath))
+                                    {
+                                        await file.CopyToAsync(stream);
+                                        string responsePath = $"{fileName}.{extension}";
+
+                                        //attachment file
+                                        if (!string.IsNullOrEmpty(token))
+                                        {
+                                            string attachmentSubPath = subPath;
+                                            MobileFileAttachment att = new MobileFileAttachment();
+                                            att.FileSubPath = attachmentSubPath;
+                                            att.FileName = responsePath;
+                                            att.FileExtension = extension;
+                                            att.MobileUserId = user.Id;
+                                            att.Type = 1;
+                                            att.Active = "Y";
+                                            att.CreatedBy = DataDAL.GetUserName(user.Id);
+                                            att.Created = now;
+                                            att.UpdatedBy = DataDAL.GetUserName(user.Id);
+                                            att.Updated = now;
+
+                                            db.MobileFileAttachments.Add(att);
+                                            db.SaveChanges();
+                                        }
+
+                                        ResponseData response = new ResponseData();
+                                        response.Success = true;
+                                        response.Data = responsePath;
+
+                                        return Ok(response);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DataDAL.ErrorLog("UploadAttachment", ex.ToString(), DataDAL.GetUserName(user.Id));
+                    }
+                }
+            }
+                
+
+            return BadRequest("No file uploaded");
+        }
+
         [HttpGet]
         public async Task<IHttpActionResult> AttachmentImage(string token)
         {
@@ -229,25 +308,21 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     if (token != null && !string.IsNullOrEmpty(token))
                     {
-                        MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token);
-                        if (loginToken != null)
+                        MobileUser user = UserDAL.GetUserByToken(token);
+                        if (user != null)
                         {
-                            MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId && c.Active == "Y");
-                            if (user != null)
+                            MobileFileAttachment attImage = db.MobileFileAttachments.Where(c => c.MobileUserId == user.Id && c.Type == 1).OrderByDescending(o => o.Created).FirstOrDefault();
+                            if (attImage != null)
                             {
-                                MobileFileAttachment attImage = db.MobileFileAttachments.Where(c => c.MobileUserId == user.Id && c.Type == 1).OrderByDescending(o => o.Created).FirstOrDefault();
-                                if (attImage != null)
-                                {
-                                    string imagePath = $"{webRootPath}{attImage.FileSubPath}{attImage.FileName}";
-                                    string extension = attImage.FileExtension;
+                                string imagePath = $"{webRootPath}{attImage.FileSubPath}{attImage.FileName}";
+                                string extension = attImage.FileExtension;
 
-                                    var stream = File.OpenRead(imagePath);
-                                    response.Content = new StreamContent(stream);
-                                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                                    response.Content.Headers.ContentLength = stream.Length;
+                                var stream = File.OpenRead(imagePath);
+                                response.Content = new StreamContent(stream);
+                                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                                response.Content.Headers.ContentLength = stream.Length;
 
-                                    return ResponseMessage(response);
-                                }
+                                return ResponseMessage(response);
                             }
                         }
                     }

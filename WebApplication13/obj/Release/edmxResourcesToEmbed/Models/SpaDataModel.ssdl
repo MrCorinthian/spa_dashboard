@@ -215,6 +215,8 @@
     <Property Name="MobileUserId" Type="int" Nullable="false" />
     <Property Name="BranchId" Type="int" Nullable="false" />
     <Property Name="TotalBaht" Type="float" Nullable="false" />
+    <Property Name="Latitude" Type="float" />
+    <Property Name="Longitude" Type="float" />
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>

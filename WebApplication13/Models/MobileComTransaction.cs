@@ -18,6 +18,8 @@ namespace WebApplication13.Models
         public int MobileUserId { get; set; }
         public int BranchId { get; set; }
         public double TotalBaht { get; set; }
+        public Nullable<double> Latitude { get; set; }
+        public Nullable<double> Longitude { get; set; }
         public System.DateTime Created { get; set; }
         public string CreatedBy { get; set; }
     }

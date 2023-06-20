@@ -108,13 +108,13 @@
     <EntitySet Name="MobileSettings" EntityType="spasystemdbModel.MobileSetting" />
     <EntitySet Name="sysdiagrams" EntityType="spasystemdbModel.sysdiagram" />
     <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
-    <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
     <EntitySet Name="MobileModules" EntityType="spasystemdbModel.MobileModule" />
     <EntitySet Name="MobileOtps" EntityType="spasystemdbModel.MobileOtp" />
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="MobileErrorLogs" EntityType="spasystemdbModel.MobileErrorLog" />
     <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
     <EntitySet Name="MobileFileAttachments" EntityType="spasystemdbModel.MobileFileAttachment" />
+    <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -382,17 +382,6 @@
     <Property Name="Created" Type="DateTime" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
-  <EntityType Name="MobileComTransaction">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
-    <Property Name="BranchId" Type="Int32" Nullable="false" />
-    <Property Name="TotalBaht" Type="Double" Nullable="false" />
-    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
-    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityType Name="MobileModule">
     <Key>
       <PropertyRef Name="Id" />
@@ -486,5 +475,18 @@
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Updated" Type="DateTime" Precision="7" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileComTransaction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="TotalBaht" Type="Double" Nullable="false" />
+    <Property Name="Latitude" Type="Double" />
+    <Property Name="Longitude" Type="Double" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

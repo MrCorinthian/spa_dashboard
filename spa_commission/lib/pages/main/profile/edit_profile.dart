@@ -8,6 +8,7 @@ import '../../../models/profile_data.dart';
 import '../../../models/mobile_user_info.dart';
 import '../../../models/responsed_data.dart';
 import '../../../app_theme/app_theme.dart';
+import '../../../shared_function/shared_function.dart';
 import '../../../shared_widget/custom_app_bar.dart';
 import '../../../shared_widget/custom_text_field.dart';
 import '../../../shared_widget/custom_dropdown.dart';
@@ -150,7 +151,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   validateData() async {
     var validate = true;
     List<String> messages = [];
-    if (_phoneNumberController.text.isNotEmpty) {
+    if (_phoneNumberController.text.isNotEmpty &&
+        _phoneNumberController.text.length == 10) {
       var response = await BaseClient().post('User/Telephone',
           {"Token": _token, "PhoneNumber": _phoneNumberController.text});
       if (response != null) {
@@ -210,6 +212,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           if (_bankAccountNumberController.text.isEmpty) {
             validate = false;
             messages.add("Bank account number");
+          }
+          if (_emailController.text.isNotEmpty &&
+              !Validator.isValidEmail(_emailController.text)) {
+            validate = false;
+            messages.add("Email");
           }
         } else {
           validate = false;
@@ -337,11 +344,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     controller: _lastNameController,
                   ),
                   CustomTextField(
-                    text: 'ID card number',
-                    requiredField: true,
-                    controller: _idCardNumberController,
-                    keyboardType: 'number',
-                  ),
+                      text: 'ID card number',
+                      requiredField: true,
+                      controller: _idCardNumberController,
+                      keyboardType: 'number',
+                      maxLength: 13),
                   CustomUploadIdCardImage(
                     requiredField: true,
                     onImageSelected: _handleUploadIdCard,
@@ -386,11 +393,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         )
                       : const SizedBox(),
                   CustomTextField(
-                    text: 'Telephone no.',
-                    requiredField: true,
-                    controller: _phoneNumberController,
-                    keyboardType: 'number',
-                  ),
+                      text: 'Telephone no.',
+                      requiredField: true,
+                      controller: _phoneNumberController,
+                      keyboardType: 'number',
+                      maxLength: 10),
                   CustomTextField(
                       text: 'Email address', controller: _emailController),
                   CustomTextField(text: 'Line ID', controller: _lineController),

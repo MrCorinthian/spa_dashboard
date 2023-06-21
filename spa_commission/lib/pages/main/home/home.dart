@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
 import '../../../shared_widget/custom_profile_widget.dart';
@@ -105,6 +106,14 @@ class _HomePageState extends State<HomePage> {
         ),
         GestureDetector(
             onTap: () async {
+              LocationPermission permission =
+                  await Geolocator.checkPermission();
+              if (!(LocationPermission.always == permission ||
+                  LocationPermission.whileInUse == permission)) {
+                LocationPermission requestPermission =
+                    await Geolocator.requestPermission();
+              }
+
               final result = await Navigator.push(
                 context,
                 CustomPageRouteBuilder.bottomToTop(const QrScanPage()),

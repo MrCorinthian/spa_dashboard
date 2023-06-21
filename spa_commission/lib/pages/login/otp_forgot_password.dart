@@ -88,7 +88,8 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
     var validate = true;
     if (_newPasswordController.text.isEmpty ||
         _confirmNewPasswordController.text.isEmpty ||
-        _newPasswordController.text != _confirmNewPasswordController.text) {
+        _newPasswordController.text != _confirmNewPasswordController.text ||
+        _newPasswordController.text.length <= 6) {
       validate = false;
     }
 
@@ -118,7 +119,9 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return buildPopup("The confirm new password does not match");
+          return buildPopup(_newPasswordController.text.length <= 6
+              ? "A new password must be more than 6 character"
+              : "The confirm new password does not match");
         },
       );
     }
@@ -206,6 +209,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
                             requiredField: true,
                             keyboardType: 'number',
                             controller: _phoneNumberController,
+                            maxLength: 10,
                           ),
                           const SizedBox(height: 60),
                           ElevatedButton(
@@ -239,6 +243,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
                             children: [
                               CustomTextField(
                                 text: 'New password',
+                                placeholder: 'more than 6 characters',
                                 requiredField: true,
                                 obscureText: true,
                                 controller: _newPasswordController,

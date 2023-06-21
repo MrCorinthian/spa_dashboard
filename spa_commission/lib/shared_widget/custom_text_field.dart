@@ -11,6 +11,8 @@ class CustomTextField extends StatefulWidget {
   final bool inputDecorationError;
   final bool requiredField;
   final String keyboardType;
+  final int maxLength;
+  final String placeholder;
 
   const CustomTextField({
     Key? key,
@@ -21,6 +23,8 @@ class CustomTextField extends StatefulWidget {
     this.inputDecorationError = true,
     this.requiredField = false,
     this.keyboardType = 'normal',
+    this.maxLength = 200,
+    this.placeholder = '',
   }) : super(key: key);
 
   @override
@@ -93,6 +97,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         const SizedBox(height: 10),
         TextField(
           controller: widget.controller,
+          maxLength: widget.maxLength,
           obscureText: widget.obscureText && hidePassword,
           cursorColor: CustomTheme.backgroundColor,
           onTap: () {
@@ -114,6 +119,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ? InputDecoration(
                   filled: true,
                   fillColor: CustomTheme.fillColor,
+                  hintText: widget.placeholder,
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
@@ -135,6 +141,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               : InputDecoration(
                   filled: true,
                   fillColor: CustomTheme.fillColor,
+                  hintText: widget.placeholder,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.red,

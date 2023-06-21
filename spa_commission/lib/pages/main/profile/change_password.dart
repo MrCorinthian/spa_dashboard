@@ -57,7 +57,8 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
       var validate = true;
       if (_newPasswordController.text.isEmpty ||
           _confirmNewPasswordController.text.isEmpty ||
-          _newPasswordController.text != _confirmNewPasswordController.text) {
+          _newPasswordController.text != _confirmNewPasswordController.text ||
+          _newPasswordController.text.length <= 6) {
         validate = false;
       }
 
@@ -80,17 +81,9 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return CustomAlertDialog(
-              title: 'Message',
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text('The confirm new password does not match.',
-                      style: TextStyle(color: CustomTheme.fillColor))
-                ],
-              ),
-            );
+            return buildPopup(_newPasswordController.text.length <= 6
+                ? "A new password must be more than 6 character"
+                : "The confirm new password does not match");
           },
         );
       }
@@ -98,20 +91,25 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomAlertDialog(
-            title: 'Message',
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('Please check your current password and try again.',
-                    style: TextStyle(color: CustomTheme.fillColor))
-              ],
-            ),
-          );
+          return buildPopup(
+              'Please check your current password and try again.');
         },
       );
     }
+  }
+
+  Widget buildPopup(String message) {
+    return CustomAlertDialog(
+      title: 'Message',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(message.isNotEmpty ? message : 'Please check the information.',
+              style: TextStyle(color: CustomTheme.fillColor))
+        ],
+      ),
+    );
   }
 
   @override
@@ -164,6 +162,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
                 ),
                 CustomTextField(
                   text: 'New password',
+                  placeholder: 'more than 6 characters',
                   requiredField: true,
                   obscureText: true,
                   controller: _newPasswordController,

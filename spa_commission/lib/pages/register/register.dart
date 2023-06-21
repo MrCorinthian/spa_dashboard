@@ -7,6 +7,7 @@ import '../../base_client/base_client.dart';
 import '../../models/register_data.dart';
 import '../../models/responsed_data.dart';
 import '../../app_theme/app_theme.dart';
+import '../../shared_function/shared_function.dart';
 import '../../shared_widget/custom_app_bar.dart';
 import '../../shared_widget/custom_text_field.dart';
 import '../../shared_widget/custom_dropdown.dart';
@@ -118,7 +119,8 @@ class _RegisterPageState extends State<RegisterPage> {
   void _validateData() async {
     var validate = true;
     List<String> messages = [];
-    if (_phoneNumberController.text.isNotEmpty) {
+    if (_phoneNumberController.text.isNotEmpty &&
+        _phoneNumberController.text.length == 10) {
       var response = await BaseClient()
           .post('User/Username', {"data": _phoneNumberController.text});
       if (response != null) {
@@ -180,7 +182,13 @@ class _RegisterPageState extends State<RegisterPage> {
           }
           if (_passwordController.text.isEmpty ||
               _confirmPasswordController.text.isEmpty ||
-              _passwordController.text != _confirmPasswordController.text) {
+              _passwordController.text != _confirmPasswordController.text ||
+              _passwordController.text.length <= 6) {
+            validate = false;
+            messages.add("Password");
+          }
+          if (_emailController.text.isNotEmpty &&
+              !Validator.isValidEmail(_emailController.text)) {
             validate = false;
             messages.add("Password");
           }
@@ -304,11 +312,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _lastNameController,
                   ),
                   CustomTextField(
-                    text: 'ID card number',
-                    requiredField: true,
-                    controller: _idCardNumberController,
-                    keyboardType: 'number',
-                  ),
+                      text: 'ID card number',
+                      requiredField: true,
+                      controller: _idCardNumberController,
+                      keyboardType: 'number',
+                      maxLength: 13),
                   CustomUploadIdCardImage(
                     requiredField: true,
                     onImageSelected: _handleUploadIdCard,
@@ -353,11 +361,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         )
                       : const SizedBox(),
                   CustomTextField(
-                    text: 'Telephone no.',
-                    requiredField: true,
-                    controller: _phoneNumberController,
-                    keyboardType: 'number',
-                  ),
+                      text: 'Telephone no.',
+                      requiredField: true,
+                      controller: _phoneNumberController,
+                      keyboardType: 'number',
+                      maxLength: 10),
                   CustomTextField(
                       text: 'Email address', controller: _emailController),
                   CustomTextField(text: 'Line ID', controller: _lineController),
@@ -390,6 +398,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: 'number'),
                   CustomTextField(
                       text: 'Password',
+                      placeholder: 'more than 6 characters',
                       requiredField: true,
                       obscureText: true,
                       controller: _passwordController),

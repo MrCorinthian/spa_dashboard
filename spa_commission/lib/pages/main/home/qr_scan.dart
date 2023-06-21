@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
-import '../../../shared_widget//custom_alert_dialog.dart';
+import '../../../shared_widget/custom_alert_dialog.dart';
 
 class QrScanPage extends StatefulWidget {
   const QrScanPage({super.key});
@@ -31,16 +31,16 @@ class _QrScanPageState extends State<QrScanPage> {
   Future<void> _loadValue() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (!(LocationPermission.always == permission ||
-        LocationPermission.whileInUse == permission)) {
-      LocationPermission requestPermission =
-          await Geolocator.requestPermission();
-      if (!(LocationPermission.always == requestPermission ||
-          LocationPermission.whileInUse == requestPermission)) {
-        Navigator.of(context).pop();
-      }
-    }
+    // LocationPermission permission = await Geolocator.checkPermission();
+    // if (!(LocationPermission.always == permission ||
+    //     LocationPermission.whileInUse == permission)) {
+    //   LocationPermission requestPermission =
+    //       await Geolocator.requestPermission();
+    //   if (!(LocationPermission.always == requestPermission ||
+    //       LocationPermission.whileInUse == requestPermission)) {
+    //     Navigator.of(context).pop();
+    //   }
+    // }
   }
 
   @override

@@ -131,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   text: 'Telephone no.',
                   controller: _phoneController,
                   keyboardType: 'number',
+                  maxLength: 10,
                 ),
                 CustomTextField(
                     text: 'Password',

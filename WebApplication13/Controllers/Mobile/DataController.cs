@@ -72,8 +72,8 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-                if (noms != null)
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
                     {
@@ -208,6 +208,47 @@ namespace WebApplication13.Controllers.Mobile
                 }
             }
             catch (Exception ex) { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetTierList()
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        List<string> result = new List<string>();
+                        List<string> query = db.MobileComTiers.Where(c => c.Active == "Y").OrderBy(o => o.ComBahtFrom).Select(s => s.TierName).ToList();
+                        if (query.Count > 0)
+                        {
+                            result.Add("All");
+                            result.AddRange(query);
+                            return Ok(result);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetBranchList()
+        {
+            List<Branch> query = DataDAL.GetBranchList();
+            if (query.Count > 0)
+            {
+                List<string> result = new List<string>();
+                result.Add("All");
+                result.AddRange(query.Select(s => s.Name).ToList());
+                return Ok(result);
+            }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }

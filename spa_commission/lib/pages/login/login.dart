@@ -74,10 +74,27 @@ class _LoginPageState extends State<LoginPage> {
         'password': _passwordController.text.trim()
       });
       if (res != null) {
-        setState(() {
-          _loading = false;
-          Provider.of<AuthProvider>(context, listen: false).login(res);
-        });
+        ResponsedData resLogin = ResponsedData.fromJson(res);
+        if (resLogin.success) {
+          setState(() {
+            _loading = false;
+            Provider.of<AuthProvider>(context, listen: false).login(res);
+          });
+        } else if (!resLogin.success) {
+          setState(() {
+            _loading = false;
+          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CustomAlertDialog(
+                title: 'Message',
+                child: Text(resLogin.message,
+                    style: TextStyle(color: CustomTheme.fillColor)),
+              );
+            },
+          );
+        }
       } else {
         setState(() {
           _loading = false;
@@ -162,33 +179,59 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text('Sign in',
                       style: CustomTheme.buttonTextStyle_fillColor),
                 ),
-              ],
-            )),
-        bottomNavigationBar: Container(
-          padding: CustomTheme.paddingPage,
-          child: ElevatedButton(
-            style: CustomTheme.buttonStyle_secondaryColor,
-            onPressed: () {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 500),
-                  transitionsBuilder: (context, animation, _, child) {
-                    return SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(-1, 0),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: child,
+                const SizedBox(
+                  height: 40,
+                ),
+                ElevatedButton(
+                  style: CustomTheme.buttonStyle_secondaryColor,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 500),
+                        transitionsBuilder: (context, animation, _, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          );
+                        },
+                        pageBuilder: (_, __, ___) => RegisterPage(),
+                      ),
                     );
                   },
-                  pageBuilder: (_, __, ___) => RegisterPage(),
-                ),
-              );
-            },
-            child: const Text('Register',
-                style: CustomTheme.buttonTextStyle_fillColor),
-          ),
-        ),
+                  child: const Text('Register',
+                      style: CustomTheme.buttonTextStyle_fillColor),
+                )
+              ],
+            )),
+        // bottomNavigationBar: Container(
+        //   padding: CustomTheme.paddingPage,
+        //   child: ElevatedButton(
+        //     style: CustomTheme.buttonStyle_secondaryColor,
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         PageRouteBuilder(
+        //           transitionDuration: const Duration(milliseconds: 500),
+        //           transitionsBuilder: (context, animation, _, child) {
+        //             return SlideTransition(
+        //               position: Tween<Offset>(
+        //                 begin: const Offset(-1, 0),
+        //                 end: Offset.zero,
+        //               ).animate(animation),
+        //               child: child,
+        //             );
+        //           },
+        //           pageBuilder: (_, __, ___) => RegisterPage(),
+        //         ),
+        //       );
+        //     },
+        //     child: const Text('Register',
+        //         style: CustomTheme.buttonTextStyle_fillColor),
+        //   ),
+        // ),
       );
 }

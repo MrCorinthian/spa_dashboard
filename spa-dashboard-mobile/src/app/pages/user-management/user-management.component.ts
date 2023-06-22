@@ -189,8 +189,8 @@ export class UserManagementComponent {
         this.selectedEdit.BankAccountNumber = value;
       } else if (type === 'CompanyName') {
         this.selectedEdit.CompanyName = value;
-      } else if (type === 'CompanyTexId') {
-        this.selectedEdit.CompanyTexId = value;
+      } else if (type === 'CompanyTaxId') {
+        this.selectedEdit.CompanyTaxId = value;
       } else if (type === 'Nationality') {
         this.selectedEdit.Nationality = value;
       } else if (type === 'Address') {

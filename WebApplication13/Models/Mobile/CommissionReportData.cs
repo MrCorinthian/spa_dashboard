@@ -16,6 +16,7 @@ namespace WebApplication13.Models.Mobile
         public double Commission { get; set; }
         public int BranchId { get; set; }
         public string BranchName { get; set; }
+        public string CompanyName { get; set; }
         public DateTime Created { get; set; }
         public string CreatedBy { get; set; }
     }

@@ -3,6 +3,7 @@
   <div class="side__container">
     <div class="column__container">
       <div class="filter__container">
+        <div>Month</div>
         <autocomplete
           placeholder="month"
           [value]="filter.month"
@@ -10,6 +11,7 @@
           [sortOption]="false"
           (onChange)="onChange('filterMonth', $event)"
         ></autocomplete>
+        <div>Year</div>
         <autocomplete
           placeholder="year"
           [value]="filter.year"
@@ -17,6 +19,7 @@
           [sortOption]="false"
           (onChange)="onChange('filterYear', $event)"
         ></autocomplete>
+        <div>Payment status</div>
         <autocomplete
           placeholder="Payment status"
           [value]="filter.status"
@@ -24,13 +27,23 @@
           [sortOption]="false"
           (onChange)="onChange('filterStatus', $event)"
         ></autocomplete>
+        <div>Type of usage</div>
+        <autocomplete
+          placeholder="Type of usage"
+          [value]="filter.companyTypeOfUsage"
+          [options]="companyTypeOfUsages"
+          [sortOption]="false"
+          (onChange)="onChange('filterCompanyTypeOfUsage', $event)"
+        ></autocomplete>
       </div>
       <div class="filter__container">
         <button
           [style.backgroundColor]="colors.greenPrimary"
           (click)="getDataTable(1)"
         >
-          Search
+          Search</button
+        ><button [style.backgroundColor]="colors.bluePrimary">
+          Export invoice
         </button>
       </div>
     </div>
@@ -41,6 +54,7 @@
           <th>Profile image</th>
           <th>First name</th>
           <th>Family name</th>
+          <th>Company</th>
           <th>Telephone no.</th>
           <th>Tier</th>
           <th>Commission</th>
@@ -60,6 +74,16 @@
           </td>
           <td class="td__center">{{ item.FirstName }}</td>
           <td class="td__center">{{ item.LastName }}</td>
+          <td class="td__center">
+            <div [style.display]="'flex'" [style.flexDirection]="'column'">
+              <div [style.padding]="'0.2rem 0 0.2rem 0'">
+                {{ item.CompanyName }}
+              </div>
+              <div [style.padding]="'0.2rem 0 0.2rem 0'">
+                {{ format("bank", item.CompanyTaxId) }}
+              </div>
+            </div>
+          </td>
           <td class="td__center">{{ format("phone", item.PhoneNumber) }}</td>
           <td class="td__center">{{ item.Tier }}</td>
           <td class="td__center">{{ item.Commission | number : "1.2-2" }}</td>

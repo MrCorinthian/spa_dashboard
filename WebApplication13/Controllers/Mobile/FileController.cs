@@ -146,7 +146,7 @@ namespace WebApplication13.Controllers.Mobile
             string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
             try
             {
-                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                var noms = UserDAL.UserLoginAuth();
                 if (noms != null)
                 {
                     using (var db = new spasystemdbEntities())

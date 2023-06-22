@@ -14,6 +14,8 @@ namespace WebApplication13.Models.Mobile
         public string PhoneNumber { get; set; }
         public string Tier { get; set; }
         public double Commission { get; set; }
+        public string CompanyName { get; set; }
+        public string CompanyTaxId { get; set; }
         public string BankAccount { get; set; }
         public string BankAccountNumber { get; set; }
         public bool Payment { get; set; }

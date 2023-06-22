@@ -8,6 +8,12 @@ namespace WebApplication13.Models.Mobile
     public class ResponseData
     {
         public bool Success { get; set; }
+        public string Message { get; set; }
         public string Data { get; set; }
+
+        public ResponseData()
+        {
+            this.Message = "";
+        }
     }
 }

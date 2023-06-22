@@ -8,6 +8,7 @@ import {
   GenerateMonthList,
   GenerateYearList,
   GeneratePaymentStatusList,
+  GenerateCompanyTypeOfUsageList,
 } from '../../share-functions/generate-functions';
 
 @Component({
@@ -18,10 +19,16 @@ import {
 export class PaymentComponent {
   colors: any = Colors;
   now: Date = new Date();
-  filter: any = { month: '', year: '', status: 'All' };
+  filter: any = {
+    month: this.now.toLocaleString('default', { month: 'long' }),
+    year: `${this.now.getFullYear()}`,
+    status: 'All',
+    companyTypeOfUsage: 'All',
+  };
   months: Array<string> = GenerateMonthList();
   years: Array<string> = GenerateYearList();
   status: Array<string> = GeneratePaymentStatusList();
+  companyTypeOfUsages: Array<string> = GenerateCompanyTypeOfUsageList();
 
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
@@ -80,6 +87,8 @@ export class PaymentComponent {
         this.filter.year = value;
       } else if (type === 'filterStatus') {
         this.filter.status = value;
+      } else if (type === 'filterCompanyTypeOfUsage') {
+        this.filter.companyTypeOfUsage = value;
       }
     }
   }

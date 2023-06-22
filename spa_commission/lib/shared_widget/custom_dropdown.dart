@@ -85,7 +85,10 @@ class _CustomDropdownState extends State<CustomDropdown> {
             style:
                 const TextStyle(fontSize: 14, color: CustomTheme.darkGreyColor),
           ),
-        )
+        ),
+        const SizedBox(
+          height: 20,
+        ),
       ],
     );
   }

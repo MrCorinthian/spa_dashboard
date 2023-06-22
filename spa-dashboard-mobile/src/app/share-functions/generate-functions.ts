@@ -28,3 +28,6 @@ export const GenerateStatusList = () => {
 export const GeneratePaymentStatusList = () => {
   return ['All', 'Completed', 'Not completed'];
 };
+export const GenerateCompanyTypeOfUsageList = () => {
+  return ['All', 'Individual', 'Company'];
+};

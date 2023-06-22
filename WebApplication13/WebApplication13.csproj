@@ -276,8 +276,11 @@
     <Content Include=".env" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy1.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />

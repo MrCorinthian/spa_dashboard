@@ -48,8 +48,9 @@ namespace WebApplication13.Controllers.Mobile
                         if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
                         if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
                         if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                        if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
                         if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                        if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
+                        if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
 
                         user.Active = "Y";
                         user.CreatedBy = DataDAL.GetUserNameByName(user.FirstName, user.LastName);

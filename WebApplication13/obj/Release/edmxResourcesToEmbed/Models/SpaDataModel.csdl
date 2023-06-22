@@ -110,11 +110,11 @@
     <EntitySet Name="MobileComPayments" EntityType="spasystemdbModel.MobileComPayment" />
     <EntitySet Name="MobileModules" EntityType="spasystemdbModel.MobileModule" />
     <EntitySet Name="MobileOtps" EntityType="spasystemdbModel.MobileOtp" />
-    <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="MobileErrorLogs" EntityType="spasystemdbModel.MobileErrorLog" />
     <EntitySet Name="Receipts" EntityType="spasystemdbModel.Receipt" />
     <EntitySet Name="MobileFileAttachments" EntityType="spasystemdbModel.MobileFileAttachment" />
     <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
+    <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -405,37 +405,6 @@
     <Property Name="Updated" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
-  <EntityType Name="MobileUser">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="TitleName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-    <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="IdCardNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Nationality" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Birthday" Type="DateTime" Precision="0" />
-    <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-    <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Occupation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="LineId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="WhatsAppId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="CompanyName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="CompanyTexId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="BankAccount" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="BankAccountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-    <Property Name="ProfilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-    <Property Name="Created" Type="DateTime" Precision="7" />
-    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="Updated" Type="DateTime" Precision="7" />
-    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityType Name="MobileErrorLog">
     <Key>
       <PropertyRef Name="Id" />
@@ -488,5 +457,37 @@
     <Property Name="Longitude" Type="Double" />
     <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TitleName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="IdCardNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Nationality" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Birthday" Type="DateTime" Precision="0" />
+    <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Occupation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LineId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="WhatsAppId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyTypeOfUsage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyTaxId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="BankAccount" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="BankAccountNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ProfilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Updated" Type="DateTime" Precision="7" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

@@ -45,3 +45,7 @@ input mdb-date-picker .md-form input[type="text"]:focus:not([readonly]) {
   box-shadow: 0 1px 0 0 green !important;
   border-bottom: 1px solid green !important;
 }
+
+mat-pseudo-checkbox {
+  display: none !important;
+}

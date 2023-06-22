@@ -38,8 +38,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _lineController = TextEditingController();
   final TextEditingController _whatsappController = TextEditingController();
+  final TextEditingController _companyTypeOfUsageController =
+      TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
-  final TextEditingController _companyTexController = TextEditingController();
+  final TextEditingController _companyTaxController = TextEditingController();
   final TextEditingController _bankAccountController = TextEditingController();
   final TextEditingController _bankAccountNumberController =
       TextEditingController();
@@ -54,6 +56,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   List<String> _province = [];
   List<String> _bank = [];
   List<String> _occupation = [];
+  List<String> _companyTypeOfUsage = [];
 
   @override
   void dispose() {
@@ -95,6 +98,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _occupation = List<String>.from(json.decode(resOccupation));
         });
       }
+      final rescompanyTypeOfUsage = await BaseClient()
+          .get('Data/GetMobileOptionSetting?code=COM_TYPE_OF_USAGE');
+      if (rescompanyTypeOfUsage != null) {
+        setState(() {
+          _companyTypeOfUsage =
+              List<String>.from(json.decode(rescompanyTypeOfUsage));
+        });
+      }
 
       var res =
           await BaseClient().post('User/GetMoblieUserInfo', {'data': _token});
@@ -117,8 +128,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _emailController.text = userInfo.Email ?? '';
           _lineController.text = userInfo.LineId ?? '';
           _whatsappController.text = userInfo.WhatsAppId ?? '';
+          _companyTypeOfUsageController.text =
+              userInfo.CompanyTypeOfUsage ?? '';
           _companyNameController.text = userInfo.CompanyName ?? '';
-          _companyTexController.text = userInfo.CompanyTexId ?? '';
+          _companyTaxController.text = userInfo.CompanyTaxId ?? '';
           _bankAccountController.text = userInfo.BankAccount ?? '';
           _bankAccountNumberController.text = userInfo.BankAccountNumber ?? '';
 
@@ -205,6 +218,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
             validate = false;
             messages.add("Occupation");
           }
+          if (_companyTypeOfUsageController.text == "Company") {
+            if (_companyNameController.text.isEmpty) {
+              validate = false;
+              messages.add("Company name");
+            }
+            if (_companyTaxController.text.isEmpty) {
+              validate = false;
+              messages.add("Company Tax");
+            }
+          }
           if (_bankAccountController.text.isEmpty) {
             validate = false;
             messages.add("Bank name");
@@ -276,8 +299,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       data.Email = _emailController.text;
       data.LineId = _lineController.text;
       data.WhatsAppId = _whatsappController.text;
+      data.CompanyTypeOfUsage = _companyTypeOfUsageController.text;
       data.CompanyName = _companyNameController.text;
-      data.CompanyTexId = _companyTexController.text;
+      data.CompanyTaxId = _companyTaxController.text;
       data.BankAccount = _bankAccountController.text;
       data.BankAccountNumber = _bankAccountNumberController.text;
       data.ProfilePath = _profilePathController.text;
@@ -403,13 +427,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   CustomTextField(text: 'Line ID', controller: _lineController),
                   CustomTextField(
                       text: 'Whatsapp ID', controller: _whatsappController),
-                  CustomTextField(
-                      text: 'Company name', controller: _companyNameController),
-                  CustomTextField(
-                    text: 'Company tax ID',
-                    controller: _companyTexController,
-                    keyboardType: 'number',
-                  ),
+                  _companyTypeOfUsage.length > 0
+                      ? CustomDropdown(
+                          text: 'Type of usage',
+                          requiredField: true,
+                          options: _companyTypeOfUsage,
+                          selected: _companyTypeOfUsageController.text,
+                          onChanged: (value) {
+                            setState(() {
+                              _companyTypeOfUsageController.text = value ?? '';
+                            });
+                          },
+                        )
+                      : const SizedBox(),
+                  _companyTypeOfUsageController.text == "Company"
+                      ? CustomTextField(
+                          text: 'Company name',
+                          requiredField:
+                              _companyTypeOfUsageController.text == "Company",
+                          controller: _companyNameController)
+                      : const SizedBox(),
+                  _companyTypeOfUsageController.text == "Company"
+                      ? CustomTextField(
+                          text: 'Company tax ID',
+                          requiredField:
+                              _companyTypeOfUsageController.text == "Company",
+                          controller: _companyTaxController,
+                          keyboardType: 'number',
+                        )
+                      : const SizedBox(),
                   _bank.length > 0
                       ? CustomDropdown(
                           text: 'Bank name',

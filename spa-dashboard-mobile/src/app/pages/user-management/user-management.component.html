@@ -85,7 +85,7 @@
             {{ format("bank", item.BankAccountNumber) }}
           </td>
           <td class="td__center">{{ item.CompanyName }}</td>
-          <td class="td__center">{{ format("idCard", item.CompanyTexId) }}</td>
+          <td class="td__center">{{ format("idCard", item.CompanyTaxId) }}</td>
           <td class="td__center">{{ item.Nationality }}</td>
           <td class="td__center">
             {{ item.Active === "Y" ? "Enable" : "Disable" }}
@@ -379,12 +379,12 @@
           <tr>
             <td class="td__topic">Company tax ID</td>
             <td *ngIf="!isEdit">
-              {{ format("idCard", selected.CompanyTexId) }}
+              {{ format("idCard", selected.CompanyTaxId) }}
             </td>
             <td *ngIf="isEdit" class="td__data">
               <input-text
-                [value]="selectedEdit.CompanyTexId"
-                (onChange)="onChange('CompanyTexId', $event)"
+                [value]="selectedEdit.CompanyTaxId"
+                (onChange)="onChange('CompanyTaxId', $event)"
               ></input-text>
             </td>
           </tr>

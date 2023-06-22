@@ -1,10 +1,12 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseUrl } from '../../const-value/base-url';
+import { firstValueFrom } from 'rxjs';
 import * as moment from 'moment';
 import { Colors } from '../../const-value/colors';
 import { Format } from '../../share-functions/format-functions';
 import { DataIndex } from '../../models/data-index';
+import { GenerateCompanyTypeOfUsageList } from '../../share-functions/generate-functions';
 
 @Component({
   selector: 'report',
@@ -20,7 +22,14 @@ export class ReportComponent {
     periodFrom: null,
     periodTo: null,
     periodFromTo: null,
+    companyTypeOfUsage: 'All',
+    companyName: '',
+    tierName: 'All',
+    branchName: 'All',
   };
+  companyTypeOfUsages: Array<string> = GenerateCompanyTypeOfUsageList();
+  tiers: Array<string> = [];
+  branches: Array<string> = [];
 
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
@@ -28,7 +37,11 @@ export class ReportComponent {
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    debugger;
+    this.tiers = await this.getTierList();
+    this.branches = await this.getBranchList();
+
     this.getDataTable(1);
   }
 
@@ -66,12 +79,31 @@ export class ReportComponent {
           this.filter.periodFrom = fromTo[0];
           this.filter.periodTo = fromTo[1];
         }
+      } else if (type === 'filterCompanyTypeOfUsages') {
+        this.filter.companyTypeOfUsage = value;
+      } else if (type === 'filterCompanyName') {
+        this.filter.companyName = value;
+      } else if (type === 'filterTierName') {
+        this.filter.tierName = value;
+      } else if (type === 'filterBranchName') {
+        this.filter.branchName = value;
       }
     } else if (type === 'filterPeriod') {
       this.filter.periodFromTo = null;
       this.filter.periodFrom = null;
       this.filter.periodTo = null;
     }
+  }
+
+  async getTierList() {
+    return await firstValueFrom(
+      this.http.get<Array<string>>(`${BaseUrl}Data/GetTierList`)
+    );
+  }
+  async getBranchList() {
+    return await firstValueFrom(
+      this.http.get<Array<string>>(`${BaseUrl}Data/GetBranchList`)
+    );
   }
 
   dateFormat(date: Date | null, format: string) {

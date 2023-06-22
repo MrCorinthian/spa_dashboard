@@ -128,13 +128,14 @@ class CustomProfileWidgetState extends State<CustomProfileWidget> {
                                   Row(
                                     children: [
                                       const Text(
-                                        'Commission tier : ',
+                                        'Tier : ',
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: CustomTheme.darkGreyColor),
                                       ),
                                       Container(
-                                        width: 60,
+                                        padding:
+                                            EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         alignment: Alignment.center,
                                         color: Color(int.parse(
                                             _tierColor ?? '000000',

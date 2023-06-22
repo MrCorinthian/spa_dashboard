@@ -296,8 +296,9 @@
     <Property Name="Email" Type="nvarchar" MaxLength="100" />
     <Property Name="LineId" Type="nvarchar" MaxLength="50" />
     <Property Name="WhatsAppId" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyTypeOfUsage" Type="nvarchar" MaxLength="50" />
     <Property Name="CompanyName" Type="nvarchar" MaxLength="200" />
-    <Property Name="CompanyTexId" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyTaxId" Type="nvarchar" MaxLength="50" />
     <Property Name="BankAccount" Type="nvarchar" MaxLength="200" />
     <Property Name="BankAccountNumber" Type="nvarchar" MaxLength="20" />
     <Property Name="ProfilePath" Type="nvarchar(max)" />

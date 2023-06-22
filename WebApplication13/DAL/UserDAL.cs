@@ -93,13 +93,14 @@ namespace WebApplication13.DAL
                         mobileUserInfo.Email = user.Email;
                         mobileUserInfo.LineId = user.LineId;
                         mobileUserInfo.WhatsAppId = user.WhatsAppId;
+                        mobileUserInfo.CompanyTypeOfUsage = user.CompanyTypeOfUsage;
                         mobileUserInfo.CompanyName = user.CompanyName;
-                        mobileUserInfo.CompanyTexId = user.CompanyTexId;
+                        mobileUserInfo.CompanyTaxId = user.CompanyTaxId;
                         mobileUserInfo.BankAccount = user.BankAccount;
                         mobileUserInfo.BankAccountNumber = user.BankAccountNumber;
                         if (!string.IsNullOrEmpty(user.ProfilePath)) mobileUserInfo.ProfilePath = $"File/ProfileImageWeb/{user.Id}";
 
-                        List<MobileComTier> comTiers = db.MobileComTiers.ToList();
+                        List<MobileComTier> comTiers = db.MobileComTiers.OrderBy(o => o.ComBahtFrom).ToList();
                         List<double> userComs = db.MobileComTransactions.Where(c => c.MobileUserId == user.Id).Select(s => s.TotalBaht).ToList();
                         double comTotal = userComs.Sum();
                         foreach (MobileComTier comTier in comTiers)

@@ -53,10 +53,10 @@ namespace WebApplication13.Models
         public virtual DbSet<MobileComPayment> MobileComPayments { get; set; }
         public virtual DbSet<MobileModule> MobileModules { get; set; }
         public virtual DbSet<MobileOtp> MobileOtps { get; set; }
-        public virtual DbSet<MobileUser> MobileUsers { get; set; }
         public virtual DbSet<MobileErrorLog> MobileErrorLogs { get; set; }
         public virtual DbSet<Receipt> Receipts { get; set; }
         public virtual DbSet<MobileFileAttachment> MobileFileAttachments { get; set; }
         public virtual DbSet<MobileComTransaction> MobileComTransactions { get; set; }
+        public virtual DbSet<MobileUser> MobileUsers { get; set; }
     }
 }

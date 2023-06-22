@@ -19,13 +19,18 @@ import { ReportBranch } from '../../models/report-branch';
 })
 export class CommissionDashboardComponent {
   @ViewChild('chartCanvas', { static: true }) chartCanvas!: ElementRef;
+
+  now: Date = new Date();
   colors: any = Colors;
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
   currentIndex: number = 1;
   branchChart: any;
 
-  filter: any = { month: '', year: '' };
+  filter: any = {
+    month: this.now.toLocaleString('default', { month: 'long' }),
+    year: `${this.now.getFullYear()}`,
+  };
   months: Array<string> = GenerateMonthList();
   years: Array<string> = GenerateYearList();
 
@@ -35,15 +40,6 @@ export class CommissionDashboardComponent {
 
   ngOnInit() {
     this.getData();
-
-    // this.http
-    //   .get<Array<number>>(`${BaseUrl}User/GetMoblieUserIndex`)
-    //   .subscribe((res) => {
-    //     if (res && res.length > 0) {
-    //       this.indexTable = res;
-    //       this.getDataTable(res[0]);
-    //     }
-    //   });
   }
 
   getData() {

@@ -19,5 +19,8 @@ namespace WebApplication13.Models.Mobile
         public string status { get; set; }
         public string periodFrom { get; set; }
         public string periodTo { get; set; }
+        public string companyTypeOfUsage { get; set; }
+        public string companyName { get; set; }
+        public string branchName { get; set; }
     }
 }

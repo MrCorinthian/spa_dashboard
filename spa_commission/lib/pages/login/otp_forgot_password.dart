@@ -89,7 +89,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
     if (_newPasswordController.text.isEmpty ||
         _confirmNewPasswordController.text.isEmpty ||
         _newPasswordController.text != _confirmNewPasswordController.text ||
-        _newPasswordController.text.length <= 6) {
+        _newPasswordController.text.length < 6) {
       validate = false;
     }
 
@@ -119,7 +119,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return buildPopup(_newPasswordController.text.length <= 6
+          return buildPopup(_newPasswordController.text.length < 6
               ? "A new password must be more than 6 character"
               : "The confirm new password does not match");
         },

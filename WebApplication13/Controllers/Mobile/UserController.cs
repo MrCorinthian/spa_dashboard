@@ -33,10 +33,20 @@ namespace WebApplication13.Controllers.Mobile
                     MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.Phone && c.Password == enPassword);
                     if (user != null)
                     {
-                        token = UserDAL.CreateLoginToken(user.Id);
+                        if (user.Active == "Y")
+                        {
+                            token = UserDAL.CreateLoginToken(user.Id);
 
-                        response.Success = true;
-                        response.Data = token;
+                            response.Success = true;
+                            response.Data = token;
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "This account has been suspended. Contact at the shop for more information.";
+                            response.Data = token;
+                        }
+
                         return Ok(response);
                     }
                 }
@@ -131,8 +141,9 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
                             if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
                             if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                            if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
                             if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                            if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
+                            if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
                             if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
                             if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
@@ -404,7 +415,7 @@ namespace WebApplication13.Controllers.Mobile
                                           LineId = s.LineId,
                                           WhatsAppId = s.WhatsAppId,
                                           CompanyName = s.CompanyName,
-                                          CompanyTexId = s.CompanyTexId,
+                                          CompanyTaxId = s.CompanyTaxId,
                                           BankAccount = s.BankAccount,
                                           BankAccountNumber = s.BankAccountNumber,
                                           ProfilePath = s.ProfilePath,
@@ -478,7 +489,7 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.LineId)) newUser.LineId = data.LineId;
                             if (!string.IsNullOrEmpty(data.WhatsAppId)) newUser.WhatsAppId = data.WhatsAppId;
                             if (!string.IsNullOrEmpty(data.CompanyName)) newUser.CompanyName = data.CompanyName;
-                            if (!string.IsNullOrEmpty(data.CompanyTexId)) newUser.CompanyTexId = data.CompanyTexId;
+                            if (!string.IsNullOrEmpty(data.CompanyTaxId)) newUser.CompanyTaxId = data.CompanyTaxId;
                             if (!string.IsNullOrEmpty(data.BankAccount)) newUser.BankAccount = data.BankAccount;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) newUser.BankAccountNumber = data.BankAccountNumber;
                             if (!string.IsNullOrEmpty(data.ProfilePath)) newUser.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
@@ -530,7 +541,7 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
                             if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
                             if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                            if (!string.IsNullOrEmpty(data.CompanyTexId)) user.CompanyTexId = data.CompanyTexId;
+                            if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
                             if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
                             if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";

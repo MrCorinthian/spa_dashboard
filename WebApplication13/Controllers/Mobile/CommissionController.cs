@@ -105,32 +105,42 @@ namespace WebApplication13.Controllers.Mobile
                             }
                         }
 
-                        List<MobileUser> users = db.MobileUsers.Where(c => filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true)).OrderBy(o => o.Id).Skip(tableMaxRow * (filter.page-1)).Take(tableMaxRow).ToList();
+                        List<MobileUser> users = db.MobileUsers.Where(c => 
+                                                    filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true)
+                                                    && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? filter.companyTypeOfUsage == c.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true)
+                                                    ).OrderBy(o => o.Id).Skip(tableMaxRow * (filter.page-1)).Take(tableMaxRow).ToList();
                         foreach (MobileUser user in users)
                         {
-                            PaymentData pData = new PaymentData();
-                            pData.Id = user.Id;
-                            pData.FirstName = user.FirstName;
-                            pData.LastName = user.LastName;
-                            pData.ProfilePath = DataDAL.GetProfilePath(user.ProfilePath);
-                            pData.PhoneNumber = user.PhoneNumber;
-                            pData.BankAccount = user.BankAccount;
-                            pData.BankAccountNumber = user.BankAccountNumber;
-                            MobileComPayment paymentStatus = db.MobileComPayments.FirstOrDefault(c => c.MobileUserId == user.Id && c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month);
-                            pData.PaymentStatus = paymentStatus != null ? "Y" : "N";
-                            pData.Payment = monthYear.Year <= now.Year && monthYear.Month < now.Month ? true : false;
-
-                            List<MobileComTransaction> comTrans = db.MobileComTransactions.Where(c => 
+                            List<MobileComTransaction> comTrans = db.MobileComTransactions.Where(c =>
                                 c.MobileUserId == user.Id
                                 && c.Created.Year == monthYear.Year
                                 && c.Created.Month == monthYear.Month
                                 ).ToList();
+                            if (comTrans.Count > 0)
+                            {
+                                PaymentData pData = new PaymentData();
+                                pData.Id = user.Id;
+                                pData.FirstName = user.FirstName;
+                                pData.LastName = user.LastName;
+                                pData.ProfilePath = DataDAL.GetProfilePath(user.ProfilePath);
+                                pData.PhoneNumber = user.PhoneNumber;
+                                if (user.CompanyTypeOfUsage == "Company")
+                                {
+                                    pData.CompanyName = user.CompanyName;
+                                    pData.CompanyTaxId = user.CompanyTaxId;
+                                }
+                                pData.BankAccount = user.BankAccount;
+                                pData.BankAccountNumber = user.BankAccountNumber;
+                                MobileComPayment paymentStatus = db.MobileComPayments.FirstOrDefault(c => c.MobileUserId == user.Id && c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month);
+                                pData.PaymentStatus = paymentStatus != null ? "Y" : "N";
+                                pData.Payment = monthYear.Year <= now.Year && monthYear.Month < now.Month ? true : false;
 
-                            double sumCom = comTrans.Sum(s => s.TotalBaht);
-                            pData.ComTrans = comTrans;
-                            pData.Commission = sumCom;
-                            pData.Tier = UserDAL.GetUserTier(user.Id)?.TierName;
-                            dataIndex.Data.Add(pData);
+                                double sumCom = comTrans.Sum(s => s.TotalBaht);
+                                pData.ComTrans = comTrans;
+                                pData.Commission = sumCom;
+                                pData.Tier = UserDAL.GetUserTier(user.Id)?.TierName;
+                                dataIndex.Data.Add(pData);
+                            }
                         }
 
                         return Ok(dataIndex);
@@ -200,19 +210,13 @@ namespace WebApplication13.Controllers.Mobile
                         List<int> comTranIds = (from comTran in db.MobileComTransactions
                                                join t2 in db.MobileUsers on comTran.MobileUserId equals t2.Id into g1
                                                from user in g1.DefaultIfEmpty()
-                                               where !string.IsNullOrEmpty(filter.firstName) ? user.FirstName.Contains(filter.firstName):true
+                                               where !string.IsNullOrEmpty(filter.firstName) ? user.FirstName.Contains(filter.firstName) : true
                                                && !string.IsNullOrEmpty(filter.lastName) ? user.LastName.Contains(filter.lastName) : true
                                                && !string.IsNullOrEmpty(filter.phone) ? user.PhoneNumber.Contains(filter.phone) : true
-                                               && (filterFrom != null && filterTo != null) ? comTran.Created >= filterFrom && comTran.Created < filterTo : true
-                                               select comTran.Id).ToList();
-                        decimal rowPerPage = comTranIds.Count / tableMaxRow;
-                        if (rowPerPage > 0)
-                        {
-                            for (int i = 0; i < rowPerPage; i++)
-                            {
-                                dataIndex.Indices.Add(i + 1);
-                            }
-                        }
+                                               && filterFrom != null && filterTo != null ? comTran.Created >= filterFrom && comTran.Created < filterTo : true
+                                               && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? filter.companyTypeOfUsage == user.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true)
+                                               && !string.IsNullOrEmpty(filter.companyName) ? user.CompanyName.Contains(filter.companyName) : true
+                                                select comTran.Id).ToList();
 
                         List<CommissionReportData> comTrans = (from comTran in db.MobileComTransactions.Where(c => comTranIds.Contains(c.Id))
                                                                .OrderByDescending(o => o.Id).Skip(tableMaxRow * (filter.page - 1)).Take(tableMaxRow)
@@ -227,14 +231,30 @@ namespace WebApplication13.Controllers.Mobile
                                                                     PhoneNumber = user.PhoneNumber,
                                                                     Commission = comTran.TotalBaht,
                                                                     BranchId = comTran.BranchId,
+                                                                    CompanyName = user.CompanyName,
                                                                     Created = comTran.Created,
                                                                     CreatedBy = comTran.CreatedBy
                                                                 }).ToList();
+                        List<int> branchList = DataDAL.GetBranchList().Select(s => s.Id).ToList();
                         foreach (CommissionReportData comTran in comTrans)
                         {
-                            comTran.BranchName = db.Branches.FirstOrDefault(c => c.Id == comTran.BranchId).Name;
-                            comTran.Tier = UserDAL.GetUserTier(comTran.MobileUserId)?.TierName;
-                            dataIndex.Data.Add(comTran);
+                            string userTierName = UserDAL.GetUserTier(comTran.MobileUserId)?.TierName;
+                            if (string.IsNullOrEmpty(filter.tierName) || filter.tierName == userTierName || filter.tierName == "All")
+                            {
+                                Branch branch = db.Branches.FirstOrDefault(c => branchList.Contains(comTran.BranchId) && c.Id == comTran.BranchId);
+                                if (branch != null && (string.IsNullOrEmpty(filter.branchName) || filter.branchName == branch.Name || filter.branchName == "All"))
+                                {
+                                    comTran.BranchName = branch.Name;
+                                    comTran.Tier = userTierName;
+                                    dataIndex.Data.Add(comTran);
+                                }
+                            }
+                        }
+
+                        decimal rowPerPage = dataIndex.Data.Count / tableMaxRow;
+                        for (int i = 0; i < rowPerPage || i == 0; i++)
+                        {
+                            dataIndex.Indices.Add(i + 1);
                         }
 
                         return Ok(dataIndex);

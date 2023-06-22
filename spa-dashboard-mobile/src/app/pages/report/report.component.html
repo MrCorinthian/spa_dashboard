@@ -3,26 +3,64 @@
   <div class="side__container">
     <div class="column__container">
       <div class="filter__container">
+        <div class="heard__field">Period (From - To)</div>
         <daterangepicker
           placeholder="Period (From - To)"
           [value]="filter.periodFromTo"
           (onChange)="onChangeFilter('filterPeriod', $event)"
         ></daterangepicker>
+        <div class="heard__field">Type of usage</div>
+        <autocomplete
+          placeholder="Type of usage"
+          [value]="filter.companyTypeOfUsage"
+          [options]="companyTypeOfUsages"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterCompanyTypeOfUsages', $event)"
+        ></autocomplete>
+        <div class="heard__field">First name</div>
         <input-text
           placeholder="First name"
           [value]="filter.firstName"
           (onChange)="onChangeFilter('filterFirstName', $event)"
         ></input-text>
+        <div class="heard__field">Last name</div>
         <input-text
           placeholder="Last name"
           [value]="filter.lastName"
           (onChange)="onChangeFilter('filterLastName', $event)"
         ></input-text>
+      </div>
+      <div class="filter__container">
+        <div class="heard__field">Company name</div>
+        <input-text
+          placeholder="Company name"
+          [value]="filter.companyName"
+          (onChange)="onChangeFilter('filterCompanyName', $event)"
+        ></input-text>
+        <div class="heard__field">Telephone no.</div>
         <input-text
           placeholder="Telephone no."
           [value]="filter.lastName"
           (onChange)="onChangeFilter('filterPhone', $event)"
         ></input-text>
+        <div *ngIf="tiers.length > 0" class="heard__field">Tier</div>
+        <autocomplete
+          *ngIf="tiers.length > 0"
+          placeholder="Tier"
+          [value]="filter.tierName"
+          [options]="tiers"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterTierName', $event)"
+        ></autocomplete>
+        <div *ngIf="branches.length > 0" class="heard__field">Location</div>
+        <autocomplete
+          *ngIf="branches.length > 0"
+          placeholder="Location"
+          [value]="filter.branchName"
+          [options]="branches"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterBranchName', $event)"
+        ></autocomplete>
       </div>
       <div class="filter__container">
         <button
@@ -39,6 +77,7 @@
             <th>Date/Time</th>
             <th>First name</th>
             <th>Family name</th>
+            <th>Company name</th>
             <th>Telephone no.</th>
             <th>Tier</th>
             <th>Commission</th>
@@ -54,6 +93,7 @@
             </td>
             <td class="td__center">{{ item.FirstName }}</td>
             <td class="td__center">{{ item.LastName }}</td>
+            <td class="td__center">{{ item.CompanyName }}</td>
             <td class="td__center">{{ format("phone", item.PhoneNumber) }}</td>
             <td class="td__center">{{ item.Tier }}</td>
             <td class="td__center">{{ item.Commission | number : "1.2-2" }}</td>

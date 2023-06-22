@@ -15,8 +15,9 @@ class ProfileData {
   String? Email;
   String? LineId;
   String? WhatsAppId;
+  String? CompanyTypeOfUsage;
   String? CompanyName;
-  String? CompanyTexId;
+  String? CompanyTaxId;
   String? BankAccount;
   String? BankAccountNumber;
   String? ProfilePath;
@@ -39,8 +40,9 @@ class ProfileData {
       this.Email,
       this.LineId,
       this.WhatsAppId,
+      this.CompanyTypeOfUsage,
       this.CompanyName,
-      this.CompanyTexId,
+      this.CompanyTaxId,
       this.BankAccount,
       this.BankAccountNumber,
       this.ProfilePath,
@@ -63,8 +65,9 @@ class ProfileData {
         'Email': Email,
         'LineId': LineId,
         'WhatsAppId': WhatsAppId,
+        'CompanyTypeOfUsage': CompanyTypeOfUsage,
         'CompanyName': CompanyName,
-        'CompanyTexId': CompanyTexId,
+        'CompanyTaxId': CompanyTaxId,
         'BankAccount': BankAccount,
         'BankAccountNumber': BankAccountNumber,
         'ProfilePath': ProfilePath,

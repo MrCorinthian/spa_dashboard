@@ -3,6 +3,7 @@
   <div class="side__container">
     <div class="column__container">
       <div class="filter__container">
+        <div>Month</div>
         <autocomplete
           placeholder="month"
           [value]="filter.month"
@@ -10,6 +11,7 @@
           [sortOption]="false"
           (onChange)="onChangeFilter('filterMonth', $event)"
         ></autocomplete>
+        <div>Year</div>
         <autocomplete
           placeholder="year"
           [value]="filter.year"

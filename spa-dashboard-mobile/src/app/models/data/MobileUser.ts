@@ -16,7 +16,7 @@ export class MobileUser {
   public LineId!: string;
   public WhatsAppId!: string;
   public CompanyName!: string;
-  public CompanyTexId!: string;
+  public CompanyTaxId!: string;
   public BankAccount!: string;
   public BankAccountNumber!: string;
   public ProfilePath!: string;

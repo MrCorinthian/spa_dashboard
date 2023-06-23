@@ -15,12 +15,14 @@ namespace WebApplication13.Models.Mobile
         public string tierName { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
+        public string IdCardNumber { get; set; }
         public string phone { get; set; }
         public string status { get; set; }
         public string periodFrom { get; set; }
         public string periodTo { get; set; }
         public string companyTypeOfUsage { get; set; }
         public string companyName { get; set; }
+        public string companyTaxId { get; set; }
         public string branchName { get; set; }
     }
 }

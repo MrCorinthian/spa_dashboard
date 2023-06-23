@@ -41,6 +41,11 @@
   }
 }
 
+.heard__field {
+  width: 150px;
+  text-align: end;
+}
+
 input {
   width: 100%;
   font-size: 1rem;
@@ -70,12 +75,13 @@ button {
   width: calc(100vw - 300px);
   max-height: calc(100vh - 180px);
   overflow: scroll;
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none; /* Firefox */
+  overflow-y: hidden;
+  // -ms-overflow-style: none; /* Internet Explorer 10+ */
+  // scrollbar-width: none; /* Firefox */
 }
-.side__container::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
-}
+// .side__container::-webkit-scrollbar {
+//   display: none; /* Safari and Chrome */
+// }
 
 .popup__container {
   display: flex;

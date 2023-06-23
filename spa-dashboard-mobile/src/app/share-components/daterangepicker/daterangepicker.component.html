@@ -1,4 +1,4 @@
-<div class="input__container">
+<div *ngIf="!single; else singleDateEl" class="input__container">
   <div [style.display]="'flex'" [style.flexDirection]="'row'">
     <input
       type="text"
@@ -22,15 +22,36 @@
     <input
       matStartDate
       matInput
-      (dateChange)="onChanceDate('from', $event)"
+      (dateChange)="onChangeDate('from', $event)"
       [style.display]="'none'"
     />
     <input
       matEndDate
       matInput
-      (dateChange)="onChanceDate('to', $event)"
+      (dateChange)="onChangeDate('to', $event)"
       [style.display]="'none'"
     />
   </mat-date-range-input>
   <mat-date-range-picker #picker></mat-date-range-picker>
 </div>
+<ng-template #singleDateEl
+  ><div class="input__container">
+    <div [style.display]="'flex'" [style.flexDirection]="'row'">
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControl]="dateControl"
+        [style.width]="'0px'"
+        [style.padding]="'0px'"
+        (dateChange)="onChangeDate('from', $event)"
+      /><input
+        type="text"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [value]="value ?? ''"
+        [style.minWidth]="'200px'"
+        (click)="onClick(); picker.open()"
+      />
+    </div>
+    <mat-datepicker #picker></mat-datepicker></div
+></ng-template>

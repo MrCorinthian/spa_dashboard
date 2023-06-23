@@ -302,14 +302,14 @@ namespace WebApplication13.Controllers.Mobile
             var response = new HttpResponseMessage();
             string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
 
-            try
+            MobileUser user = UserDAL.GetUserByToken(token);
+            if (user != null)
             {
-                using (var db = new spasystemdbEntities())
+                try
                 {
-                    if (token != null && !string.IsNullOrEmpty(token))
+                    using (var db = new spasystemdbEntities())
                     {
-                        MobileUser user = UserDAL.GetUserByToken(token);
-                        if (user != null)
+                        if (token != null && !string.IsNullOrEmpty(token))
                         {
                             MobileFileAttachment attImage = db.MobileFileAttachments.Where(c => c.MobileUserId == user.Id && c.Type == 1).OrderByDescending(o => o.Created).FirstOrDefault();
                             if (attImage != null)
@@ -324,11 +324,148 @@ namespace WebApplication13.Controllers.Mobile
 
                                 return ResponseMessage(response);
                             }
+
+                        }
+                    }
+                }
+                catch (Exception ex) { }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateUserAttachment(FileAttachmentParams data)
+        {
+            if (data.MobileUserId > 0)
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    string userAuth = UserDAL.UserLoginAuth();
+                    MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == data.MobileUserId);
+                    if (!string.IsNullOrEmpty(userAuth) && user != null)
+                    {
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(data.Filename))
+                            {
+                                DateTime now = DataDAL.GetDateTimeNow();
+                                string subPath = $"UPLOAD\\MOBILE_ATTACHMENT_IMAGES\\";
+                                string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}{subPath}";
+                                string extension = data.Filename.Split('.').LastOrDefault();
+                                string filePath = $"{webRootPath}{data.Filename}";
+
+                                MobileFileAttachment att = new MobileFileAttachment();
+                                att.FileSubPath = subPath;
+                                att.FileName = data.Filename;
+                                att.FileExtension = extension;
+                                att.MobileUserId = user.Id;
+                                att.Type = 1;
+                                att.Active = "Y";
+                                att.CreatedBy = userAuth;
+                                att.Created = now;
+                                att.UpdatedBy = userAuth;
+                                att.Updated = now;
+
+                                db.MobileFileAttachments.Add(att);
+                                db.SaveChanges();
+
+                                ResponseData response = new ResponseData();
+                                response.Success = true;
+                                response.Data = $"File/AttachmentImageWeb?filename={data.Filename}";
+
+                                return Ok(response);
+                            }
+                            else
+                            {
+                                MobileFileAttachment fileAtt = db.MobileFileAttachments.Where(c => c.MobileUserId == user.Id && c.Type == 1 && c.Active == "Y").OrderByDescending(o => o.Created).FirstOrDefault();
+                                if (fileAtt != null)
+                                {
+                                    ResponseData response = new ResponseData();
+                                    response.Success = true;
+                                    response.Data = $"File/AttachmentImageWeb?filename={fileAtt.FileName}";
+                                    return Ok(response);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            DataDAL.ErrorLog("UploadAttachment", ex.ToString(), DataDAL.GetUserName(user.Id));
                         }
                     }
                 }
             }
-            catch (Exception ex) { }
+
+
+            return BadRequest("No file uploaded");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> UserAttachmentImageWeb(int id)
+        {
+            var response = new HttpResponseMessage();
+            string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
+
+            string userAuth = UserDAL.UserLoginAuth();
+            if (!string.IsNullOrEmpty(userAuth))
+            {
+                try
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == id);
+                        if (user != null)
+                        {
+                            MobileFileAttachment attImage = db.MobileFileAttachments.Where(c => c.MobileUserId == user.Id && c.Type == 1 && c.Active == "Y").OrderByDescending(o => o.Created).FirstOrDefault();
+                            string imagePath = $"{webRootPath}{attImage.FileSubPath}{attImage.FileName}";
+
+                            var stream = File.OpenRead(imagePath);
+                            response.Content = new StreamContent(stream);
+                            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                            response.Content.Headers.ContentLength = stream.Length;
+
+                            return ResponseMessage(response);
+
+                        }
+                    }
+                }
+                catch (Exception ex) { }
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> AttachmentImageWeb(string filename)
+        {
+            var response = new HttpResponseMessage();
+            string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
+
+            string user = UserDAL.UserLoginAuth();
+            if (!string.IsNullOrEmpty(user))
+            {
+                try
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        if (filename != null && !string.IsNullOrEmpty(filename))
+                        {
+                            string subPath = $"UPLOAD\\MOBILE_ATTACHMENT_IMAGES\\";
+                            string imagePath = $"{webRootPath}{subPath}{filename}";
+                            string extension = filename.Split('.').LastOrDefault();
+
+                            var stream = File.OpenRead(imagePath);
+                            response.Content = new StreamContent(stream);
+                            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                            response.Content.Headers.ContentLength = stream.Length;
+
+                            return ResponseMessage(response);
+
+                        }
+                    }
+                }
+                catch (Exception ex) { }
+            }
 
             return NotFound();
         }

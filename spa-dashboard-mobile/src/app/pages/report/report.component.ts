@@ -38,7 +38,6 @@ export class ReportComponent {
   constructor(private http: HttpClient) {}
 
   async ngOnInit() {
-    debugger;
     this.tiers = await this.getTierList();
     this.branches = await this.getBranchList();
 

@@ -543,6 +543,7 @@
     </Compile>
     <Compile Include="Models\Mobile\ChanegePasswordParams.cs" />
     <Compile Include="Models\Mobile\CommissionReportData.cs" />
+    <Compile Include="Models\Mobile\FileAttachmentParams.cs" />
     <Compile Include="Models\Mobile\FilterParams.cs" />
     <Compile Include="Models\Mobile\ForgotPasswordParams.cs" />
     <Compile Include="Models\Mobile\MobileUserInfo.cs" />

@@ -4,9 +4,14 @@ import { FormControl } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import * as moment from 'moment';
 import { BaseUrl } from '../../const-value/base-url';
 import { Colors } from '../../const-value/colors';
-import { GenerateStatusList } from '../../share-functions/generate-functions';
+import {
+  GenerateStatusList,
+  GenerateCompanyTypeOfUsageList,
+  GenerateCompanyTypeOfUsageListForEdit,
+} from '../../share-functions/generate-functions';
 import { Format } from '../../share-functions/format-functions';
 import { CloneObj } from '../../share-functions/clone-functions';
 import { MobileUser } from '../../models/data/MobileUser';
@@ -19,8 +24,17 @@ import { MobileUser } from '../../models/data/MobileUser';
 export class UserManagementComponent {
   colors: any = Colors;
 
-  filter: any = { firstName: '', lastName: '', phone: '', status: '' };
-  status: Array<string> = GenerateStatusList();
+  filter: any = {
+    firstName: '',
+    lastName: '',
+    phone: '',
+    status: 'All',
+    IdCardNumber: '',
+    companyTypeOfUsage: 'All',
+    companyTaxId: '',
+    companyName: '',
+    tierName: 'All',
+  };
 
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
@@ -35,15 +49,20 @@ export class UserManagementComponent {
   bankAccounts: Array<string> = [];
   occupations: Array<string> = [];
   provinces: Array<string> = [];
+  tiers: Array<string> = [];
+  status: Array<string> = GenerateStatusList();
+  companyTypeOfUsages: Array<string> = GenerateCompanyTypeOfUsageList();
+  companyTypeOfUsagesForEdit: Array<string> =
+    GenerateCompanyTypeOfUsageListForEdit();
 
   constructor(private ref: ChangeDetectorRef, private http: HttpClient) {}
 
   async ngOnInit() {
     this.getTableIndex();
-
-    this.bankAccounts = JSON.parse(await this.getSetting('BANK_ACCOUNT'));
-    this.occupations = JSON.parse(await this.getSetting('OCCUPATION'));
-    this.provinces = JSON.parse(await this.getSetting('PROVINCE'));
+    this.bankAccounts = await this.getDropdown('BANK_ACCOUNT');
+    this.occupations = await this.getDropdown('OCCUPATION');
+    this.provinces = await this.getDropdown('PROVINCE');
+    this.tiers = await this.GetTierList();
   }
 
   search() {
@@ -69,6 +88,7 @@ export class UserManagementComponent {
   }
 
   getDataTable(page: number) {
+    this.dataTable = [];
     this.http
       .post<Array<MobileUser>>(`${BaseUrl}User/GetMoblieUser`, {
         page: page,
@@ -76,10 +96,14 @@ export class UserManagementComponent {
       })
       .subscribe((res) => {
         if (res?.length > 0) {
-          this.dataTable = [];
           for (let item of res) {
-            if (item.ProfilePath)
+            if (item.ProfilePath) {
               item.ProfilePath = `${BaseUrl}${item.ProfilePath}`;
+            }
+            if (item.Birthday) {
+              item.BirthdayString = moment(item.Birthday).format('DD MMM YYYY');
+            }
+            item.IdCardPath = `${BaseUrl}File/UserAttachmentImageWeb?id=${item.Id}`;
             this.dataTable.push(item);
           }
           this.currentIndex = page;
@@ -97,6 +121,23 @@ export class UserManagementComponent {
         .subscribe((res) => {
           if (res || res?.Data) {
             this.selectedEdit.ProfilePath = `${BaseUrl}File/ProfileImageWebUpload?fileName=${res.Data}`;
+            this.selectedEdit = CloneObj(this.selectedEdit);
+          }
+        });
+    }
+  }
+
+  onIdCardFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('thumbnail', file);
+      this.http
+        .post<any>(`${BaseUrl}File/UploadAttachment`, formData)
+        .subscribe((res) => {
+          if (res || res?.Data) {
+            this.selectedEdit.idCardFilename = res.Data;
+            this.selectedEdit.IdCardPath = `${BaseUrl}File/AttachmentImageWeb?filename=${this.selectedEdit.idCardFilename}`;
             this.selectedEdit = CloneObj(this.selectedEdit);
           }
         });
@@ -123,6 +164,17 @@ export class UserManagementComponent {
       .post<any>(`${BaseUrl}User/UpdateUserInformation`, fromData)
       .subscribe((res) => {
         if (res?.Id) {
+          //update id card
+          this.http
+            .post<any>(`${BaseUrl}File/UpdateUserAttachment`, {
+              MobileUserId: res.Id,
+              Filename: this.selectedEdit.idCardFilename ?? '',
+            })
+            .subscribe((resUserAtt) => {
+              if (resUserAtt != null && resUserAtt?.Data)
+                this.selected.IdCardPath = `${BaseUrl}${resUserAtt.Data}`;
+            });
+
           let tier = this.dataTable.find((c) => c.Id === res.Id);
           if (tier) {
             this.getDataTable(this.currentIndex);
@@ -156,6 +208,16 @@ export class UserManagementComponent {
       this.filter.status = value;
     } else if (type === 'filterPhone') {
       this.filter.phone = value;
+    } else if (type === 'filterIdCardNo') {
+      this.filter.IdCardNumber = value;
+    } else if (type === 'filterCompanyTypeOfUsage') {
+      this.filter.companyTypeOfUsage = value;
+    } else if (type === 'filterCompanyName') {
+      this.filter.companyName = value;
+    } else if (type === 'filterCompanyTaxId') {
+      this.filter.companyTaxId = value;
+    } else if (type === 'filterTierName') {
+      this.filter.tierName = value;
     }
   }
 
@@ -199,13 +261,24 @@ export class UserManagementComponent {
         this.selectedEdit.Province = value;
       } else if (type === 'Active') {
         this.selectedEdit.Active = value.checked ? 'Y' : 'N';
+      } else if (type === 'CompanyTypeOfUsage') {
+        this.selectedEdit.CompanyTypeOfUsage = value;
+      } else if (type === 'Birthday') {
+        this.selectedEdit.Birthday = moment(value, 'DD MMM YYYY').toDate();
+        this.selectedEdit.BirthdayString = value;
       }
     }
   }
 
-  async getSetting(code: string) {
+  async getDropdown(code: string) {
     return await firstValueFrom(
-      this.http.get<string>(`${BaseUrl}Data/GetSetting?code=${code}`)
+      this.http.get<Array<string>>(`${BaseUrl}Data/GetDropdown?code=${code}`)
+    );
+  }
+
+  async GetTierList() {
+    return await firstValueFrom(
+      this.http.get<Array<string>>(`${BaseUrl}Data/GetTierList`)
     );
   }
 

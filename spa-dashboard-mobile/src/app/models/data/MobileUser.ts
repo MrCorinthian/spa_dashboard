@@ -15,6 +15,7 @@ export class MobileUser {
   public Email!: string;
   public LineId!: string;
   public WhatsAppId!: string;
+  public CompanyTypeOfUsage!: string;
   public CompanyName!: string;
   public CompanyTaxId!: string;
   public BankAccount!: string;
@@ -28,4 +29,7 @@ export class MobileUser {
 
   //extension
   public ConfirmPassword!: string;
+  public BirthdayString!: string;
+  public IdCardPath!: string;
+  idCardFilename!: string;
 }

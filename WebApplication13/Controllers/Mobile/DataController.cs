@@ -79,9 +79,9 @@ namespace WebApplication13.Controllers.Mobile
                     {
                         filter.status = DataDAL.GetActiveFlag(filter.status);
                         var comTiers = db.MobileComTiers.Where(c =>
-                        !string.IsNullOrEmpty(filter.tierName) ? c.TierName.ToLower().Contains(filter.tierName) : true
-                        && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status : true
-                        ).ToList();
+                            !string.IsNullOrEmpty(filter.tierName) ? c.TierName.ToLower().Contains(filter.tierName) : true
+                            && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status : true
+                        ).OrderBy(o => o.ComBahtFrom).ToList();
                         if (comTiers.Count > 0)
                         {
                             return Ok(comTiers);
@@ -204,6 +204,25 @@ namespace WebApplication13.Controllers.Mobile
                     using (var db = new spasystemdbEntities())
                     {
                         return Ok(DataDAL.GetMobileSetting(code));
+                    }
+                }
+            }
+            catch (Exception ex) { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetDropdown(string code)
+        {
+            try
+            {
+                string userAuth = UserDAL.UserLoginAuth();
+                if (!string.IsNullOrEmpty(userAuth))
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        return Ok(JsonConvert.DeserializeObject<List<string>>(DataDAL.GetMobileSetting(code)));
                     }
                 }
             }

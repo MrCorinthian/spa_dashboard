@@ -31,6 +31,7 @@ namespace WebApplication13.Controllers.Mobile
                     var findPhoneNumber = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
                     if (findPhoneNumber == null)
                     {
+                        user.ProfilePath = $"{profileSubPath}{data.ProfilePath}";
                         user.Password = EncryptionDAL.EncryptString(data.Password);
                         user.FirstName = data.FirstName;
                         user.LastName = data.LastName;
@@ -42,15 +43,24 @@ namespace WebApplication13.Controllers.Mobile
                         user.BankAccountNumber = data.BankAccountNumber;
 
                         if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
-                        if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"{profileSubPath}{data.ProfilePath}";
+                        else user.Birthday = null;
+                        if (!string.IsNullOrEmpty(data.ProfilePath)) 
                         if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
+                        else user.Nationality = null;
                         if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
+                        else user.Address = null;
                         if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
+                        else user.Email = null;
                         if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
+                        else user.LineId = null;
                         if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                        else user.WhatsAppId = null;
                         if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                        if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                        if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                        if (data.CompanyTypeOfUsage == "Company")
+                        {
+                            if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
+                            if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                        }
 
                         user.Active = "Y";
                         user.CreatedBy = DataDAL.GetUserNameByName(user.FirstName, user.LastName);

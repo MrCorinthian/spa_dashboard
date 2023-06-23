@@ -3,21 +3,65 @@
   <div class="side__container">
     <div class="column__container">
       <div class="filter__container">
-        <input-text
-          placeholder="First name"
-          [value]="filter.firstName"
-          (onChange)="onChangeFilter('filterFirstName', $event)"
-        ></input-text>
-        <input-text
-          placeholder="Last name"
-          [value]="filter.lastName"
-          (onChange)="onChangeFilter('filterLastName', $event)"
-        ></input-text>
+        <div class="heard__field">Type of usage</div>
+        <autocomplete
+          *ngIf="companyTypeOfUsages.length > 0"
+          placeholder="Type of usage"
+          [value]="filter.companyTypeOfUsage"
+          [options]="companyTypeOfUsages"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterCompanyTypeOfUsage', $event)"
+        ></autocomplete>
+        <div class="heard__field">Telephone no.</div>
         <input-text
           placeholder="Telephone no."
           [value]="filter.lastName"
           (onChange)="onChangeFilter('filterPhone', $event)"
         ></input-text>
+        <div class="heard__field">Tier</div>
+        <autocomplete
+          *ngIf="tiers.length > 0"
+          placeholder="Tier"
+          [value]="filter.tierName"
+          [options]="tiers"
+          [sortOption]="false"
+          (onChange)="onChangeFilter('filterTierName', $event)"
+        ></autocomplete>
+      </div>
+      <div class="filter__container">
+        <div class="heard__field">First name</div>
+        <input-text
+          placeholder="First name"
+          [value]="filter.firstName"
+          (onChange)="onChangeFilter('filterFirstName', $event)"
+        ></input-text>
+        <div class="heard__field">Family name</div>
+        <input-text
+          placeholder="Family name"
+          [value]="filter.lastName"
+          (onChange)="onChangeFilter('filterLastName', $event)"
+        ></input-text>
+        <div class="heard__field">Id card no.</div>
+        <input-text
+          placeholder="Id card no."
+          [value]="filter.IdCardNumber"
+          (onChange)="onChangeFilter('filterIdCardNo', $event)"
+        ></input-text>
+      </div>
+      <div class="filter__container">
+        <div class="heard__field">Company name</div>
+        <input-text
+          placeholder="Company name"
+          [value]="filter.companyName"
+          (onChange)="onChangeFilter('filterCompanyName', $event)"
+        ></input-text>
+        <div class="heard__field">Company tax id</div>
+        <input-text
+          placeholder="Company tax id"
+          [value]="filter.companyTaxId"
+          (onChange)="onChangeFilter('filterCompanyTaxId', $event)"
+        ></input-text>
+        <div class="heard__field">Active status</div>
         <autocomplete
           placeholder="Active status"
           [value]="filter.status"
@@ -50,16 +94,18 @@
           <th>First name</th>
           <th>Family name</th>
           <th>Occupation</th>
-          <th>Telephone number</th>
+          <th>Telephone no.</th>
+          <th>Tier</th>
           <th>Line id</th>
           <th>Whatsapp id</th>
           <th>Email</th>
           <th>Bank account</th>
-          <th>Bank account number</th>
+          <th>Bank account no.</th>
+          <th>Type of usage</th>
           <th>Company name</th>
-          <th>Company tax ID</th>
+          <th>Company tax Id</th>
           <th>Nationality</th>
-          <th>Status</th>
+          <th>Active status</th>
         </tr>
       </thead>
       <tbody *ngIf="dataTable.length > 0">
@@ -77,6 +123,7 @@
           <td>{{ item.LastName }}</td>
           <td>{{ item.Occupation }}</td>
           <td class="td__center">{{ format("phone", item.PhoneNumber) }}</td>
+          <td class="td__center">{{ item.TierName }}</td>
           <td class="td__center">{{ item.LineId }}</td>
           <td class="td__center">{{ item.WhatsAppId }}</td>
           <td class="td__center">{{ item.Email }}</td>
@@ -84,6 +131,7 @@
           <td class="td__center">
             {{ format("bank", item.BankAccountNumber) }}
           </td>
+          <td class="td__center">{{ item.CompanyTypeOfUsage }}</td>
           <td class="td__center">{{ item.CompanyName }}</td>
           <td class="td__center">{{ format("idCard", item.CompanyTaxId) }}</td>
           <td class="td__center">{{ item.Nationality }}</td>
@@ -96,7 +144,7 @@
     <div class="table__pagination">
       <img
         class="img__icon"
-        src="../../assets/images/angle-left.png"
+        src="../Content/AngularViews/assets/images/angle-left.png"
         [width]="20"
         (click)="previousPage()"
       />
@@ -144,7 +192,7 @@
       </div>
       <img
         class="img__icon"
-        src="../../assets/images/angle-right.png"
+        src="../Content/AngularViews/assets/images/angle-right.png"
         [width]="20"
         (click)="nextPage()"
       />
@@ -257,18 +305,6 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">ID card number</td>
-            <td *ngIf="!isEdit">
-              {{ format("idCard", selected.IdCardNumber) }}
-            </td>
-            <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.IdCardNumber"
-                (onChange)="onChange('IdCardNumber', $event)"
-              ></input-text>
-            </td>
-          </tr>
-          <tr>
             <td class="td__topic">First name</td>
             <td *ngIf="!isEdit">{{ selected.FirstName }}</td>
             <td *ngIf="isEdit" class="td__data">
@@ -289,103 +325,64 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Occupation</td>
-            <td *ngIf="!isEdit">{{ selected.Occupation }}</td>
-            <td *ngIf="isEdit" class="td__data">
-              <autocomplete
-                [value]="selectedEdit.Occupation"
-                [options]="occupations"
-                [sortOption]="false"
-                (onChange)="onChange('Occupation', $event)"
-              ></autocomplete>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">Telephone number</td>
+            <td class="td__topic">ID card no.</td>
             <td *ngIf="!isEdit">
-              {{ format("phone", selected.PhoneNumber) }}
+              {{ format("idCard", selected.IdCardNumber) }}
             </td>
             <td *ngIf="isEdit" class="td__data">
               <input-text
-                [value]="selectedEdit.PhoneNumber"
-                (onChange)="onChange('PhoneNumber', $event)"
+                [value]="selectedEdit.IdCardNumber"
+                (onChange)="onChange('IdCardNumber', $event)"
               ></input-text>
             </td>
           </tr>
+
+          <!-- ID card image -->
           <tr>
-            <td class="td__topic">Line ID</td>
-            <td *ngIf="!isEdit">{{ selected.LineId }}</td>
-            <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.LineId"
-                (onChange)="onChange('LineId', $event)"
-              ></input-text>
+            <td class="td__topic">ID card image</td>
+            <td *ngIf="!isEdit" class="td__data">
+              <img class="td__img" src="{{ selected.IdCardPath }}" />
+            </td>
+            <td
+              *ngIf="isEdit"
+              class="td__data"
+              [style.flexDirection]="'column'"
+            >
+              <img
+                *ngIf="selectedEdit.IdCardPath"
+                class="td__img"
+                src="{{ selectedEdit.IdCardPath }}"
+              />
+              <input
+                type="file"
+                [style.display]="'none'"
+                (change)="onIdCardFileSelected($event)"
+                #idCardFileUpload
+              />
+              <div>
+                <button
+                  [style.backgroundColor]="colors.greenPrimary"
+                  [style.marginTop]="'0.5rem'"
+                  [style.padding]="'0.5rem'"
+                  [style.width]="'100px'"
+                  (click)="idCardFileUpload.click()"
+                >
+                  Upload
+                </button>
+              </div>
             </td>
           </tr>
+          <!-- ID card image -->
+
           <tr>
-            <td class="td__topic">Whatsapp ID</td>
-            <td *ngIf="!isEdit">{{ selected.WhatsAppId }}</td>
+            <td class="td__topic">Birthday</td>
+            <td *ngIf="!isEdit">{{ selected.BirthdayString }}</td>
             <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.WhatsAppId"
-                (onChange)="onChange('WhatsAppId', $event)"
-              ></input-text>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">Email</td>
-            <td *ngIf="!isEdit">{{ selected.Email }}</td>
-            <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.Email"
-                (onChange)="onChange('Email', $event)"
-              ></input-text>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">Bank account</td>
-            <td *ngIf="!isEdit">{{ selected.BankAccount }}</td>
-            <td *ngIf="isEdit" class="td__data">
-              <autocomplete
-                [value]="selectedEdit.BankAccount"
-                [options]="bankAccounts"
-                [sortOption]="false"
-                (onChange)="onChange('Occupation', $event)"
-              ></autocomplete>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">Bank account number</td>
-            <td *ngIf="!isEdit">
-              {{ format("bank", selected.BankAccountNumber) }}
-            </td>
-            <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.BankAccountNumber"
-                (onChange)="onChange('BankAccountNumber', $event)"
-              ></input-text>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">Company name</td>
-            <td *ngIf="!isEdit">{{ selected.CompanyName }}</td>
-            <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.CompanyName"
-                (onChange)="onChange('CompanyName', $event)"
-              ></input-text>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">Company tax ID</td>
-            <td *ngIf="!isEdit">
-              {{ format("idCard", selected.CompanyTaxId) }}
-            </td>
-            <td *ngIf="isEdit" class="td__data">
-              <input-text
-                [value]="selectedEdit.CompanyTaxId"
-                (onChange)="onChange('CompanyTaxId', $event)"
-              ></input-text>
+              <daterangepicker
+                [value]="selectedEdit.BirthdayString"
+                [single]="true"
+                (onChange)="onChange('Birthday', $event)"
+              ></daterangepicker>
             </td>
           </tr>
           <tr>
@@ -421,7 +418,119 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Status</td>
+            <td class="td__topic">Occupation</td>
+            <td *ngIf="!isEdit">{{ selected.Occupation }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <autocomplete
+                [value]="selectedEdit.Occupation"
+                [options]="occupations"
+                [sortOption]="false"
+                (onChange)="onChange('Occupation', $event)"
+              ></autocomplete>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Telephone no.</td>
+            <td *ngIf="!isEdit">
+              {{ format("phone", selected.PhoneNumber) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.PhoneNumber"
+                (onChange)="onChange('PhoneNumber', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Email address</td>
+            <td *ngIf="!isEdit">{{ selected.Email }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.Email"
+                (onChange)="onChange('Email', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Line ID</td>
+            <td *ngIf="!isEdit">{{ selected.LineId }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.LineId"
+                (onChange)="onChange('LineId', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Whatsapp ID</td>
+            <td *ngIf="!isEdit">{{ selected.WhatsAppId }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.WhatsAppId"
+                (onChange)="onChange('WhatsAppId', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Type of usage</td>
+            <td *ngIf="!isEdit">{{ selected.CompanyTypeOfUsage }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <autocomplete
+                [value]="selectedEdit.CompanyTypeOfUsage"
+                [options]="companyTypeOfUsagesForEdit"
+                [sortOption]="false"
+                (onChange)="onChange('CompanyTypeOfUsage', $event)"
+              ></autocomplete>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Company name</td>
+            <td *ngIf="!isEdit">{{ selected.CompanyName }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.CompanyName"
+                (onChange)="onChange('CompanyName', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Company tax ID</td>
+            <td *ngIf="!isEdit">
+              {{ format("idCard", selected.CompanyTaxId) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.CompanyTaxId"
+                (onChange)="onChange('CompanyTaxId', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Bank account</td>
+            <td *ngIf="!isEdit">{{ selected.BankAccount }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <autocomplete
+                [value]="selectedEdit.BankAccount"
+                [options]="bankAccounts"
+                [sortOption]="false"
+                (onChange)="onChange('Occupation', $event)"
+              ></autocomplete>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Bank account no.</td>
+            <td *ngIf="!isEdit">
+              {{ format("bank", selected.BankAccountNumber) }}
+            </td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.BankAccountNumber"
+                (onChange)="onChange('BankAccountNumber', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="td__topic">Active status</td>
             <td *ngIf="!isEdit">
               {{ selected.Active === "Y" ? "Enable" : "Disable" }}
             </td>

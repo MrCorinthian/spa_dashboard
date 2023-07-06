@@ -136,7 +136,7 @@ namespace WebApplication13.DAL
                         ignoreBranch.Add(2);
                         ignoreBranch.Add(3);
                         ignoreBranch.Add(9);
-                        ignoreBranch.Add(99);
+                        //ignoreBranch.Add(99);
 
                         List<Branch> query = db.Branches.Where(c => !ignoreBranch.Contains(c.Id)).OrderBy(o => o.Id).ToList();
                         if (query.Count > 0)

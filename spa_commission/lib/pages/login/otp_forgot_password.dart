@@ -243,7 +243,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
                             children: [
                               CustomTextField(
                                 text: 'New password',
-                                placeholder: 'more than 6 characters',
+                                placeholder: 'Must have at least 6 characters',
                                 requiredField: true,
                                 obscureText: true,
                                 controller: _newPasswordController,

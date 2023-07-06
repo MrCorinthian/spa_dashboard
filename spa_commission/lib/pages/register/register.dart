@@ -444,7 +444,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: 'number'),
                   CustomTextField(
                       text: 'Password',
-                      placeholder: 'more than 6 characters',
+                      placeholder: 'Must have at least 6 characters',
                       requiredField: true,
                       obscureText: true,
                       controller: _passwordController),

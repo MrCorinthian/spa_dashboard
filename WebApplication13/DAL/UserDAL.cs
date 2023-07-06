@@ -21,7 +21,7 @@ namespace WebApplication13.DAL
                         MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token);
                         if (loginToken != null)
                         {
-                            MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
+                            MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId && c.Active == "Y");
                             if (user != null)
                             {
                                 return user;
@@ -154,7 +154,7 @@ namespace WebApplication13.DAL
                                 ).ToList();
 
                     double sumCom = comTrans.Sum(s => s.TotalBaht);
-                    MobileComTier tier = db.MobileComTiers.FirstOrDefault(c => sumCom >= c.ComBahtFrom && c.ComBahtTo != null ? sumCom <= c.ComBahtTo : true);
+                    MobileComTier tier = db.MobileComTiers.Where(c => sumCom >= c.ComBahtFrom && c.ComBahtTo != null ? sumCom <= c.ComBahtTo : true).OrderBy(o => o.ComBahtFrom).FirstOrDefault();
 
                     return tier;
                 }

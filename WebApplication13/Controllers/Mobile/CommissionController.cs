@@ -50,7 +50,8 @@ namespace WebApplication13.Controllers.Mobile
                         }
 
                         List<ReportBranch> reportBranchs = new List<ReportBranch>();
-                        List<Branch> branches = db.Branches.Where(c => c.Id != 99).OrderBy(o => o.Id).ToList();
+                        List<int> branchList = DataDAL.GetBranchList().Select(s => s.Id).ToList();
+                        List<Branch> branches = db.Branches.Where(c => branchList.Contains(c.Id)).OrderBy(o => o.Id).ToList();
                         double totalBaht = comTrans.Sum(s => s.TotalBaht);
                         foreach (var item in branches)
                         {
@@ -287,7 +288,19 @@ namespace WebApplication13.Controllers.Mobile
                             List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();
                             if (orders.Count > 0)
                             {
-                                double totalBaht = orders.Sum(s => s.Price);
+                                OrderRecord order = orders.FirstOrDefault();
+                                List<OrderRecordWithDiscount> mapOderDiscounts = db.OrderRecordWithDiscounts.Where(c => c.BranchId == order.BranchId && c.OrderRecordId == order.Id).ToList();
+                                double totalDiscount = 0;
+                                foreach (OrderRecordWithDiscount item in mapOderDiscounts)
+                                {
+                                    DiscountRecord DiscountRecord = db.DiscountRecords.FirstOrDefault(c => c.BranchId == order.BranchId && c.Id == item.DiscountRecordId);
+                                    if (DiscountRecord != null)
+                                    {
+                                        totalDiscount += Convert.ToDouble(DiscountRecord.Value);
+                                    }
+                                }
+
+                                double totalBaht = orders.Sum(s => s.Price) - totalDiscount;
                                 totalBaht = totalBaht * (userTier.ComPercentage / 100);
 
                                 MobileComTransaction comTran = new MobileComTransaction();

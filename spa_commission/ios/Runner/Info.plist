@@ -35,6 +35,9 @@
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+         <string>UIInterfaceOrientationLandscapeLeft</string>
+         <string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
@@ -46,5 +49,11 @@
 	<string>This app needs access to location when open.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs access to Photo Library for user profile image.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs access to camera for user profile image and qr code</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
 </dict>
 </plist>

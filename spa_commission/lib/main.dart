@@ -15,7 +15,7 @@ import './shared_widget/custom_profile_widget.dart';
 import '../../../models/mobile_user_info.dart';
 // import './pages/main/qr_scan.dart';
 
-void main() async {
+void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeNotifier(AppTheme.customTheme),

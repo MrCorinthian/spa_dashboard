@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _loading = true;
+  bool _preLoading = true;
 
   @override
   void initState() {
@@ -33,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _loadValue() async {
-    var preLoading = true;
     final prefs = await SharedPreferences.getInstance();
     final _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
@@ -43,16 +43,18 @@ class _LoginPageState extends State<LoginPage> {
         Provider.of<AuthProvider>(context, listen: false)
             .login(jsonEncode({'Success': true, 'Data': _token}));
       } else {
-        preLoading = false;
+        setState(() {
+          _preLoading = false;
+        });
       }
     } else {
-      preLoading = false;
-    }
-    if (!preLoading) {
       setState(() {
-        _loading = false;
+        _preLoading = false;
       });
     }
+    setState(() {
+      _loading = false;
+    });
   }
 
   void login() async {
@@ -132,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return CustomLoading(
       isLoading: _loading,
-      child: !_loading ? buildLogin() : const SizedBox(width: 0),
+      child: !_preLoading ? buildLogin() : const SizedBox(width: 0),
     );
   }
 

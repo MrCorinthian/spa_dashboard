@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return CustomLoading(
       isLoading: _loading,
-      child: buildLogin(),
+      child: !_loading ? buildLogin() : const SizedBox(width: 0),
     );
   }
 

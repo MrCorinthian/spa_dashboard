@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
@@ -17,6 +18,7 @@ class QrScanPage extends StatefulWidget {
 class _QrScanPageState extends State<QrScanPage> {
   String _token = '';
   bool _processing = false;
+  bool _allow_camera = false;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   Barcode? barcode;
@@ -31,16 +33,7 @@ class _QrScanPageState extends State<QrScanPage> {
   Future<void> _loadValue() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
-    // LocationPermission permission = await Geolocator.checkPermission();
-    // if (!(LocationPermission.always == permission ||
-    //     LocationPermission.whileInUse == permission)) {
-    //   LocationPermission requestPermission =
-    //       await Geolocator.requestPermission();
-    //   if (!(LocationPermission.always == requestPermission ||
-    //       LocationPermission.whileInUse == requestPermission)) {
-    //     Navigator.of(context).pop();
-    //   }
-    // }
+    requestCameraPermission();
   }
 
   @override
@@ -65,8 +58,21 @@ class _QrScanPageState extends State<QrScanPage> {
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          buildQrView(context),
-          Positioned(bottom: 30, child: buildResult())
+          _allow_camera ? buildQrView(context) : buildRequsetCamera(context),
+          Positioned(
+              top: 20,
+              left: 20,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                    color: Colors.transparent,
+                    child: Image.asset(
+                      'assets/images/xmark-primary.png',
+                      fit: BoxFit.contain,
+                      height: 30,
+                    )),
+              )),
+          if (_allow_camera) Positioned(bottom: 30, child: buildResult()),
         ],
       ),
     ));
@@ -136,6 +142,36 @@ class _QrScanPageState extends State<QrScanPage> {
           Text('Scan a QR Code.'),
         ]),
       );
+
+  Widget buildRequsetCamera(BuildContext context) => Scaffold(
+          body: Center(
+              child: Padding(
+        padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'To scan QR code, we need access to your device\'s camera',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              child: Text(
+                'Open settings',
+                style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
+              ),
+              style: TextButton.styleFrom(
+                backgroundColor: CustomTheme.primaryColor,
+              ),
+              onPressed: () => openAppSettings(),
+            )
+          ],
+        ),
+      )));
 
   Widget buildQrView(BuildContext context) => QRView(
         key: qrKey,
@@ -236,5 +272,20 @@ class _QrScanPageState extends State<QrScanPage> {
         }
       }
     });
+  }
+
+  void requestCameraPermission() async {
+    var status = await Permission.camera.status;
+    if (status.isDenied) {
+      if (await Permission.camera.request().isGranted) {
+        setState(() {
+          _allow_camera = true;
+        });
+      }
+    } else {
+      setState(() {
+        _allow_camera = true;
+      });
+    }
   }
 }

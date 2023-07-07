@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../base_client/base_client.dart';
@@ -14,7 +15,7 @@ import './shared_widget/custom_profile_widget.dart';
 import '../../../models/mobile_user_info.dart';
 // import './pages/main/qr_scan.dart';
 
-void main() {
+void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeNotifier(AppTheme.customTheme),
@@ -71,7 +72,7 @@ class _MyAppState extends State<MyApp> {
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
 
-  final String title = 'SPA Commission';
+  final String title = 'Urban Thai Spa';
 
   @override
   State<LandingPage> createState() => _LandingPageState();

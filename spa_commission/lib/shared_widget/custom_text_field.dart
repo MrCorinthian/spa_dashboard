@@ -32,7 +32,26 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  final FocusNode _focusNode = FocusNode();
   bool hidePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus) {
+        // Perform any action you want when the keyboard is dismissed
+        // For example, you can trigger form validation or save data
+        print('Keyboard dismissed');
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   void _selectDate(BuildContext context) async {
     DateFormat format = DateFormat('dd MMMM yyyy');
@@ -97,6 +116,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         const SizedBox(height: 10),
         TextField(
           controller: widget.controller,
+          focusNode: _focusNode,
+          onSubmitted: (_) {
+            _focusNode.unfocus(); // Dismiss the keyboard
+          },
           maxLength: widget.maxLength,
           obscureText: widget.obscureText && hidePassword,
           cursorColor: CustomTheme.backgroundColor,

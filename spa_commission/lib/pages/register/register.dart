@@ -304,7 +304,11 @@ class _RegisterPageState extends State<RegisterPage> {
     return CustomLoading(isLoading: _loading, child: buildRegister());
   }
 
-  Widget buildRegister() => Scaffold(
+  Widget buildRegister() => GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
         appBar: const CustomAppBar(),
         body: SingleChildScrollView(
           child: Center(
@@ -480,5 +484,5 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
-      );
+      ));
 }

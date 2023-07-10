@@ -114,83 +114,89 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: const <Widget>[
-                    Text(
-                      'Change password',
-                      style: CustomTheme.headerPageName,
-                    )
+    return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          appBar: const CustomAppBar(),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: const <Widget>[
+                        Text(
+                          'Change password',
+                          style: CustomTheme.headerPageName,
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CustomTextField(
+                      text: 'Current password',
+                      requiredField: true,
+                      obscureText: true,
+                      controller: _passwordController,
+                    ),
+                    Container(
+                        child: Align(
+                      alignment: Alignment.topRight,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        ),
+                        onPressed: () => Navigator.push(
+                            context,
+                            CustomPageRouteBuilder.bottomToTop(
+                                OtpForgotPasswordPage())),
+                        child: const Text(
+                          'Forgot password',
+                          style: TextStyle(
+                              fontSize: 16, color: CustomTheme.fillColor),
+                        ),
+                      ),
+                    )),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    CustomTextField(
+                      text: 'New password',
+                      placeholder: 'Must have at least 6 characters',
+                      requiredField: true,
+                      obscureText: true,
+                      controller: _newPasswordController,
+                    ),
+                    CustomTextField(
+                      text: 'Confirm new password',
+                      requiredField: true,
+                      obscureText: true,
+                      controller: _confirmNewPasswordController,
+                      inputDecorationError: _isPasswordMatched,
+                      onChanged: (value) {
+                        setState(() {
+                          _isPasswordMatched =
+                              _newPasswordController.text == value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 60),
+                    ElevatedButton(
+                      style: CustomTheme.buttonStyle_primaryColor,
+                      onPressed: () => ChangePassword(),
+                      child: const Text('Confirm',
+                          style: CustomTheme.buttonTextStyle_fillColor),
+                    ),
                   ],
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomTextField(
-                  text: 'Current password',
-                  requiredField: true,
-                  obscureText: true,
-                  controller: _passwordController,
-                ),
-                Container(
-                    child: Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    ),
-                    onPressed: () => Navigator.push(
-                        context,
-                        CustomPageRouteBuilder.bottomToTop(
-                            OtpForgotPasswordPage())),
-                    child: const Text(
-                      'Forgot password',
-                      style:
-                          TextStyle(fontSize: 16, color: CustomTheme.fillColor),
-                    ),
-                  ),
-                )),
-                const SizedBox(
-                  height: 40,
-                ),
-                CustomTextField(
-                  text: 'New password',
-                  placeholder: 'Must have at least 6 characters',
-                  requiredField: true,
-                  obscureText: true,
-                  controller: _newPasswordController,
-                ),
-                CustomTextField(
-                  text: 'Confirm new password',
-                  requiredField: true,
-                  obscureText: true,
-                  controller: _confirmNewPasswordController,
-                  inputDecorationError: _isPasswordMatched,
-                  onChanged: (value) {
-                    setState(() {
-                      _isPasswordMatched = _newPasswordController.text == value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 60),
-                ElevatedButton(
-                  style: CustomTheme.buttonStyle_primaryColor,
-                  onPressed: () => ChangePassword(),
-                  child: const Text('Confirm',
-                      style: CustomTheme.buttonTextStyle_fillColor),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

@@ -336,7 +336,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return CustomLoading(isLoading: _loading, child: buildEditProfile());
   }
 
-  Widget buildEditProfile() => Scaffold(
+  Widget buildEditProfile() => GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
         appBar: const CustomAppBar(),
         body: SingleChildScrollView(
           child: Center(
@@ -495,5 +499,5 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ),
         ),
-      );
+      ));
 }

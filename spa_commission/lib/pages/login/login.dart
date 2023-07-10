@@ -138,102 +138,107 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget buildLogin() => Scaffold(
-        body: Container(
-            padding: CustomTheme.paddingPage,
-            child: Column(
-              children: <Widget>[
-                const Image(
-                  image: AssetImage('assets/images/urban-logo.png'),
-                ),
-                CustomTextField(
-                  text: 'Telephone no.',
-                  controller: _phoneController,
-                  keyboardType: 'number',
-                  maxLength: 10,
-                ),
-                CustomTextField(
-                    text: 'Password',
-                    obscureText: true,
-                    controller: _passwordController),
-                Container(
-                    child: Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    ),
-                    onPressed: () => Navigator.push(
-                        context,
-                        CustomPageRouteBuilder.bottomToTop(
-                            OtpForgotPasswordPage())),
-                    child: const Text(
-                      'Forgot password',
-                      style:
-                          TextStyle(fontSize: 16, color: CustomTheme.fillColor),
-                    ),
+  Widget buildLogin() => GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          body: Container(
+              padding: CustomTheme.paddingPage,
+              child: Column(
+                children: <Widget>[
+                  const Image(
+                    image: AssetImage('assets/images/urban-logo.png'),
                   ),
-                )),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  style: CustomTheme.buttonStyle_primaryColor,
-                  onPressed: login,
-                  child: const Text('Sign in',
-                      style: CustomTheme.buttonTextStyle_fillColor),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                ElevatedButton(
-                  style: CustomTheme.buttonStyle_secondaryColor,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 500),
-                        transitionsBuilder: (context, animation, _, child) {
-                          return SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(-1, 0),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: child,
-                          );
-                        },
-                        pageBuilder: (_, __, ___) => RegisterPage(),
+                  CustomTextField(
+                    text: 'Telephone no.',
+                    controller: _phoneController,
+                    keyboardType: 'number',
+                    maxLength: 10,
+                  ),
+                  CustomTextField(
+                      text: 'Password',
+                      obscureText: true,
+                      controller: _passwordController),
+                  Container(
+                      child: Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       ),
-                    );
-                  },
-                  child: const Text('Register',
-                      style: CustomTheme.buttonTextStyle_fillColor),
-                )
-              ],
-            )),
-        // bottomNavigationBar: Container(
-        //   padding: CustomTheme.paddingPage,
-        //   child: ElevatedButton(
-        //     style: CustomTheme.buttonStyle_secondaryColor,
-        //     onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         PageRouteBuilder(
-        //           transitionDuration: const Duration(milliseconds: 500),
-        //           transitionsBuilder: (context, animation, _, child) {
-        //             return SlideTransition(
-        //               position: Tween<Offset>(
-        //                 begin: const Offset(-1, 0),
-        //                 end: Offset.zero,
-        //               ).animate(animation),
-        //               child: child,
-        //             );
-        //           },
-        //           pageBuilder: (_, __, ___) => RegisterPage(),
-        //         ),
-        //       );
-        //     },
-        //     child: const Text('Register',
-        //         style: CustomTheme.buttonTextStyle_fillColor),
-        //   ),
-        // ),
+                      onPressed: () => Navigator.push(
+                          context,
+                          CustomPageRouteBuilder.bottomToTop(
+                              OtpForgotPasswordPage())),
+                      child: const Text(
+                        'Forgot password',
+                        style: TextStyle(
+                            fontSize: 16, color: CustomTheme.fillColor),
+                      ),
+                    ),
+                  )),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    style: CustomTheme.buttonStyle_primaryColor,
+                    onPressed: login,
+                    child: const Text('Sign in',
+                        style: CustomTheme.buttonTextStyle_fillColor),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  ElevatedButton(
+                    style: CustomTheme.buttonStyle_secondaryColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(milliseconds: 500),
+                          transitionsBuilder: (context, animation, _, child) {
+                            return SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(-1, 0),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: child,
+                            );
+                          },
+                          pageBuilder: (_, __, ___) => RegisterPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('Register',
+                        style: CustomTheme.buttonTextStyle_fillColor),
+                  )
+                ],
+              )),
+          // bottomNavigationBar: Container(
+          //   padding: CustomTheme.paddingPage,
+          //   child: ElevatedButton(
+          //     style: CustomTheme.buttonStyle_secondaryColor,
+          //     onPressed: () {
+          //       Navigator.push(
+          //         context,
+          //         PageRouteBuilder(
+          //           transitionDuration: const Duration(milliseconds: 500),
+          //           transitionsBuilder: (context, animation, _, child) {
+          //             return SlideTransition(
+          //               position: Tween<Offset>(
+          //                 begin: const Offset(-1, 0),
+          //                 end: Offset.zero,
+          //               ).animate(animation),
+          //               child: child,
+          //             );
+          //           },
+          //           pageBuilder: (_, __, ___) => RegisterPage(),
+          //         ),
+          //       );
+          //     },
+          //     child: const Text('Register',
+          //         style: CustomTheme.buttonTextStyle_fillColor),
+          //   ),
+          // ),
+        ),
       );
 }

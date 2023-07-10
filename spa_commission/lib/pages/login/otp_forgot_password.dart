@@ -182,100 +182,108 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: const <Widget>[
-                    Text(
-                      'Forgot password',
-                      style: CustomTheme.headerPageName,
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                _ref.isEmpty && _otp.isEmpty
-                    ? Column(
-                        children: [
-                          CustomTextField(
-                            text: 'Telephone no.',
-                            requiredField: true,
-                            keyboardType: 'number',
-                            controller: _phoneNumberController,
-                            maxLength: 10,
-                          ),
-                          const SizedBox(height: 60),
-                          ElevatedButton(
-                            style: CustomTheme.buttonStyle_primaryColor,
-                            onPressed: () => requestOtp(),
-                            child: const Text('Confirm',
-                                style: CustomTheme.buttonTextStyle_fillColor),
-                          )
-                        ],
-                      )
-                    : (_ref.isNotEmpty && _otp.isEmpty
+    return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          appBar: const CustomAppBar(),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: const <Widget>[
+                        Text(
+                          'Forgot password',
+                          style: CustomTheme.headerPageName,
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    _ref.isEmpty && _otp.isEmpty
                         ? Column(
                             children: [
                               CustomTextField(
-                                text: 'OTP from SMS',
+                                text: 'Telephone no.',
                                 requiredField: true,
                                 keyboardType: 'number',
-                                controller: _otpController,
+                                controller: _phoneNumberController,
+                                maxLength: 10,
                               ),
                               const SizedBox(height: 60),
                               ElevatedButton(
                                 style: CustomTheme.buttonStyle_primaryColor,
-                                onPressed: () => verifyOtp(),
+                                onPressed: () => requestOtp(),
                                 child: const Text('Confirm',
                                     style:
                                         CustomTheme.buttonTextStyle_fillColor),
-                              ),
+                              )
                             ],
                           )
-                        : Column(
-                            children: [
-                              CustomTextField(
-                                text: 'New password',
-                                placeholder: 'Must have at least 6 characters',
-                                requiredField: true,
-                                obscureText: true,
-                                controller: _newPasswordController,
-                              ),
-                              CustomTextField(
-                                text: 'Confirm new password',
-                                requiredField: true,
-                                obscureText: true,
-                                controller: _confirmNewPasswordController,
-                                inputDecorationError: _isPasswordMatched,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isPasswordMatched =
-                                        _newPasswordController.text == value;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 60),
-                              ElevatedButton(
-                                style: CustomTheme.buttonStyle_primaryColor,
-                                onPressed: () => forgotPassword(),
-                                child: const Text('Confirm',
-                                    style:
-                                        CustomTheme.buttonTextStyle_fillColor),
-                              ),
-                            ],
-                          )),
-              ],
+                        : (_ref.isNotEmpty && _otp.isEmpty
+                            ? Column(
+                                children: [
+                                  CustomTextField(
+                                    text: 'OTP from SMS',
+                                    requiredField: true,
+                                    keyboardType: 'number',
+                                    controller: _otpController,
+                                  ),
+                                  const SizedBox(height: 60),
+                                  ElevatedButton(
+                                    style: CustomTheme.buttonStyle_primaryColor,
+                                    onPressed: () => verifyOtp(),
+                                    child: const Text('Confirm',
+                                        style: CustomTheme
+                                            .buttonTextStyle_fillColor),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  CustomTextField(
+                                    text: 'New password',
+                                    placeholder:
+                                        'Must have at least 6 characters',
+                                    requiredField: true,
+                                    obscureText: true,
+                                    controller: _newPasswordController,
+                                  ),
+                                  CustomTextField(
+                                    text: 'Confirm new password',
+                                    requiredField: true,
+                                    obscureText: true,
+                                    controller: _confirmNewPasswordController,
+                                    inputDecorationError: _isPasswordMatched,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _isPasswordMatched =
+                                            _newPasswordController.text ==
+                                                value;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: 60),
+                                  ElevatedButton(
+                                    style: CustomTheme.buttonStyle_primaryColor,
+                                    onPressed: () => forgotPassword(),
+                                    child: const Text('Confirm',
+                                        style: CustomTheme
+                                            .buttonTextStyle_fillColor),
+                                  ),
+                                ],
+                              )),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

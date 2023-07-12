@@ -12,9 +12,9 @@ class RegisterData {
   String? Email;
   String? LineId;
   String? WhatsAppId;
-  String? companyTypeOfUsage;
+  String? CompanyTypeOfUsage;
   String? CompanyName;
-  String? CompanyTexId;
+  String? CompanyTaxId;
   String? BankAccount;
   String? BankAccountNumber;
   String? ProfilePath;
@@ -34,9 +34,9 @@ class RegisterData {
       this.Email,
       this.LineId,
       this.WhatsAppId,
-      this.companyTypeOfUsage,
+      this.CompanyTypeOfUsage,
       this.CompanyName,
-      this.CompanyTexId,
+      this.CompanyTaxId,
       this.BankAccount,
       this.BankAccountNumber,
       this.ProfilePath,
@@ -56,9 +56,9 @@ class RegisterData {
         'Email': Email,
         'LineId': LineId,
         'WhatsAppId': WhatsAppId,
-        'companyTypeOfUsage': companyTypeOfUsage,
+        'CompanyTypeOfUsage': CompanyTypeOfUsage,
         'CompanyName': CompanyName,
-        'CompanyTexId': CompanyTexId,
+        'CompanyTaxId': CompanyTaxId,
         'BankAccount': BankAccount,
         'BankAccountNumber': BankAccountNumber,
         'ProfilePath': ProfilePath,

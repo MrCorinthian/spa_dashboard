@@ -55,11 +55,14 @@ namespace WebApplication13.Controllers.Mobile
                         else user.LineId = null;
                         if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
                         else user.WhatsAppId = null;
-                        if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                        if (data.CompanyTypeOfUsage == "Company")
-                        {
-                            if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                            if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                        if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage))
+                        { 
+                            user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
+                            if (data.CompanyTypeOfUsage.ToLower() == "company")
+                            {
+                                if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
+                                if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                            }
                         }
 
                         user.Active = "Y";

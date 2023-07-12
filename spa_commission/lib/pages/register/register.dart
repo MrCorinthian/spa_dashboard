@@ -267,9 +267,9 @@ class _RegisterPageState extends State<RegisterPage> {
     data.Email = _emailController.text;
     data.LineId = _lineController.text;
     data.WhatsAppId = _whatsappController.text;
-    data.companyTypeOfUsage = _companyTypeOfUsageController.text;
+    data.CompanyTypeOfUsage = _companyTypeOfUsageController.text;
     data.CompanyName = _companyNameController.text;
-    data.CompanyTexId = _companyTaxController.text;
+    data.CompanyTaxId = _companyTaxController.text;
     data.BankAccount = _bankAccountController.text;
     data.BankAccountNumber = _bankAccountNumberController.text;
     data.ProfilePath = _profilePathController.text;

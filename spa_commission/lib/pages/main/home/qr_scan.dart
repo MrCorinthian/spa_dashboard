@@ -18,7 +18,7 @@ class QrScanPage extends StatefulWidget {
 class _QrScanPageState extends State<QrScanPage> {
   String _token = '';
   bool _processing = false;
-  bool _allow_camera = false;
+  bool _allow_camera = true;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   Barcode? barcode;
@@ -272,6 +272,10 @@ class _QrScanPageState extends State<QrScanPage> {
       if (await Permission.camera.request().isGranted) {
         setState(() {
           _allow_camera = true;
+        });
+      } else {
+        setState(() {
+          _allow_camera = false;
         });
       }
     } else {

@@ -253,6 +253,8 @@ export class UserManagementComponent {
         this.selectedEdit.CompanyName = value;
       } else if (type === 'CompanyTaxId') {
         this.selectedEdit.CompanyTaxId = value;
+      } else if (type === 'CompanyAddress') {
+        this.selectedEdit.CompanyAddress = value;
       } else if (type === 'Nationality') {
         this.selectedEdit.Nationality = value;
       } else if (type === 'Address') {

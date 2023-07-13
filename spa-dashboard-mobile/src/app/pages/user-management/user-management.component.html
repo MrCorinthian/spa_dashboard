@@ -506,6 +506,16 @@
             </td>
           </tr>
           <tr>
+            <td class="td__topic">Company address</td>
+            <td *ngIf="!isEdit">{{ selected.CompanyAddress }}</td>
+            <td *ngIf="isEdit" class="td__data">
+              <input-text
+                [value]="selectedEdit.CompanyAddress"
+                (onChange)="onChange('CompanyAddress', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
             <td class="td__topic">Bank account</td>
             <td *ngIf="!isEdit">{{ selected.BankAccount }}</td>
             <td *ngIf="isEdit" class="td__data">

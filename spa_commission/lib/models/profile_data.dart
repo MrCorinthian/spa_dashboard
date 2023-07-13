@@ -18,6 +18,7 @@ class ProfileData {
   String? CompanyTypeOfUsage;
   String? CompanyName;
   String? CompanyTaxId;
+  String? CompanyAddress;
   String? BankAccount;
   String? BankAccountNumber;
   String? ProfilePath;
@@ -43,6 +44,7 @@ class ProfileData {
       this.CompanyTypeOfUsage,
       this.CompanyName,
       this.CompanyTaxId,
+      this.CompanyAddress,
       this.BankAccount,
       this.BankAccountNumber,
       this.ProfilePath,
@@ -68,6 +70,7 @@ class ProfileData {
         'CompanyTypeOfUsage': CompanyTypeOfUsage,
         'CompanyName': CompanyName,
         'CompanyTaxId': CompanyTaxId,
+        'CompanyAddress': CompanyAddress,
         'BankAccount': BankAccount,
         'BankAccountNumber': BankAccountNumber,
         'ProfilePath': ProfilePath,

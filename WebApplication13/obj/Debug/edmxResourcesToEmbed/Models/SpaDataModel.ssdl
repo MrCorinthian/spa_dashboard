@@ -307,6 +307,7 @@
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
     <Property Name="Updated" Type="datetime2" Precision="7" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyAddress" Type="nvarchar" MaxLength="300" />
   </EntityType>
   <EntityType Name="MobileUserLoginToken">
     <Key>

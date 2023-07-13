@@ -62,6 +62,7 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                 if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                                if (!string.IsNullOrEmpty(data.CompanyAddress)) user.CompanyAddress = data.CompanyAddress;
                             }
                         }
 

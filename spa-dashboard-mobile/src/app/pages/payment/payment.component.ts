@@ -20,7 +20,7 @@ export class PaymentComponent {
   colors: any = Colors;
   now: Date = new Date();
   filter: any = {
-    month: this.now.toLocaleString('default', { month: 'long' }),
+    month: this.now.toLocaleString('en-EN', { month: 'long' }),
     year: `${this.now.getFullYear()}`,
     status: 'All',
     companyTypeOfUsage: 'All',
@@ -38,7 +38,7 @@ export class PaymentComponent {
   paymentSelected: any = null;
 
   constructor(private http: HttpClient) {
-    this.filter.month = this.now.toLocaleString('default', { month: 'long' });
+    this.filter.month = this.now.toLocaleString('en-EN', { month: 'long' });
     this.filter.year = `${this.now.getFullYear()}`;
   }
 

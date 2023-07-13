@@ -3,7 +3,7 @@ export const GenerateMonthList = () => {
 
   for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
     const date = new Date(2013, monthIndex);
-    const monthName = date.toLocaleString('default', { month: 'long' });
+    const monthName = date.toLocaleString('en-EN', { month: 'long' });
     monthNames.push(monthName);
   }
 

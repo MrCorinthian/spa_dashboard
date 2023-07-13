@@ -42,6 +42,8 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _companyTaxController = TextEditingController();
+  final TextEditingController _companyAddressController =
+      TextEditingController();
   final TextEditingController _bankAccountController = TextEditingController();
   final TextEditingController _bankAccountNumberController =
       TextEditingController();
@@ -194,6 +196,10 @@ class _RegisterPageState extends State<RegisterPage> {
               validate = false;
               messages.add("Company Tax");
             }
+            if (_companyAddressController.text.isEmpty) {
+              validate = false;
+              messages.add("Company Address");
+            }
           }
           if (_bankAccountController.text.isEmpty) {
             validate = false;
@@ -270,6 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
     data.CompanyTypeOfUsage = _companyTypeOfUsageController.text;
     data.CompanyName = _companyNameController.text;
     data.CompanyTaxId = _companyTaxController.text;
+    data.CompanyAddress = _companyAddressController.text;
     data.BankAccount = _bankAccountController.text;
     data.BankAccountNumber = _bankAccountNumberController.text;
     data.ProfilePath = _profilePathController.text;
@@ -426,6 +433,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               _companyTypeOfUsageController.text == "Company",
                           controller: _companyTaxController,
                           keyboardType: 'number',
+                        )
+                      : const SizedBox(),
+                  _companyTypeOfUsageController.text == "Company"
+                      ? CustomTextField(
+                          text: 'Company Address',
+                          requiredField:
+                              _companyTypeOfUsageController.text == "Company",
+                          controller: _companyAddressController,
                         )
                       : const SizedBox(),
                   _bank.length > 0

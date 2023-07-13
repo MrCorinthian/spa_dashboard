@@ -96,6 +96,8 @@ namespace WebApplication13.DAL
                         mobileUserInfo.CompanyTypeOfUsage = user.CompanyTypeOfUsage;
                         mobileUserInfo.CompanyName = user.CompanyName;
                         mobileUserInfo.CompanyTaxId = user.CompanyTaxId;
+                        mobileUserInfo.CompanyTaxId = user.CompanyTaxId;
+                        mobileUserInfo.CompanyAddress = user.CompanyAddress;
                         mobileUserInfo.BankAccount = user.BankAccount;
                         mobileUserInfo.BankAccountNumber = user.BankAccountNumber;
                         if (!string.IsNullOrEmpty(user.ProfilePath)) mobileUserInfo.ProfilePath = $"File/ProfileImageWeb/{user.Id}";

@@ -444,6 +444,7 @@
     <EntitySetMapping Name="MobileUsers">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileUser">
         <MappingFragment StoreEntitySet="MobileUser">
+          <ScalarProperty Name="CompanyAddress" ColumnName="CompanyAddress" />
           <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
           <ScalarProperty Name="Updated" ColumnName="Updated" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />

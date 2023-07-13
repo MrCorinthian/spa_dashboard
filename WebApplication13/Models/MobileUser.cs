@@ -41,5 +41,6 @@ namespace WebApplication13.Models
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> Updated { get; set; }
         public string UpdatedBy { get; set; }
+        public string CompanyAddress { get; set; }
     }
 }

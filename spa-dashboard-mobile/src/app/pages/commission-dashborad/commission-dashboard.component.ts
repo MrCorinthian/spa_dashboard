@@ -28,7 +28,7 @@ export class CommissionDashboardComponent {
   branchChart: any;
 
   filter: any = {
-    month: this.now.toLocaleString('default', { month: 'long' }),
+    month: this.now.toLocaleString('en-EN', { month: 'long' }),
     year: `${this.now.getFullYear()}`,
   };
   months: Array<string> = GenerateMonthList();

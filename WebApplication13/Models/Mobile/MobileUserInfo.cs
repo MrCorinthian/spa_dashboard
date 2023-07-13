@@ -25,6 +25,7 @@ namespace WebApplication13.Models.Mobile {
         public string CompanyTypeOfUsage { get; set; }
         public string CompanyName { get; set; }
         public string CompanyTaxId { get; set; }
+        public string CompanyAddress { get; set; }
         public string BankAccount { get; set; }
         public string BankAccountNumber { get; set; }
         public string ProfilePath { get; set; }

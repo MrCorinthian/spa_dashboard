@@ -99,7 +99,7 @@ namespace WebApplication13.Controllers.Mobile
                         MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token.Data);
                         if (loginToken != null)
                         {
-                            var user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
+                            var user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId && c.Active == "Y");
                             if (user != null)
                             {
                                 MobileUserInfo uInfo = UserDAL.GetMoblieUserInfo(user.Id);
@@ -132,20 +132,40 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
                             if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
                             if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
-                            if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
-                            if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
-                            if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
                             if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
-                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
                             if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
-                            if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
-                            if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
-                            if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
-                            if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                            if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                            if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
                             if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
+
+                            if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
+                            else user.Birthday = null;
+                            if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
+                            else user.Nationality = null;
+                            if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
+                            else user.Address = null;
+                            if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
+                            else user.Email = null;
+                            if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
+                            else user.LineId = null;
+                            if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
+                            else user.WhatsAppId = null;
+                            if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage))
+                            {
+                                user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
+                                if (data.CompanyTypeOfUsage.ToLower() == "company")
+                                {
+                                    if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
+                                    if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                                    if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyAddress = data.CompanyAddress;
+                                }
+                                else
+                                {
+                                    user.CompanyName = null;
+                                    user.CompanyTaxId = null;
+                                    user.CompanyAddress = null;
+                                }
+                            }
                             if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
                             //if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;
                             user.Updated = now;
@@ -549,11 +569,13 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                 if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                                if (!string.IsNullOrEmpty(data.CompanyAddress)) user.CompanyAddress = data.CompanyAddress;
                             }
                             else
                             {
                                 user.CompanyName = null;
                                 user.CompanyTaxId = null;
+                                user.CompanyAddress = null;
                             }
                             if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
@@ -617,11 +639,13 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                 if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
+                                if (!string.IsNullOrEmpty(data.CompanyAddress)) user.CompanyAddress = data.CompanyAddress;
                             }
                             else
                             {
                                 user.CompanyName = null;
                                 user.CompanyTaxId = null;
+                                user.CompanyAddress = null;
                             }
                             if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;

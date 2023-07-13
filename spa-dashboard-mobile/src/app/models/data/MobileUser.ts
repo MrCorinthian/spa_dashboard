@@ -18,6 +18,7 @@ export class MobileUser {
   public CompanyTypeOfUsage!: string;
   public CompanyName!: string;
   public CompanyTaxId!: string;
+  public CompanyAddress!: string;
   public BankAccount!: string;
   public BankAccountNumber!: string;
   public ProfilePath!: string;

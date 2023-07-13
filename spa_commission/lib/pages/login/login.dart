@@ -43,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         Provider.of<AuthProvider>(context, listen: false)
             .login(jsonEncode({'Success': true, 'Data': _token}));
       } else {
+        Provider.of<AuthProvider>(context, listen: false).logout();
         setState(() {
           _preLoading = false;
         });

@@ -444,6 +444,7 @@
     <EntitySetMapping Name="MobileUsers">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileUser">
         <MappingFragment StoreEntitySet="MobileUser">
+          <ScalarProperty Name="CompanyAddress" ColumnName="CompanyAddress" />
           <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
           <ScalarProperty Name="Updated" ColumnName="Updated" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -470,6 +471,20 @@
           <ScalarProperty Name="TitleName" ColumnName="TitleName" />
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MobileExportInvoices">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileExportInvoice">
+        <MappingFragment StoreEntitySet="MobileExportInvoice">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="DocName" ColumnName="DocName" />
+          <ScalarProperty Name="DocNo" ColumnName="DocNo" />
+          <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

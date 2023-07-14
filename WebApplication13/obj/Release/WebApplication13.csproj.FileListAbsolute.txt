@@ -74,3 +74,16 @@ C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Relea
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.dll
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.pdb
 C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\HtmlRenderer.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\HtmlRenderer.PdfSharp.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\PdfSharp.Charting.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\PdfSharp.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Select.HtmlToPdf.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\HtmlRenderer.pdb
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\HtmlRenderer.PdfSharp.pdb
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\PdfSharp.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\PdfSharp.Charting.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Select.HtmlToPdf.xml
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\de\PdfSharp.resources.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\de\PdfSharp.Charting.resources.dll
+C:\Users\pi\Documents\24DVLOP\WORKSPACE\spa_dashboard\WebApplication13\bin\Select.Html.dep

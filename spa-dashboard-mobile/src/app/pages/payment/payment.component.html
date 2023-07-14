@@ -118,13 +118,10 @@
                 >
                   Pay</button
                 ><button
-                  [disabled]="!item.Payment"
-                  [style.backgroundColor]="
-                    item.Payment ? colors.bluePrimary : colors.grayPrimary
-                  "
+                  [style.backgroundColor]="colors.bluePrimary"
                   [style.cursor]="item.Payment ? 'pointer' : 'default'"
                   [style.margin]="'0.2rem 0 0.2rem 0'"
-                  (click)="(false)"
+                  (click)="exportInvoice(item.Id, item.month, item.year)"
                 >
                   Export invoice
                 </button>

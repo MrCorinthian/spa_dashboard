@@ -115,6 +115,7 @@
     <EntitySet Name="MobileFileAttachments" EntityType="spasystemdbModel.MobileFileAttachment" />
     <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
+    <EntitySet Name="MobileExportInvoices" EntityType="spasystemdbModel.MobileExportInvoice" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -489,5 +490,19 @@
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Updated" Type="DateTime" Precision="7" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyAddress" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MobileExportInvoice">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+    <Property Name="DocDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DocNo" Type="Int32" Nullable="false" />
+    <Property Name="DocName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

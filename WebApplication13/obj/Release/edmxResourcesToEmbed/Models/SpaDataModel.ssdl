@@ -230,6 +230,19 @@
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="MobileExportInvoice">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MobileUserId" Type="int" Nullable="false" />
+    <Property Name="DocDate" Type="date" Nullable="false" />
+    <Property Name="DocNo" Type="int" Nullable="false" />
+    <Property Name="DocName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Active" Type="nvarchar" MaxLength="1" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="MobileFileAttachment">
     <Key>
       <PropertyRef Name="Id" />
@@ -307,6 +320,7 @@
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
     <Property Name="Updated" Type="datetime2" Precision="7" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyAddress" Type="nvarchar" MaxLength="300" />
   </EntityType>
   <EntityType Name="MobileUserLoginToken">
     <Key>
@@ -473,6 +487,7 @@
     <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileErrorLog" EntityType="Self.MobileErrorLog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileExportInvoice" EntityType="Self.MobileExportInvoice" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileFileAttachment" EntityType="Self.MobileFileAttachment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileModule" EntityType="Self.MobileModule" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MobileOtp" EntityType="Self.MobileOtp" Schema="dbo" store:Type="Tables" />

@@ -15,6 +15,7 @@ using System.Web.Http.Cors;
 using WebApplication13.DAL;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Globalization;
 
 namespace WebApplication13.Controllers.Mobile
 {
@@ -464,7 +465,78 @@ namespace WebApplication13.Controllers.Mobile
                         }
                     }
                 }
-                catch (Exception ex) { }
+                catch { }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> ExportInvoice(ReportParams _params)
+        {
+            var response = new HttpResponseMessage();
+            string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
+
+            string user = UserDAL.UserLoginAuth();
+            if (!string.IsNullOrEmpty(user) && _params.MobileUserId > 0 && !string.IsNullOrEmpty(_params.Month) && !string.IsNullOrEmpty(_params.Year))
+            {
+                try
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        DateTime now = DateTime.Now;
+                        string subPath = $"UPLOAD\\MOBILE_EXPORT_INVOICE\\";
+                        string filePath = "";
+                        string filename = "";
+                        int docCount = 0;
+                        string docNo = "";
+                        DateTime comDate = DateTime.ParseExact(_params.Month + " " + _params.Year, "MMMM yyyy", CultureInfo.InvariantCulture);
+                        DateTime docDate = DateTime.ParseExact(_params.Month + " " + _params.Year, "MMMM yyyy", CultureInfo.InvariantCulture).AddMonths(1);
+                        List<MobileExportInvoice> exportInvoices = db.MobileExportInvoices.Where(c => c.DocDate == docDate).ToList();
+                        MobileExportInvoice exportInvoiceByUser = exportInvoices.FirstOrDefault(c => c.MobileUserId == _params.MobileUserId && c.Active == "Y");
+                        if (exportInvoiceByUser != null)
+                        {
+                            filename = $"{exportInvoiceByUser.DocName}.pdf";
+                        }
+                        else
+                        {
+                            docCount = exportInvoices.Count + 1;
+                            docNo = $"BN{docDate.Year}{docDate.Month.ToString("00")}{docDate.Day.ToString("00")}{docCount.ToString("000")}";
+                            filename = $"INVOICE_{docNo}.pdf";
+                            filePath = PdfDAL.GenerateExportInvoice(_params.MobileUserId, docNo, comDate, webRootPath, $"{webRootPath}{subPath}{filename}");
+
+                            if (!string.IsNullOrEmpty(filePath))
+                            {
+                                MobileExportInvoice newExportInvoice = new MobileExportInvoice();
+                                newExportInvoice.MobileUserId = _params.MobileUserId;
+                                newExportInvoice.DocDate = comDate;
+                                newExportInvoice.DocNo = docCount;
+                                newExportInvoice.DocName = docNo;
+                                newExportInvoice.Active = "Y";
+                                newExportInvoice.Created = now;
+                                newExportInvoice.CreatedBy = user;
+                                db.MobileExportInvoices.Add(newExportInvoice);
+                                db.SaveChanges();
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(filePath))
+                        {
+                            var stream = File.OpenRead(filePath);
+                            response.Content = new StreamContent(stream);
+                            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                            response.Content.Headers.ContentLength = stream.Length;
+                            response.Content.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+                            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                            {
+                                FileName = filename
+                            };
+
+                            return ResponseMessage(response);
+
+                        }
+                    }
+                }
+                catch { }
             }
 
             return NotFound();

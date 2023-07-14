@@ -235,6 +235,19 @@
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="MobileExportInvoice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MobileUserId" Type="int" Nullable="false" />
+          <Property Name="DocDate" Type="date" Nullable="false" />
+          <Property Name="DocNo" Type="int" Nullable="false" />
+          <Property Name="DocName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Active" Type="nvarchar" MaxLength="1" />
+          <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="MobileFileAttachment">
           <Key>
             <PropertyRef Name="Id" />
@@ -479,6 +492,7 @@
           <EntitySet Name="MobileComTier" EntityType="Self.MobileComTier" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileComTransaction" EntityType="Self.MobileComTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileErrorLog" EntityType="Self.MobileErrorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileExportInvoice" EntityType="Self.MobileExportInvoice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileFileAttachment" EntityType="Self.MobileFileAttachment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileModule" EntityType="Self.MobileModule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileOtp" EntityType="Self.MobileOtp" Schema="dbo" store:Type="Tables" />
@@ -615,6 +629,7 @@
           <EntitySet Name="MobileFileAttachments" EntityType="spasystemdbModel.MobileFileAttachment" />
           <EntitySet Name="MobileComTransactions" EntityType="spasystemdbModel.MobileComTransaction" />
           <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
+          <EntitySet Name="MobileExportInvoices" EntityType="spasystemdbModel.MobileExportInvoice" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -990,6 +1005,19 @@
           <Property Name="Updated" Type="DateTime" Precision="7" />
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CompanyAddress" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MobileExportInvoice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MobileUserId" Type="Int32" Nullable="false" />
+          <Property Name="DocDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DocNo" Type="Int32" Nullable="false" />
+          <Property Name="DocName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1467,6 +1495,20 @@
                 <ScalarProperty Name="TitleName" ColumnName="TitleName" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileExportInvoices">
+            <EntityTypeMapping TypeName="spasystemdbModel.MobileExportInvoice">
+              <MappingFragment StoreEntitySet="MobileExportInvoice">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="DocName" ColumnName="DocName" />
+                <ScalarProperty Name="DocNo" ColumnName="DocNo" />
+                <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+                <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

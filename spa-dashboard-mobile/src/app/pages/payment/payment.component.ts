@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { BaseUrl } from '../../const-value/base-url';
 import { Colors } from '../../const-value/colors';
 import { DataIndex } from '../../models/data-index';
@@ -60,6 +60,8 @@ export class PaymentComponent {
           for (let item of res.Data) {
             if (item.ProfilePath) {
               item.ProfilePath = `${BaseUrl}${item.ProfilePath}`;
+              item.month = `${this.filter.month}`;
+              item.year = `${this.filter.year}`;
             }
             this.dataTable.push(item);
           }
@@ -76,6 +78,44 @@ export class PaymentComponent {
       })
       .subscribe((res) => {
         this.getDataTable(this.currentIndex);
+      });
+  }
+
+  exportInvoice(id: number, month: string, year: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    debugger;
+    this.http
+      .post(
+        `${BaseUrl}File/ExportInvoice`,
+        { MobileUserId: id, Month: month, Year: year },
+        { responseType: 'blob', observe: 'response' }
+      )
+      .subscribe((response: any) => {
+        if (response && response?.body) {
+          // Extract the filename from the response headers
+          const contentDispositionHeader = response.headers.get(
+            'content-disposition'
+          );
+          let filename = contentDispositionHeader?.split('filename=')[1];
+          filename = filename?.split(';')[0];
+
+          // Create a URL object from the response blob
+          const blob = new Blob([response.body], {
+            type: 'application/octet-stream',
+          });
+          const url = window.URL.createObjectURL(blob);
+
+          // Create an anchor element and set its properties
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename ? filename : `INVOICE_00000000000.pdf`;
+
+          // Programmatically click the anchor element to trigger the file download
+          link.click();
+
+          // Clean up the URL object
+          window.URL.revokeObjectURL(url);
+        }
       });
   }
 

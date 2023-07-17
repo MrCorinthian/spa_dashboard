@@ -37,6 +37,8 @@ export class PaymentComponent {
   showPopup: boolean = false;
   paymentSelected: any = null;
 
+  loading = false;
+
   constructor(private http: HttpClient) {
     this.filter.month = this.now.toLocaleString('en-EN', { month: 'long' });
     this.filter.year = `${this.now.getFullYear()}`;
@@ -81,9 +83,14 @@ export class PaymentComponent {
       });
   }
 
+  exportInvoiceAll() {
+    for (let item of this.dataTable) {
+      this.exportInvoice(item.Id, item.month, item.year);
+    }
+  }
+
   exportInvoice(id: number, month: string, year: string) {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    debugger;
+    this.loading = true;
     this.http
       .post(
         `${BaseUrl}File/ExportInvoice`,
@@ -116,6 +123,7 @@ export class PaymentComponent {
           // Clean up the URL object
           window.URL.revokeObjectURL(url);
         }
+        this.loading = false;
       });
   }
 

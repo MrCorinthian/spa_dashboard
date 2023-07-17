@@ -6,7 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
+import '../../../shared_widget/custom_page_route_builder.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
+import '../../../shared_widget/request_camera.dart';
 
 class QrScanPage extends StatefulWidget {
   const QrScanPage({super.key});
@@ -58,7 +60,7 @@ class _QrScanPageState extends State<QrScanPage> {
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          _allow_camera ? buildQrView(context) : buildRequsetCamera(context),
+          _allow_camera ? buildQrView(context) : const RequestCamera(),
           Positioned(
               top: 20,
               left: 20,
@@ -134,36 +136,6 @@ class _QrScanPageState extends State<QrScanPage> {
           Text('Scan a QR Code.'),
         ]),
       );
-
-  Widget buildRequsetCamera(BuildContext context) => Scaffold(
-          body: Center(
-              child: Padding(
-        padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'To scan QR code, we need access to your device\'s camera',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              child: Text(
-                'Open settings',
-                style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
-              ),
-              style: TextButton.styleFrom(
-                backgroundColor: CustomTheme.primaryColor,
-              ),
-              onPressed: () => openAppSettings(),
-            )
-          ],
-        ),
-      )));
 
   Widget buildQrView(BuildContext context) => QRView(
         key: qrKey,
@@ -266,22 +238,20 @@ class _QrScanPageState extends State<QrScanPage> {
     });
   }
 
-  void requestCameraPermission() async {
+  Future requestCameraPermission() async {
+    bool allowCamera = false;
     var status = await Permission.camera.status;
     if (status.isDenied) {
-      if (await Permission.camera.request().isGranted) {
-        setState(() {
-          _allow_camera = true;
-        });
-      } else {
-        setState(() {
-          _allow_camera = false;
-        });
+      var request = await Permission.camera.request();
+      if (request.isGranted || request.isLimited) {
+        allowCamera = true;
       }
     } else {
-      setState(() {
-        _allow_camera = true;
-      });
+      allowCamera = true;
     }
+
+    setState(() {
+      _allow_camera = allowCamera;
+    });
   }
 }

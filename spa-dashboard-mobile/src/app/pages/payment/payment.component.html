@@ -42,7 +42,10 @@
           (click)="getDataTable(1)"
         >
           Search</button
-        ><button [style.backgroundColor]="colors.bluePrimary">
+        ><button
+          [style.backgroundColor]="colors.bluePrimary"
+          (click)="exportInvoiceAll()"
+        >
           Export invoice
         </button>
       </div>
@@ -245,3 +248,8 @@
     </button>
   </div>
 </popup>
+<div *ngIf="loading" class="backdrop">
+  <div class="overlay">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+</div>

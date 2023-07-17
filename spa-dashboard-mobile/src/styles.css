@@ -27,6 +27,11 @@ h1 {
   stroke: #4fd3a9 !important;
 }
 
+.mat-mdc-progress-spinner .mdc-circular-progress__determinate-circle,
+.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: #4fd3a9 !important;
+}
+
 .mat-date-range-input-container {
   display: none !important;
 }

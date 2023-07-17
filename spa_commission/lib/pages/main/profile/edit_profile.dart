@@ -165,6 +165,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   validateData() async {
+    setState(() {
+      _loading = true;
+    });
     var validate = true;
     List<String> messages = [];
     if (_phoneNumberController.text.isNotEmpty &&
@@ -259,6 +262,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     if (!validate) {
+      setState(() {
+        _loading = false;
+      });
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -282,10 +288,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   updateProfile() async {
-    setState(() {
-      _loading = true;
-    });
-
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {

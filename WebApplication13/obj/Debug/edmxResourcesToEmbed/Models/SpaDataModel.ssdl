@@ -234,7 +234,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MobileUserId" Type="int" Nullable="false" />
     <Property Name="DocDate" Type="date" Nullable="false" />
     <Property Name="DocNo" Type="int" Nullable="false" />

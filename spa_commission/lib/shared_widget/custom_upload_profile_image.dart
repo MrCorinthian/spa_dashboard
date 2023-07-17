@@ -2,8 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../base_client/base_client.dart';
 import '../../app_theme/app_theme.dart';
+import 'request_camera.dart';
+import '../shared_widget/custom_page_route_builder.dart';
 
 class CustomUploadProfileImage extends StatefulWidget {
   final Function(File?) onImageSelected;
@@ -49,15 +52,18 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
   }
 
   void _handleImageSelection(String type) async {
-    final result = await ImagePicker().pickImage(
-        source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
+    bool allowCamera = await requestCameraPermission();
+    if (allowCamera) {
+      final result = await ImagePicker().pickImage(
+          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
 
-    if (result != null) {
-      setState(() {
-        _image = File(result.path);
-      });
+      if (result != null) {
+        setState(() {
+          _image = File(result.path);
+        });
 
-      widget.onImageSelected(_image);
+        widget.onImageSelected(_image);
+      }
     }
   }
 
@@ -154,5 +160,24 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
         ),
       ],
     );
+  }
+
+  Future requestCameraPermission() async {
+    bool allowCamera = false;
+    var status = await Permission.camera.status;
+    if (status.isDenied) {
+      var request = await Permission.camera.request();
+      if (request.isGranted || request.isLimited) {
+        allowCamera = true;
+      } else {
+        Navigator.push(
+          context,
+          CustomPageRouteBuilder.bottomToTop(RequestCamera()),
+        );
+      }
+    } else {
+      allowCamera = true;
+    }
+    return allowCamera;
   }
 }

@@ -141,16 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
       if (response != null) {
         ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
         if (resPhoneNumber.success == false) {
-          if (_profileImage != null) {
-            var res = await BaseClient().uploadImage(_profileImage);
-            if (res != null) {
-              ResponsedData response = ResponsedData.fromJson(res);
-              _profilePathController.text = response.data;
-            } else {
-              validate = false;
-              messages.add("Profile image");
-            }
-          } else {
+          if (_profileImage == null) {
             validate = false;
             messages.add("Profile image");
           }
@@ -258,6 +249,14 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _loading = true;
     });
+
+    if (_profileImage != null) {
+      var res = await BaseClient().uploadImage(_profileImage);
+      if (res != null) {
+        ResponsedData response = ResponsedData.fromJson(res);
+        _profilePathController.text = response.data;
+      }
+    }
 
     RegisterData data = RegisterData();
     data.Password = _passwordController.text;

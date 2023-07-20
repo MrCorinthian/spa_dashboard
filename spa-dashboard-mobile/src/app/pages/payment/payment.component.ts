@@ -37,7 +37,7 @@ export class PaymentComponent {
   showPopup: boolean = false;
   paymentSelected: any = null;
 
-  loading = false;
+  loading: number = 0;
 
   constructor(private http: HttpClient) {
     this.filter.month = this.now.toLocaleString('en-EN', { month: 'long' });
@@ -90,7 +90,7 @@ export class PaymentComponent {
   }
 
   exportInvoice(id: number, month: string, year: string) {
-    this.loading = true;
+    this.loading++;
     this.http
       .post(
         `${BaseUrl}File/ExportInvoice`,
@@ -123,7 +123,7 @@ export class PaymentComponent {
           // Clean up the URL object
           window.URL.revokeObjectURL(url);
         }
-        this.loading = false;
+        this.loading--;
       });
   }
 

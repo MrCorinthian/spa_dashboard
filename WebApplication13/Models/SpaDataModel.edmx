@@ -28,6 +28,11 @@
           <Property Name="MassageSetId" Type="int" Nullable="false" />
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="UrbanSystem" Type="varchar" MaxLength="10" />
+          <Property Name="BaanThaiSystem" Type="varchar" MaxLength="10" />
+          <Property Name="GlobalThaiSystem" Type="varchar" MaxLength="10" />
+          <Property Name="QASystem" Type="varchar" MaxLength="10" />
+          <Property Name="Status" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="DiscountMaster">
           <Key>
@@ -539,6 +544,11 @@
           <Property Name="MassageSetId" Type="Int32" Nullable="false" />
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="UrbanSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="BaanThaiSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GlobalThaiSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="QASystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="MassagePlan">
           <Key>
@@ -1046,6 +1056,11 @@
           <EntitySetMapping Name="Branches">
             <EntityTypeMapping TypeName="spasystemdbModel.Branch">
               <MappingFragment StoreEntitySet="Branch">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="QASystem" ColumnName="QASystem" />
+                <ScalarProperty Name="GlobalThaiSystem" ColumnName="GlobalThaiSystem" />
+                <ScalarProperty Name="BaanThaiSystem" ColumnName="BaanThaiSystem" />
+                <ScalarProperty Name="UrbanSystem" ColumnName="UrbanSystem" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="MassageSetId" ColumnName="MassageSetId" />

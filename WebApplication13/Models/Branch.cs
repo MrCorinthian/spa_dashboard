@@ -19,5 +19,10 @@ namespace WebApplication13.Models
         public int MassageSetId { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
+        public string UrbanSystem { get; set; }
+        public string BaanThaiSystem { get; set; }
+        public string GlobalThaiSystem { get; set; }
+        public string QASystem { get; set; }
+        public string Status { get; set; }
     }
 }

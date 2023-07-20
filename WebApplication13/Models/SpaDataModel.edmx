@@ -464,6 +464,8 @@
           <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="UrbanSystem" Type="varchar" MaxLength="10" />
+          <Property Name="BaanThaiSystem" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Version">
           <Key>
@@ -644,6 +646,8 @@
           <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="UrbanSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="BaanThaiSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Version">
           <Key>
@@ -1110,6 +1114,8 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="spasystemdbModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="BaanThaiSystem" ColumnName="BaanThaiSystem" />
+                <ScalarProperty Name="UrbanSystem" ColumnName="UrbanSystem" />
                 <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
                 <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
                 <ScalarProperty Name="Status" ColumnName="Status" />

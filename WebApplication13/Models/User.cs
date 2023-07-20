@@ -23,5 +23,7 @@ namespace WebApplication13.Models
         public string Status { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
+        public string UrbanSystem { get; set; }
+        public string BaanThaiSystem { get; set; }
     }
 }

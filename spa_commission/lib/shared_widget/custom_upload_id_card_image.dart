@@ -198,7 +198,7 @@ class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
   Future requestCameraPermission() async {
     bool allowCamera = false;
     var status = await Permission.camera.status;
-    if (status.isDenied) {
+    if (status.isDenied || status.isPermanentlyDenied) {
       var request = await Permission.camera.request();
       if (request.isGranted || request.isLimited) {
         allowCamera = true;

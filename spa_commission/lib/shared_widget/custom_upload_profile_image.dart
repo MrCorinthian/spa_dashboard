@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../base_client/base_client.dart';
 import '../../app_theme/app_theme.dart';
 import 'request_camera.dart';
@@ -44,27 +45,50 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
-      setState(() {
-        _currentImagePath =
-            '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
-      });
+      final res = await BaseClient().get('File/ProfileImage?token=${_token}');
+      if (res != null) {
+        setState(() {
+          _currentImagePath =
+              '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
+        });
+      }
     }
   }
 
   void _handleImageSelection(String type) async {
     bool allowCamera = await requestCameraPermission();
     if (allowCamera) {
-      final result = await ImagePicker().pickImage(
+      final rawImage = await ImagePicker().pickImage(
           source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
 
-      if (result != null) {
-        setState(() {
-          _image = File(result.path);
-        });
+      if (rawImage != null) {
+        final compressedImage = await compressImage(rawImage);
+        if (compressedImage != null) {
+          setState(() {
+            _image = File(compressedImage.path);
+          });
 
-        widget.onImageSelected(_image);
+          widget.onImageSelected(_image);
+        }
       }
     }
+  }
+
+  compressImage(XFile imageFile) async {
+    int quality = 90;
+    final filePath = imageFile.path;
+    final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+    final compressedPath = "${filePath.substring(0, (lastIndex))}_compress.jpg";
+    final originalFile = File(filePath);
+
+    final result = await FlutterImageCompress.compressAndGetFile(
+      originalFile.absolute.path,
+      compressedPath,
+      quality: quality,
+      minWidth: 800,
+    );
+
+    return result!;
   }
 
   Widget buildChooseImageSource() => Scaffold(

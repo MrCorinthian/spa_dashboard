@@ -177,19 +177,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (response != null) {
         ResponsedData resPhoneNumber = ResponsedData.fromJson(response);
         if (resPhoneNumber.success == true) {
-          if (_profileImage != null) {
-            var res = await BaseClient().uploadImage(_profileImage);
-            if (res != null) {
-              ResponsedData response = ResponsedData.fromJson(res);
-              _profilePathController.text = response.data;
-            } else {
-              // validate = false;
-              // messages.add("Profile image");
-            }
-          } else {
-            // validate = false;
-            // messages.add("Profile image");
-          }
           if (_IdCardImage != null) {
             var res =
                 await BaseClient().uploadUserAttachment(_token, _IdCardImage);
@@ -291,6 +278,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
+      if (_profileImage != null) {
+        var res = await BaseClient().uploadImage(_profileImage);
+        if (res != null) {
+          ResponsedData response = ResponsedData.fromJson(res);
+          _profilePathController.text = response.data;
+        }
+      }
+
       ProfileData data = ProfileData();
       data.Token = _token;
       data.Password = '';

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:uuid/uuid.dart';
 import '../../base_client/base_client.dart';
 import '../../app_theme/app_theme.dart';
 import 'request_camera.dart';
@@ -49,7 +50,7 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
       if (res != null) {
         setState(() {
           _currentImagePath =
-              '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
+              '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}&c=${generateUniqueId()}';
         });
       }
     }
@@ -203,5 +204,10 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
       allowCamera = true;
     }
     return allowCamera;
+  }
+
+  String generateUniqueId() {
+    var uuid = Uuid();
+    return uuid.v4();
   }
 }

@@ -203,32 +203,41 @@ class _QrScanPageState extends State<QrScanPage> {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: CustomTheme.darkGreyColor,
-                  title: const Text('Message',
-                      style: TextStyle(color: CustomTheme.fillColor)),
-                  content: const Text(
-                    'QR Code is expired or invalid',
-                    style: TextStyle(color: CustomTheme.fillColor),
+                return WillPopScope(
+                  onWillPop: () async {
+                    // This will be called when the user tries to close the dialog
+                    this.barcode = null;
+                    this.controller!.resumeCamera();
+                    return true; // Return true to allow the dialog to be closed, or false to prevent closing
+                  },
+                  child: AlertDialog(
+                    backgroundColor: CustomTheme.darkGreyColor,
+                    title: const Text('Message',
+                        style: TextStyle(color: CustomTheme.fillColor)),
+                    content: const Text(
+                      'QR Code is expired or invalid',
+                      style: TextStyle(color: CustomTheme.fillColor),
+                    ),
+                    actions: [
+                      Center(
+                        child: TextButton(
+                          child: Text(
+                            'Ok',
+                            style: TextStyle(
+                                color: CustomTheme.fillColor, fontSize: 16),
+                          ),
+                          style: TextButton.styleFrom(
+                            backgroundColor: CustomTheme.primaryColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            this.barcode = null;
+                            this.controller!.resumeCamera();
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                  actions: [
-                    Center(
-                      child: TextButton(
-                        child: Text(
-                          'Ok',
-                          style: TextStyle(
-                              color: CustomTheme.fillColor, fontSize: 16),
-                        ),
-                        style: TextButton.styleFrom(
-                          backgroundColor: CustomTheme.primaryColor,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          this.controller!.resumeCamera();
-                        },
-                      ),
-                    )
-                  ],
                 );
               },
             );

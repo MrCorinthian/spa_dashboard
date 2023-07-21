@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../base_client/base_client.dart';
-import '../app_theme/app_theme.dart';
 import '../app_theme/app_theme.dart';
 import '../models/mobile_user_info.dart';
 import '../models/commistion_tier.dart';
@@ -63,7 +63,7 @@ class CustomProfileWidgetState extends State<CustomProfileWidget> {
           _maxBaht = _userInfo.MaxBaht;
           _totalPercentage = (_totalBaht / _maxBaht);
           _profilePath =
-              '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}';
+              '${BaseClient().getBaseUrl}File/ProfileImage?token=${_token}&c=${generateUniqueId()}';
         });
       }
     }
@@ -191,5 +191,10 @@ class CustomProfileWidgetState extends State<CustomProfileWidget> {
         )
       ],
     );
+  }
+
+  String generateUniqueId() {
+    var uuid = Uuid();
+    return uuid.v4();
   }
 }

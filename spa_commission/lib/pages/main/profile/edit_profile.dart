@@ -218,7 +218,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             }
             if (_companyTaxController.text.isEmpty) {
               validate = false;
-              messages.add("Company Tax");
+              messages.add("Company Tax ID");
             }
             if (_companyAddressController.text.isEmpty) {
               validate = false;

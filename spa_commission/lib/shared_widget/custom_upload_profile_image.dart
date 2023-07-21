@@ -43,6 +43,7 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
   }
 
   Future<void> _loadValue() async {
+    var status = await Permission.camera.status;
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('spa_login_token') ?? '';
     if (_token != '') {
@@ -190,7 +191,7 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
   Future requestCameraPermission() async {
     bool allowCamera = false;
     var status = await Permission.camera.status;
-    if (status.isDenied) {
+    if (status.isDenied || status.isPermanentlyDenied) {
       var request = await Permission.camera.request();
       if (request.isGranted || request.isLimited) {
         allowCamera = true;

@@ -2030,7 +2030,8 @@ namespace WebApplication13.Controllers
 
                 HeaderValueVIP hv = new HeaderValueVIP()
                 {
-                    MemberList = listMemForView
+                    MemberList = listMemForView,
+                    strLoginName = userName
                 };
 
 
@@ -2183,7 +2184,8 @@ namespace WebApplication13.Controllers
 
                 HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
                 {
-                    MemberGroupList = listMemGForView
+                    MemberGroupList = listMemGForView,
+                    strLoginName = userName
                 };
 
 
@@ -2305,7 +2307,8 @@ namespace WebApplication13.Controllers
 
                 HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
                 {
-                    MemberPriviledgeList = listMemPrivForView
+                    MemberPriviledgeList = listMemPrivForView,
+                    strLoginName = userName
                 };
 
 
@@ -2424,7 +2427,8 @@ namespace WebApplication13.Controllers
 
                 HeaderValueVIP hv = new HeaderValueVIP()
                 {
-                    MemberList = listMemForView
+                    MemberList = listMemForView,
+                    strLoginName = userName
                 };
 
 
@@ -2839,7 +2843,8 @@ namespace WebApplication13.Controllers
 
                     HeaderValueVIP hv = new HeaderValueVIP()
                     {
-                        MemberList = listMemForView
+                        MemberList = listMemForView,
+                        strLoginName = userName
                     };
 
 
@@ -2857,7 +2862,8 @@ namespace WebApplication13.Controllers
 
                     HeaderValueVIP hv = new HeaderValueVIP()
                     {
-                        MemberList = listMemForView
+                        MemberList = listMemForView,
+                        strLoginName = userName
                     };
 
 

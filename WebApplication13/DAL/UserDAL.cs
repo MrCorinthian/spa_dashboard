@@ -237,7 +237,7 @@ namespace WebApplication13.DAL
                             MobileOtp otp = db.MobileOtps.FirstOrDefault(c => c.MobileUserId == user.Id && c.Module == module && c.Ref == _ref && c.Otp == _otp && c.Used == "N" && c.Active == "Y");
                             if (otp != null)
                             {
-                                DateTime otpExpired = otp.Created.AddMinutes(5);
+                                DateTime otpExpired = otp.Created.AddMinutes(3);
                                 if (otpExpired >= now)
                                 {
                                     OtpData otpData = new OtpData();

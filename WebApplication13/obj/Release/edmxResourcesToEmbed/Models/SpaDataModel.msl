@@ -18,6 +18,11 @@
     <EntitySetMapping Name="Branches">
       <EntityTypeMapping TypeName="spasystemdbModel.Branch">
         <MappingFragment StoreEntitySet="Branch">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="QASystem" ColumnName="QASystem" />
+          <ScalarProperty Name="GlobalThaiSystem" ColumnName="GlobalThaiSystem" />
+          <ScalarProperty Name="BaanThaiSystem" ColumnName="BaanThaiSystem" />
+          <ScalarProperty Name="UrbanSystem" ColumnName="UrbanSystem" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="MassageSetId" ColumnName="MassageSetId" />
@@ -86,6 +91,8 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="spasystemdbModel.User">
         <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="BaanThaiSystem" ColumnName="BaanThaiSystem" />
+          <ScalarProperty Name="UrbanSystem" ColumnName="UrbanSystem" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />

@@ -250,6 +250,7 @@
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
     <Content Include="Images\bggreen.jpg" />
+    <Content Include="Images\urban-logo-crop.png" />
     <Content Include="js\maingraphcalculate.js" />
     <Content Include="js\sb-admin-2.js" />
     <Content Include="Models\SpaDataModel.Context.tt">
@@ -465,6 +466,7 @@
     <Compile Include="Controllers\Mobile\RegisterController.cs" />
     <Compile Include="Controllers\Mobile\ReportController.cs" />
     <Compile Include="Controllers\Mobile\UserController.cs" />
+    <Compile Include="Controllers\PrivacyController.cs" />
     <Compile Include="DAL\DataDAL.cs" />
     <Compile Include="DAL\EncryptionDAL.cs" />
     <Compile Include="DAL\EnvDAL.cs" />
@@ -657,6 +659,7 @@
     <Content Include="Views\Home\EditMemberDetail.cshtml" />
     <Content Include="Views\Mobile\Index.cshtml" />
     <Content Include="Views\Home\UrbanEight.cshtml" />
+    <Content Include="Views\Privacy\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

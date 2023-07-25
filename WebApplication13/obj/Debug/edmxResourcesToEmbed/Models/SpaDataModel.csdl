@@ -23,6 +23,11 @@
     <Property Name="MassageSetId" Type="Int32" Nullable="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UrbanSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="BaanThaiSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="GlobalThaiSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="QASystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="MassagePlan">
     <Key>
@@ -130,6 +135,8 @@
     <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UrbanSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="BaanThaiSystem" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="Version">
     <Key>

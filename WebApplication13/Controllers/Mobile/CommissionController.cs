@@ -282,7 +282,7 @@ namespace WebApplication13.Controllers.Mobile
                         Receipt receipt = db.Receipts.FirstOrDefault(c => 
                                             c.Code == receiptParams.ReceiptCode
                                             && c.UsedStatus != "Y");
-                        DateTime? receiptExpired = receipt?.Created?.AddMinutes(15);
+                        DateTime? receiptExpired = receipt?.Created?.ToLocalTime().AddMinutes(15);
                         if (userTier != null && receipt != null && receiptExpired != null && receiptExpired >= now)
                         {
                             List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();

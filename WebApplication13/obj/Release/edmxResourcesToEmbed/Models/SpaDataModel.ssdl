@@ -23,6 +23,11 @@
     <Property Name="MassageSetId" Type="int" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="UrbanSystem" Type="varchar" MaxLength="10" />
+    <Property Name="BaanThaiSystem" Type="varchar" MaxLength="10" />
+    <Property Name="GlobalThaiSystem" Type="varchar" MaxLength="10" />
+    <Property Name="QASystem" Type="varchar" MaxLength="10" />
+    <Property Name="Status" Type="varchar" MaxLength="10" />
   </EntityType>
   <EntityType Name="DiscountMaster">
     <Key>
@@ -459,6 +464,8 @@
     <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="UrbanSystem" Type="varchar" MaxLength="10" />
+    <Property Name="BaanThaiSystem" Type="varchar" MaxLength="10" />
   </EntityType>
   <EntityType Name="Version">
     <Key>

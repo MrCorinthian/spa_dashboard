@@ -20,17 +20,32 @@ namespace WebApplication13.Controllers
         {
             //User getUs = getUserAuthen();
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
-                return View();
-            }
-            else
+            //Check user is login with old logic
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Dashboard");
+            //}
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie_ = Request.Cookies["TokenCookie"];
+
+            //Check user token from cookie
+            if (cookie_ != null)
             {
                 return RedirectToAction("Dashboard");
             }
-            
-            
+            else
+            {
+                return View();
+            }
+
+
         }
 
         [HttpPost]
@@ -40,13 +55,34 @@ namespace WebApplication13.Controllers
             User checkUs = getUserAuthen(userModel);
             if (checkUs != null)
             {
-                // login user logic here.
-                // redirect to home page.
 
-                var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-                noms = checkUs.Name;
-                System.Runtime.Caching.MemoryCache.Default["names"] = noms;
+                ////Cookie development process
+                // Generate your token. This could be anything, for example:
+                string token = Guid.NewGuid().ToString();
+
+                // Create a new cookie
+                HttpCookie cookie = new HttpCookie("TokenCookie", token);
+                HttpCookie cookie_user = new HttpCookie("UserCookie", checkUs.Username);
+
+                // Optional: Set the cookie expiration
+                cookie.Expires = DateTime.Now.AddDays(5);
+                cookie_user.Expires = DateTime.Now.AddDays(5);
+
+                // Optional: Secure your cookie (only transmitted over HTTPS)
+                //cookie.Secure = true;
+
+                // Add the cookie to the response to set it on the client
+                Response.Cookies.Add(cookie);
+                Response.Cookies.Add(cookie_user);
+
                 return RedirectToAction("Dashboard");
+
+                // login user logic here.
+                //Old logic for login by using server cache
+                //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                //noms = checkUs.Name;
+                //System.Runtime.Caching.MemoryCache.Default["names"] = noms;
+                //return RedirectToAction("Dashboard");
             }
             else
             {
@@ -58,21 +94,44 @@ namespace WebApplication13.Controllers
         public ActionResult Dashboard(string cmd)
         {
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 HeaderValue hv = new HeaderValue();
 
                 SqlCommand command;
@@ -99,14 +158,62 @@ namespace WebApplication13.Controllers
 
                 }
 
+                hv.strLoginName = userName;
+
                 dataReader.Close();
                 command.Dispose();
                 cnn.Close();
 
                 return View(hv);
-
-
             }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+
+            //Check user authen with old logic by check from hosting memory cache
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    HeaderValue hv = new HeaderValue();
+
+            //    SqlCommand command;
+            //    SqlDataReader dataReader;
+            //    String sql = " ";
+            //    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sales', count(dbo.OrderRecord.Id) as 'Total Pax', (select sum(dbo.Account.StaffAmount) from dbo.Account where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','4','5','6','7','8','9','10','99')) as 'Total Staff', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average per Pax',COUNT(CASE WHEN dbo.OrderRecord.MemberId != '0' THEN dbo.OrderRecord.MemberId ELSE NULL END) as 'Total VIP' from dbo.OrderRecord left join dbo.Account on dbo.OrderRecord.AccountId = dbo.Account.Id and dbo.OrderRecord.BranchId = dbo.Account.BranchId where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','4','5','6','7','8','9','10','99')";
+
+            //    connetionString = ConfigurationManager.AppSettings["cString"];
+            //    cnn = new SqlConnection(connetionString);
+            //    cnn.Open();
+            //    command = new SqlCommand(sql, cnn);
+
+            //    dataReader = command.ExecuteReader();
+            //    while (dataReader.Read())
+            //    {
+            //        if (dataReader.GetValue(0).Equals(null) || dataReader.GetValue(0).Equals("null"))
+            //        {
+            //            hv = new HeaderValue() { strSales = "0", strPax = "0", strStaff = "0", strCommission = "0", strAverage = "0", strVipCount = "0" };
+            //        }
+            //        else
+            //        {
+            //            hv = new HeaderValue() { strSales = String.Format("{0:n0}", dataReader.GetValue(0)), strPax = String.Format("{0:n0}", dataReader.GetValue(1)), strStaff = String.Format("{0:n0}", dataReader.GetValue(2)), strCommission = String.Format("{0:n0}", dataReader.GetValue(3)), strAverage = String.Format("{0:n0}", dataReader.GetValue(4)), strVipCount = String.Format("{0:n0}", dataReader.GetValue(5)) };
+            //        }
+
+            //    }
+
+            //    dataReader.Close();
+            //    command.Dispose();
+            //    cnn.Close();
+
+            //    return View(hv);
+
+
+            //}
         }
 
         public ActionResult Urban(string accountId, string monthNo, string yearNo, string cmd)
@@ -1329,21 +1436,44 @@ namespace WebApplication13.Controllers
         {
             int branchIds = 4;
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 if (accountId != null)
                 {
                     string tSales = " ";
@@ -1491,7 +1621,8 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName
                     };
 
 
@@ -1562,7 +1693,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -1628,7 +1760,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -1753,12 +1886,17 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName
                     };
 
 
                     return View(hv);
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
@@ -2347,21 +2485,44 @@ namespace WebApplication13.Controllers
         {
             int branchIds = 5;
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 if (accountId != null)
                 {
                     string tSales = " ";
@@ -2374,6 +2535,11 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
@@ -2383,6 +2549,22 @@ namespace WebApplication13.Controllers
                     //float tPaxNumInFloat = (float)tPaxNum;
                     //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
                     //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
@@ -2461,9 +2643,16 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,
@@ -2481,7 +2670,8 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName
                     };
 
 
@@ -2552,7 +2742,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -2618,7 +2809,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -2743,12 +2935,17 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName
                     };
 
 
                     return View(hv);
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
@@ -2756,21 +2953,44 @@ namespace WebApplication13.Controllers
         {
             int branchIds = 6;
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 if (accountId != null)
                 {
                     string tSales = " ";
@@ -2783,6 +3003,11 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
@@ -2792,6 +3017,22 @@ namespace WebApplication13.Controllers
                     //float tPaxNumInFloat = (float)tPaxNum;
                     //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
                     //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
@@ -2870,9 +3111,16 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,
@@ -2890,7 +3138,8 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName
                     };
 
 
@@ -2961,7 +3210,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -3027,7 +3277,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -3152,12 +3403,17 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName
                     };
 
 
                     return View(hv);
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
@@ -3165,21 +3421,44 @@ namespace WebApplication13.Controllers
         {
             int branchIds = 7;
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 if (accountId != null)
                 {
                     string tSales = " ";
@@ -3192,6 +3471,11 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
@@ -3201,6 +3485,22 @@ namespace WebApplication13.Controllers
                     //float tPaxNumInFloat = (float)tPaxNum;
                     //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
                     //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
@@ -3279,9 +3579,16 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,
@@ -3299,7 +3606,8 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName
                     };
 
 
@@ -3370,7 +3678,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -3436,7 +3745,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -3561,12 +3871,17 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName
                     };
 
 
                     return View(hv);
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
@@ -3574,21 +3889,44 @@ namespace WebApplication13.Controllers
         {
             int branchIds = 8;
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 if (accountId != null)
                 {
                     string tSales = " ";
@@ -3601,6 +3939,11 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
@@ -3610,6 +3953,22 @@ namespace WebApplication13.Controllers
                     //float tPaxNumInFloat = (float)tPaxNum;
                     //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
                     //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
@@ -3688,9 +4047,16 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,
@@ -3708,7 +4074,8 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName
                     };
 
 
@@ -3779,7 +4146,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -3819,10 +4187,8 @@ namespace WebApplication13.Controllers
                         tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
                         tInitMoney += (int)ac.StartMoney;
                         tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
                     }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
 
                     float tSalesInFloat = (float)tSales;
                     float tPaxNumInFloat = (float)tPaxNum;
@@ -3847,7 +4213,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -3972,12 +4339,17 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName
                     };
 
 
                     return View(hv);
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
@@ -3985,21 +4357,44 @@ namespace WebApplication13.Controllers
         {
             int branchIds = 10;
 
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 if (accountId != null)
                 {
                     string tSales = " ";
@@ -4012,6 +4407,11 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
@@ -4021,6 +4421,22 @@ namespace WebApplication13.Controllers
                     //float tPaxNumInFloat = (float)tPaxNum;
                     //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
                     //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
@@ -4099,9 +4515,16 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,
@@ -4119,7 +4542,8 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName
                     };
 
 
@@ -4190,7 +4614,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -4230,10 +4655,8 @@ namespace WebApplication13.Controllers
                         tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
                         tInitMoney += (int)ac.StartMoney;
                         tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
                     }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
 
                     float tSalesInFloat = (float)tSales;
                     float tPaxNumInFloat = (float)tPaxNum;
@@ -4258,7 +4681,8 @@ namespace WebApplication13.Controllers
                         strOtherSale = String.Format("{0:n0}", tOtherS),
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
                     };
 
                     return View(hv);
@@ -4383,12 +4807,17 @@ namespace WebApplication13.Controllers
                         strInitMoney = tInitMoney,
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString()
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName
                     };
 
 
                     return View(hv);
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
@@ -6733,6 +7162,25 @@ namespace WebApplication13.Controllers
             }
 
             return totalVip;
+        }
+
+        public void RemoveCookie()
+        {
+            if (Request.Cookies["TokenCookie"] != null)
+            {
+                var _cookie = new HttpCookie("TokenCookie")
+                {
+                    Expires = DateTime.Now.AddDays(-1), // Expire the cookie
+                                                        //Secure = true
+                };
+                var _cookie_user = new HttpCookie("UserCookie")
+                {
+                    Expires = DateTime.Now.AddDays(-1), // Expire the cookie
+                                                        //Secure = true
+                };
+                Response.Cookies.Add(_cookie);
+                Response.Cookies.Add(_cookie_user);
+            }
         }
 
     }

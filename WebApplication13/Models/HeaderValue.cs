@@ -30,5 +30,6 @@ namespace WebApplication13.Models
         public string strOilIncome { get; set; }
         public string strBalanceNet { get; set; }
         public string strVipCount { get; set; }
+        public string strLoginName { get; set; }
     }
 }

@@ -72,6 +72,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
         if (res != null) {
           Provider.of<AuthProvider>(context, listen: false).login(res);
           Navigator.of(context).pop();
+          Navigator.of(context).pop();
         } else {
           validate = false;
         }

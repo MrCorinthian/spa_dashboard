@@ -1903,21 +1903,94 @@ namespace WebApplication13.Controllers
         public ActionResult Member(string accountId, string monthNo, string yearNo, string cmd)
         {
             
-            if (cmd != null)
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    List<Member> listMem = new List<Member>();
+
+            //    using (var context = new spasystemdbEntities())
+            //    {
+
+            //        listMem = context.Members
+            //                        .OrderBy(b => b.Id)
+            //                        .ToList();
+            //    }
+
+            //    List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //    foreach(Member mem in listMem)
+            //    {
+                    
+            //        string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
+            //        string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
+
+            //        MemberItem memItem = new MemberItem() { Id=mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire= splitExpire[0] };
+            //        if(mem.ActiveStatus.Equals("true"))
+            //        {
+            //            memItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memItem.Status = "Inactive";
+            //        }
+
+            //        if(!string.IsNullOrEmpty(mem.Birth.ToString()))
+            //        {
+            //            string[] splitBirth = mem.Birth.ToString().Split(' ');
+            //            memItem.Birth = splitBirth[0];
+            //        }
+                    
+            //        listMemForView.Add(memItem);
+            //    };
+
+            //    HeaderValueVIP hv = new HeaderValueVIP()
+            //    {
+            //        MemberList = listMemForView
+            //    };
+
+
+            //    return View(hv);
+            //}
+
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 List<Member> listMem = new List<Member>();
 
                 using (var context = new spasystemdbEntities())
@@ -1930,14 +2003,14 @@ namespace WebApplication13.Controllers
 
                 List<MemberItem> listMemForView = new List<MemberItem>();
 
-                foreach(Member mem in listMem)
+                foreach (Member mem in listMem)
                 {
-                    
+
                     string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
                     string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
 
-                    MemberItem memItem = new MemberItem() { Id=mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire= splitExpire[0] };
-                    if(mem.ActiveStatus.Equals("true"))
+                    MemberItem memItem = new MemberItem() { Id = mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+                    if (mem.ActiveStatus.Equals("true"))
                     {
                         memItem.Status = "Active";
                     }
@@ -1946,12 +2019,12 @@ namespace WebApplication13.Controllers
                         memItem.Status = "Inactive";
                     }
 
-                    if(!string.IsNullOrEmpty(mem.Birth.ToString()))
+                    if (!string.IsNullOrEmpty(mem.Birth.ToString()))
                     {
                         string[] splitBirth = mem.Birth.ToString().Split(' ');
                         memItem.Birth = splitBirth[0];
                     }
-                    
+
                     listMemForView.Add(memItem);
                 };
 
@@ -1962,26 +2035,109 @@ namespace WebApplication13.Controllers
 
 
                 return View(hv);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
         public ActionResult ManageMemberType(string accountId, string monthNo, string yearNo, string cmd)
         {
-            if (cmd != null)
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    List<MemberGroup> listMemG = new List<MemberGroup>();
+
+            //    using (var context = new spasystemdbEntities())
+            //    {
+
+            //        listMemG = context.MemberGroups
+            //                        .OrderBy(b => b.Id)
+            //                        .ToList();
+            //    }
+
+            //    List<MemberGroupItem> listMemGForView = new List<MemberGroupItem>();
+
+            //    foreach (MemberGroup memG in listMemG)
+            //    {
+            //        MemberGroupItem memGItem = new MemberGroupItem();
+            //        memGItem.MemberGroupId = memG.Id.ToString();
+            //        memGItem.MemberGroupName = memG.Name;
+            //        memGItem.MemberGroupShowName = memG.ShowName;
+            //        if (memG.Status.Equals("true"))
+            //        {
+            //            memGItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memGItem.Status = "Inactive";
+            //        }
+
+            //        if(getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
+            //        {
+            //            memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+            //            memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+            //            memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+            //        }
+            //        //else
+            //        //{
+            //        //    memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+            //        //    memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+            //        //    memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+            //        //}
+
+            //        listMemGForView.Add(memGItem);
+            //    };
+
+            //    HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
+            //    {
+            //        MemberGroupList = listMemGForView
+            //    };
+
+
+            //    return View(hvg);
+            //}
+
+            //Check user token
+            //Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 List<MemberGroup> listMemG = new List<MemberGroup>();
 
                 using (var context = new spasystemdbEntities())
@@ -2009,7 +2165,7 @@ namespace WebApplication13.Controllers
                         memGItem.Status = "Inactive";
                     }
 
-                    if(getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
+                    if (getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
                     {
                         memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
                         memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
@@ -2032,26 +2188,94 @@ namespace WebApplication13.Controllers
 
 
                 return View(hvg);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
         public ActionResult ManagePriviledge(string accountId, string monthNo, string yearNo, string cmd)
         {
-            if (cmd != null)
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
+
+            //    List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
+
+            //    foreach (MemberPriviledge memP in listMemPriv)
+            //    {
+            //        MemberPriviledgeItem memPrivItem = new MemberPriviledgeItem();
+            //        memPrivItem.Id = memP.Id.ToString();
+            //        memPrivItem.ShowName = memP.ShowName;
+            //        memPrivItem.PriviledgeTypeId = memP.PriviledgeTypeId.ToString();
+            //        memPrivItem.PriviledgeTypeName = getPriviledgeTypeDetail(memP.PriviledgeTypeId).Name;
+            //        memPrivItem.Value = memP.Value.ToString();
+            //        memPrivItem.StartDate = memP.StartDate.ToString();
+            //        memPrivItem.ExpireDate = memP.ExpireDate.ToString();
+
+            //        if (memP.Status.Equals("true"))
+            //        {
+            //            memPrivItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memPrivItem.Status = "Inactive";
+            //        }
+
+            //        listMemPrivForView.Add(memPrivItem);
+            //    };
+
+            //    HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
+            //    {
+            //        MemberPriviledgeList = listMemPrivForView
+            //    };
+
+
+            //    return View(hvp);
+            //}
+
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
 
                 List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
@@ -2086,26 +2310,92 @@ namespace WebApplication13.Controllers
 
 
                 return View(hvp);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 
         public ActionResult MemberDetail(string accountId, string cmd, string MemberId)
         {
-            if (cmd != null)
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    Member myMem = getMember(Int32.Parse(MemberId));
+            //    string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+            //    string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+            //    List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+            //    if (myMem.ActiveStatus.Equals("true"))
+            //    {
+            //        memItem.Status = "Active";
+            //    }
+            //    else
+            //    {
+            //        memItem.Status = "Inactive";
+            //    }
+
+            //    if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
+            //    {
+            //        string[] splitBirth = myMem.Birth.ToString().Split(' ');
+            //        string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
+            //        memItem.Birth = splitBirthInEach[1]+"/"+ splitBirthInEach[0]+"/"+ splitBirthInEach[2];
+            //    }
+                
+
+            //    listMemForView.Add(memItem);
+
+            //    HeaderValueVIP hv = new HeaderValueVIP()
+            //    {
+            //        MemberList = listMemForView
+            //    };
+
+
+            //    return View(hv);
+            //}
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
                 Member myMem = getMember(Int32.Parse(MemberId));
                 string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
                 string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
@@ -2126,9 +2416,9 @@ namespace WebApplication13.Controllers
                 {
                     string[] splitBirth = myMem.Birth.ToString().Split(' ');
                     string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
-                    memItem.Birth = splitBirthInEach[1]+"/"+ splitBirthInEach[0]+"/"+ splitBirthInEach[2];
+                    memItem.Birth = splitBirthInEach[1] + "/" + splitBirthInEach[0] + "/" + splitBirthInEach[2];
                 }
-                
+
 
                 listMemForView.Add(memItem);
 
@@ -2139,8 +2429,15 @@ namespace WebApplication13.Controllers
 
 
                 return View(hv);
+
             }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
         }
+
         [HttpPost]
         public string SaveMember(ForInsertMember myData)
         {
@@ -2393,35 +2690,128 @@ namespace WebApplication13.Controllers
         }
         public ActionResult EditMemberDetail(string accountId, string cmd, string MemberId, string Mode)
         {
-            if (cmd != null)
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    if(Mode.Equals("Edit"))
+            //    {
+            //        Member myMem = getMember(Int32.Parse(MemberId));
+                    
+            //        string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+            //        string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+                    
+            //        string[] splitVipStartPart = splitStart[0].Split('/');
+            //        string[] splitVipExpirePart = splitExpire[0].Split('/');
+
+            //        List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //        MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(),VipStart = splitStart[0], VipExpire = splitExpire[0],VipStartDay=splitVipStartPart[1],VipStartMonth=splitVipStartPart[0],VipStartYear=splitVipStartPart[2],VipExpireDay=splitVipExpirePart[1],VipExpireMonth=splitVipExpirePart[0],VipExpireYear=splitVipExpirePart[2] };
+            //        if (myMem.ActiveStatus.Equals("true"))
+            //        {
+            //            memItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memItem.Status = "Inactive";
+            //        }
+
+            //        if(!string.IsNullOrEmpty(myMem.Birth.ToString()))
+            //        {
+            //            string[] splitBirth = myMem.Birth.ToString().Split(' ');
+            //            string[] splitBirthPart = splitBirth[0].Split('/');
+            //            memItem.Birth = splitBirth[0];
+            //            memItem.BirthDay = splitBirthPart[1];
+            //            memItem.BirthMonth = splitBirthPart[0];
+            //            memItem.BirthYear = splitBirthPart[2];
+            //        }
+
+            //        memItem.MemberGroupForSelect = getAllMemberGroup();
+            //        memItem.MemberGroupId = getMemberDetail(myMem.Id).MemberGroupId.ToString();
+            //        memItem.PageMode = Mode;
+
+            //        listMemForView.Add(memItem);
+
+            //        HeaderValueVIP hv = new HeaderValueVIP()
+            //        {
+            //            MemberList = listMemForView
+            //        };
+
+
+            //        return View(hv);
+            //    }
+            //    else
+            //    {
+            //        List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //        MemberItem memItem = new MemberItem();
+            //        memItem.MemberGroupForSelect = getAllMemberGroup();
+            //        memItem.PageMode = Mode;
+
+            //        listMemForView.Add(memItem);
+
+            //        HeaderValueVIP hv = new HeaderValueVIP()
+            //        {
+            //            MemberList = listMemForView
+            //        };
+
+
+            //        return View(hv);
+            //    }
+            //}
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                if(Mode.Equals("Edit"))
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                if (Mode.Equals("Edit"))
                 {
                     Member myMem = getMember(Int32.Parse(MemberId));
-                    
+
                     string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
                     string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
 
-                    
+
                     string[] splitVipStartPart = splitStart[0].Split('/');
                     string[] splitVipExpirePart = splitExpire[0].Split('/');
 
                     List<MemberItem> listMemForView = new List<MemberItem>();
 
-                    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(),VipStart = splitStart[0], VipExpire = splitExpire[0],VipStartDay=splitVipStartPart[1],VipStartMonth=splitVipStartPart[0],VipStartYear=splitVipStartPart[2],VipExpireDay=splitVipExpirePart[1],VipExpireMonth=splitVipExpirePart[0],VipExpireYear=splitVipExpirePart[2] };
+                    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0], VipStartDay = splitVipStartPart[1], VipStartMonth = splitVipStartPart[0], VipStartYear = splitVipStartPart[2], VipExpireDay = splitVipExpirePart[1], VipExpireMonth = splitVipExpirePart[0], VipExpireYear = splitVipExpirePart[2] };
                     if (myMem.ActiveStatus.Equals("true"))
                     {
                         memItem.Status = "Active";
@@ -2431,7 +2821,7 @@ namespace WebApplication13.Controllers
                         memItem.Status = "Inactive";
                     }
 
-                    if(!string.IsNullOrEmpty(myMem.Birth.ToString()))
+                    if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
                     {
                         string[] splitBirth = myMem.Birth.ToString().Split(' ');
                         string[] splitBirthPart = splitBirth[0].Split('/');
@@ -2473,6 +2863,11 @@ namespace WebApplication13.Controllers
 
                     return View(hv);
                 }
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
             }
         }
 

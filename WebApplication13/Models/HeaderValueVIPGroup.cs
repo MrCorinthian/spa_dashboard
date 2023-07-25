@@ -9,5 +9,6 @@ namespace WebApplication13.Models
     public class HeaderValueVIPGroup
     {
         public List<MemberGroupItem> MemberGroupList { get; set; }
+        public string strLoginName { get; set; }
     }
 }

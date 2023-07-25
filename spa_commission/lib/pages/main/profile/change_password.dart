@@ -27,6 +27,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
   final TextEditingController _confirmNewPasswordController =
       TextEditingController();
   bool _isPasswordMatched = true;
+  bool _process = false;
 
   @override
   void initState() {
@@ -43,60 +44,65 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
   }
 
   ChangePassword() async {
-    bool verifiedPassword = false;
-    var response = await BaseClient().post('User/Password',
-        {"Token": _token, "Password": _passwordController.text});
-    if (response != null) {
-      ResponsedData resPassword = ResponsedData.fromJson(response);
-      if (resPassword.success == true) {
-        verifiedPassword = true;
-      }
-    }
+    if (!_process) {
+      _process = true;
 
-    if (verifiedPassword) {
-      var validate = true;
-      if (_newPasswordController.text.isEmpty ||
-          _confirmNewPasswordController.text.isEmpty ||
-          _newPasswordController.text != _confirmNewPasswordController.text ||
-          _newPasswordController.text.length < 6) {
-        validate = false;
-      }
-
-      if (validate) {
-        var res = await BaseClient().post('User/ChangePassword', {
-          "Token": _token,
-          "Password": _passwordController.text,
-          "NewPassword": _newPasswordController.text,
-          "ConfirmNewPassword": _confirmNewPasswordController.text
-        });
-        if (res != null) {
-          Provider.of<AuthProvider>(context, listen: false).login(res);
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-        } else {
-          validate = false;
+      bool verifiedPassword = false;
+      var response = await BaseClient().post('User/Password',
+          {"Token": _token, "Password": _passwordController.text});
+      if (response != null) {
+        ResponsedData resPassword = ResponsedData.fromJson(response);
+        if (resPassword.success == true) {
+          verifiedPassword = true;
         }
       }
 
-      if (!validate) {
+      if (verifiedPassword) {
+        var validate = true;
+        if (_newPasswordController.text.isEmpty ||
+            _confirmNewPasswordController.text.isEmpty ||
+            _newPasswordController.text != _confirmNewPasswordController.text ||
+            _newPasswordController.text.length < 6) {
+          validate = false;
+        }
+
+        if (validate) {
+          var res = await BaseClient().post('User/ChangePassword', {
+            "Token": _token,
+            "Password": _passwordController.text,
+            "NewPassword": _newPasswordController.text,
+            "ConfirmNewPassword": _confirmNewPasswordController.text
+          });
+          if (res != null) {
+            Provider.of<AuthProvider>(context, listen: false).login(res);
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          } else {
+            validate = false;
+          }
+        }
+
+        if (!validate) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return buildPopup(_newPasswordController.text.length < 6
+                  ? "A new password must be more than 6 character"
+                  : "The confirm new password does not match");
+            },
+          );
+        }
+      } else {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return buildPopup(_newPasswordController.text.length < 6
-                ? "A new password must be more than 6 character"
-                : "The confirm new password does not match");
+            return buildPopup(
+                'Please check your current password and try again.');
           },
         );
       }
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return buildPopup(
-              'Please check your current password and try again.');
-        },
-      );
     }
+    _process = false;
   }
 
   Widget buildPopup(String message) {

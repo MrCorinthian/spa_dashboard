@@ -27,6 +27,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
   final TextEditingController _confirmNewPasswordController =
       TextEditingController();
   bool _isPasswordMatched = true;
+  bool _process = false;
 
   @override
   void initState() {
@@ -43,88 +44,100 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
   }
 
   requestOtp() async {
-    var res = await BaseClient().post('User/RequestOtpForgotPassword', {
-      "PhoneNumber": _phoneNumberController.text,
-    });
-    if (res != null) {
-      OtpData otp = OtpData.fromJson(res);
-      setState(() {
-        _ref = otp.Ref;
-        FocusScope.of(context).unfocus();
+    if (!_process) {
+      _process = true;
+      var res = await BaseClient().post('User/RequestOtpForgotPassword', {
+        "PhoneNumber": _phoneNumberController.text,
       });
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return buildPopup("Telephone no. does not exist");
-        },
-      );
+      if (res != null) {
+        OtpData otp = OtpData.fromJson(res);
+        setState(() {
+          _ref = otp.Ref;
+          FocusScope.of(context).unfocus();
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return buildPopup("Telephone no. does not exist");
+          },
+        );
+      }
     }
+    _process = false;
   }
 
   verifyOtp() async {
-    var res = await BaseClient().post('User/VerifyOtpForgotPassword', {
-      "PhoneNumber": _phoneNumberController.text,
-      "Ref": _ref,
-      "Otp": _otpController.text,
-    });
-    if (res != null) {
-      OtpData otp = OtpData.fromJson(res);
-      setState(() {
-        _otp = otp.Otp;
-        FocusScope.of(context).unfocus();
+    if (!_process) {
+      _process = true;
+      var res = await BaseClient().post('User/VerifyOtpForgotPassword', {
+        "PhoneNumber": _phoneNumberController.text,
+        "Ref": _ref,
+        "Otp": _otpController.text,
       });
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return buildPopup("OTP is invalid");
-        },
-      );
+      if (res != null) {
+        OtpData otp = OtpData.fromJson(res);
+        setState(() {
+          _otp = otp.Otp;
+          FocusScope.of(context).unfocus();
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return buildPopup("OTP is invalid");
+          },
+        );
+      }
     }
+    _process = false;
   }
 
   forgotPassword() async {
-    var validate = true;
-    if (_newPasswordController.text.isEmpty ||
-        _confirmNewPasswordController.text.isEmpty ||
-        _newPasswordController.text != _confirmNewPasswordController.text ||
-        _newPasswordController.text.length < 6) {
-      validate = false;
-    }
-
-    if (validate) {
-      var response = await BaseClient().post('User/ForgotPassword', {
-        "PhoneNumber": _phoneNumberController.text,
-        "Ref": _ref,
-        "Otp": _otp,
-        "NewPassword": _newPasswordController.text,
-        "ConfirmNewPassword": _confirmNewPasswordController.text
-      });
-      if (response != null) {
-        ResponsedData res = ResponsedData.fromJson(response);
-        if (res.success) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return buildPopupSuccess();
-            },
-          );
-        }
-      } else {
+    if (!_process) {
+      _process = true;
+      var validate = true;
+      if (_newPasswordController.text.isEmpty ||
+          _confirmNewPasswordController.text.isEmpty ||
+          _newPasswordController.text != _confirmNewPasswordController.text ||
+          _newPasswordController.text.length < 6) {
         validate = false;
       }
+
+      if (validate) {
+        var response = await BaseClient().post('User/ForgotPassword', {
+          "PhoneNumber": _phoneNumberController.text,
+          "Ref": _ref,
+          "Otp": _otp,
+          "NewPassword": _newPasswordController.text,
+          "ConfirmNewPassword": _confirmNewPasswordController.text
+        });
+        if (response != null) {
+          ResponsedData res = ResponsedData.fromJson(response);
+          if (res.success) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return buildPopupSuccess();
+              },
+            );
+          }
+        } else {
+          validate = false;
+        }
+      }
+      if (!validate) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return buildPopup(_newPasswordController.text.length < 6
+                ? "A new password must be more than 6 character"
+                : "The confirm new password does not match");
+          },
+        );
+      }
     }
-    if (!validate) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return buildPopup(_newPasswordController.text.length < 6
-              ? "A new password must be more than 6 character"
-              : "The confirm new password does not match");
-        },
-      );
-    }
+    _process = false;
   }
 
   Widget buildPopupSuccess() {

@@ -1,0 +1,39 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model string
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Privacy policy</title>
+    <style>
+        body{
+            font-family:sans-serif
+        }
+        @@media (max-width: 767px) {
+            .side__space {
+                display: none;
+            }
+    </style>
+</head>
+<body>
+    <div style="display:flex; flex-direction:row;">
+        <div class="side__space" style=" flex: 1;"></div>
+
+        <div style="flex:2;">
+            <div style="display:flex; flex-direction:column;">
+                <div style="text-align:center"><img width="300px" src="~/Images/urban-logo-crop.png" /></div>
+                <div style="text-align:center"><h2>Privacy Policy</h2></div>
+                <div style="height: 70vh; overflow-y: scroll; padding: 1rem;">@Html.Raw(Model)</div>
+            </div>
+        </div>
+
+        <div class="side__space" style=" flex: 1;"></div>
+    </div>
+</body>
+</html>

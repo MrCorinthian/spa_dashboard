@@ -165,6 +165,8 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
+                &nbsp;&nbsp;
+                <b>@Html.DisplayFor(model => model.strLoginName)</b> &nbsp;&nbsp;
                 <li class="dropdown">
                     <a href="@Url.Action("UrbanSix", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
                 </li>

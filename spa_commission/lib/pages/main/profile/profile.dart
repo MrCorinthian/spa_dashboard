@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../base_client/base_client.dart';
 import '../../../providers/AuthProvider/auth_provider.dart';
 import '../../../app_theme/app_theme.dart';
@@ -25,6 +26,8 @@ class _ProfilePageState extends State<ProfilePage> {
       GlobalKey<CustomProfileWidgetState>();
 
   String _token = '';
+  final Uri _urlPrivacy =
+      Uri.parse('https://manage.urban-partners-group.com/Privacy');
 
   @override
   void initState() {
@@ -42,6 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
           .remove('spa_login_token')
           .then((value) =>
               Provider.of<AuthProvider>(context, listen: false).logout())));
+
+  Future<void> _openLink() async {
+    if (!await launchUrl(_urlPrivacy)) {
+      throw Exception('Could not launch $_urlPrivacy');
+    }
+  }
 
   Widget buildLoadingWidget() => const Center(
         child: CircularProgressIndicator(
@@ -88,6 +97,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     context,
                     CustomPageRouteBuilder.leftToRight(
                         CommisionTierInfoPage())),
+              ),
+              CustomProfileMenuButton(
+                text: 'Privacy policy',
+                imageIconPath: 'assets/images/privacy-policy.png',
+                onPressed: () => _openLink(),
               ),
               CustomProfileMenuButton(
                 text: 'Sign out',

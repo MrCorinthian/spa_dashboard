@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/AuthProvider/auth_provider.dart';
 import '../../base_client/base_client.dart';
 import '../../models/register_data.dart';
@@ -55,10 +56,13 @@ class _RegisterPageState extends State<RegisterPage> {
   File? _profileImage;
   String _IdCardImagePath = '';
   File? _IdCardImage;
+  bool _isChecked = false;
   List<String> _province = [];
   List<String> _bank = [];
   List<String> _occupation = [];
   List<String> _companyTypeOfUsage = [];
+  final Uri _urlPrivacy =
+      Uri.parse('https://manage.urban-partners-group.com/Privacy');
 
   @override
   void initState() {
@@ -128,6 +132,12 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _IdCardImage = file;
       });
+    }
+  }
+
+  Future<void> _openLink() async {
+    if (!await launchUrl(_urlPrivacy)) {
+      throw Exception('Could not launch $_urlPrivacy');
     }
   }
 
@@ -211,6 +221,10 @@ class _RegisterPageState extends State<RegisterPage> {
               !Validator.isValidEmail(_emailController.text)) {
             validate = false;
             messages.add("Password");
+          }
+          if (!_isChecked) {
+            validate = false;
+            messages.add("Privacy policy");
           }
         } else {
           validate = false;
@@ -477,6 +491,48 @@ class _RegisterPageState extends State<RegisterPage> {
                         _isPasswordMatched = _passwordController.text == value;
                       });
                     },
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Theme(
+                          data: Theme.of(context).copyWith(
+                              unselectedWidgetColor: CustomTheme.fillColor),
+                          child: CheckboxListTile(
+                            activeColor: CustomTheme.primaryColor,
+                            checkColor: CustomTheme.fillColor,
+                            value: _isChecked,
+                            onChanged: (value) {
+                              setState(() {
+                                _isChecked = value!;
+                              });
+                            },
+                            title: GestureDetector(
+                              onTap: _openLink,
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'I have read and accept the ',
+                                      style: TextStyle(
+                                          color: CustomTheme.fillColor,
+                                          fontSize:
+                                              18), // Set white color for the first part
+                                    ),
+                                    TextSpan(
+                                      text: 'Privacy Policy',
+                                      style: TextStyle(
+                                          color: CustomTheme.primaryColor,
+                                          fontSize:
+                                              18), // Use primary color (red) for the second part
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            controlAffinity: ListTileControlAffinity.leading,
+                          )),
+                    ],
                   ),
                   const SizedBox(height: 60),
                   ElevatedButton(

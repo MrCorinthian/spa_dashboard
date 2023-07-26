@@ -9,6 +9,7 @@ import '../../../shared_widget/custom_app_bar.dart';
 import '../../../shared_widget/custom_text_field.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
 import '../../../shared_widget/custom_page_route_builder.dart';
+import '../../../shared_widget/custom_loading.dart';
 import '../../../models/responsed_data.dart';
 
 class ChangePasswordPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
   final TextEditingController _confirmNewPasswordController =
       TextEditingController();
   bool _isPasswordMatched = true;
-  bool _process = false;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -44,8 +45,10 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
   }
 
   ChangePassword() async {
-    if (!_process) {
-      _process = true;
+    if (!_loading) {
+      setState(() {
+        _loading = true;
+      });
 
       bool verifiedPassword = false;
       var response = await BaseClient().post('User/Password',
@@ -102,7 +105,9 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
         );
       }
     }
-    _process = false;
+    setState(() {
+      _loading = false;
+    });
   }
 
   Widget buildPopup(String message) {
@@ -121,6 +126,13 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    return CustomLoading(
+      isLoading: _loading,
+      child: buildWidget(context),
+    );
+  }
+
+  Widget buildWidget(BuildContext context) {
     return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();

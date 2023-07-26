@@ -4,6 +4,7 @@ import '../../../base_client/base_client.dart';
 import '../../../app_theme/app_theme.dart';
 import '../../../shared_widget/custom_app_bar.dart';
 import '../../../shared_widget/custom_text_field.dart';
+import '../../../shared_widget/custom_loading.dart';
 import '../../../shared_widget/custom_alert_dialog.dart';
 import '../../models/responsed_data.dart';
 import '../../models/otp_data.dart';
@@ -27,7 +28,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
   final TextEditingController _confirmNewPasswordController =
       TextEditingController();
   bool _isPasswordMatched = true;
-  bool _process = false;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -44,8 +45,11 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
   }
 
   requestOtp() async {
-    if (!_process) {
-      _process = true;
+    if (!_loading) {
+      setState(() {
+        _loading = true;
+      });
+
       var res = await BaseClient().post('User/RequestOtpForgotPassword', {
         "PhoneNumber": _phoneNumberController.text,
       });
@@ -64,12 +68,18 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
         );
       }
     }
-    _process = false;
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   verifyOtp() async {
-    if (!_process) {
-      _process = true;
+    if (!_loading) {
+      setState(() {
+        _loading = true;
+      });
+
       var res = await BaseClient().post('User/VerifyOtpForgotPassword', {
         "PhoneNumber": _phoneNumberController.text,
         "Ref": _ref,
@@ -90,12 +100,18 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
         );
       }
     }
-    _process = false;
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   forgotPassword() async {
-    if (!_process) {
-      _process = true;
+    if (!_loading) {
+      setState(() {
+        _loading = true;
+      });
+
       var validate = true;
       if (_newPasswordController.text.isEmpty ||
           _confirmNewPasswordController.text.isEmpty ||
@@ -137,7 +153,10 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
         );
       }
     }
-    _process = false;
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   Widget buildPopupSuccess() {
@@ -195,6 +214,13 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    return CustomLoading(
+      isLoading: _loading,
+      child: buildWidget(context),
+    );
+  }
+
+  Widget buildWidget(BuildContext context) {
     return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();

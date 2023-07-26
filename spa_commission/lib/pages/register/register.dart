@@ -9,6 +9,7 @@ import '../../models/register_data.dart';
 import '../../models/responsed_data.dart';
 import '../../app_theme/app_theme.dart';
 import '../../shared_function/shared_function.dart';
+import '../../shared_widget/custom_page_route_builder.dart';
 import '../../shared_widget/custom_app_bar.dart';
 import '../../shared_widget/custom_text_field.dart';
 import '../../shared_widget/custom_dropdown.dart';
@@ -16,6 +17,7 @@ import '../../shared_widget/custom_upload_profile_image.dart';
 import '../../shared_widget/custom_alert_dialog.dart';
 import '../../shared_widget/custom_loading.dart';
 import '../../shared_widget/custom_upload_id_card_image.dart';
+import '../../shared_widget/privacy_policy.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -508,7 +510,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               });
                             },
                             title: GestureDetector(
-                              onTap: _openLink,
+                              onTap: () => Navigator.push(
+                                  context,
+                                  CustomPageRouteBuilder.bottomToTop(
+                                      PrivacyPolicy())),
                               child: RichText(
                                 text: TextSpan(
                                   children: [

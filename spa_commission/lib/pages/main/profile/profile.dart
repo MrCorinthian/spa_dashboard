@@ -8,6 +8,7 @@ import '../../../app_theme/app_theme.dart';
 import '../../../shared_widget/custom_profile_menu_button.dart';
 import '../../../shared_widget/custom_profile_widget.dart';
 import '../../../shared_widget/custom_page_route_builder.dart';
+import '../../../shared_widget/privacy_policy.dart';
 import './edit_profile.dart';
 import './commission_tier_info.dart';
 import './change_password.dart';
@@ -101,7 +102,8 @@ class _ProfilePageState extends State<ProfilePage> {
               CustomProfileMenuButton(
                 text: 'Privacy policy',
                 imageIconPath: 'assets/images/privacy-policy.png',
-                onPressed: () => _openLink(),
+                onPressed: () => Navigator.push(context,
+                    CustomPageRouteBuilder.bottomToTop(PrivacyPolicy())),
               ),
               CustomProfileMenuButton(
                 text: 'Sign out',

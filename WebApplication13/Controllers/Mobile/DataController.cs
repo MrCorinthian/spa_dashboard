@@ -65,6 +65,25 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMobileOption(string code)
+        {
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    string query = DataDAL.GetMobileSetting(code);
+                    if (!string.IsNullOrEmpty(query))
+                    {
+                        return Ok(query);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
         #endregion
 
         [HttpPost]

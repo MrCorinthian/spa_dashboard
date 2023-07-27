@@ -133,13 +133,14 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
         if (response != null) {
           ResponsedData res = ResponsedData.fromJson(response);
           if (res.success) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return buildPopupSuccess();
-              },
-              barrierDismissible: false,
-            );
+            Navigator.of(context).pop();
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return buildPopupSuccess();
+            //   },
+            //   barrierDismissible: false,
+            // );
           }
         } else {
           validate = false;

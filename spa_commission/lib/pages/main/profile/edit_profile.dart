@@ -268,6 +268,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           );
         },
+        barrierDismissible: false,
       );
     } else {
       updateProfile();
@@ -331,6 +332,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   style: TextStyle(color: CustomTheme.fillColor)),
             );
           },
+          barrierDismissible: false,
         );
       }
     }

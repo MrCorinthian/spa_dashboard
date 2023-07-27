@@ -164,6 +164,7 @@ class _QrScanPageState extends State<QrScanPage> {
           builder: (BuildContext context) {
             return buildPopup();
           },
+          barrierDismissible: false,
         );
 
         await Future.delayed(Duration(seconds: 1));
@@ -194,6 +195,7 @@ class _QrScanPageState extends State<QrScanPage> {
               builder: (BuildContext context) {
                 return buildPopup();
               },
+              barrierDismissible: false,
             );
           });
         } else {
@@ -240,6 +242,7 @@ class _QrScanPageState extends State<QrScanPage> {
                   ),
                 );
               },
+              barrierDismissible: false,
             );
           });
         }

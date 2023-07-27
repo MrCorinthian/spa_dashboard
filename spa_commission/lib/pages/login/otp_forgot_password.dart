@@ -65,6 +65,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
           builder: (BuildContext context) {
             return buildPopup("Telephone no. does not exist");
           },
+          barrierDismissible: false,
         );
       }
     }
@@ -97,6 +98,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
           builder: (BuildContext context) {
             return buildPopup("OTP is invalid");
           },
+          barrierDismissible: false,
         );
       }
     }
@@ -136,6 +138,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
               builder: (BuildContext context) {
                 return buildPopupSuccess();
               },
+              barrierDismissible: false,
             );
           }
         } else {
@@ -150,6 +153,7 @@ class _OtpForgotPasswordState extends State<OtpForgotPasswordPage> {
                 ? "A new password must be more than 6 character"
                 : "The confirm new password does not match");
           },
+          barrierDismissible: false,
         );
       }
     }

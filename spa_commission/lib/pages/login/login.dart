@@ -96,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(color: CustomTheme.fillColor)),
               );
             },
+            barrierDismissible: false,
           );
         }
       } else {
@@ -112,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: CustomTheme.fillColor)),
             );
           },
+          barrierDismissible: false,
         );
       }
     } else {
@@ -127,6 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: CustomTheme.fillColor)),
           );
         },
+        barrierDismissible: false,
       );
     }
   }

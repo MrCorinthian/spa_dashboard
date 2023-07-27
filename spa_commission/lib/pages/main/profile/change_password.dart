@@ -79,7 +79,6 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
           if (res != null) {
             Provider.of<AuthProvider>(context, listen: false).login(res);
             Navigator.of(context).pop();
-            Navigator.of(context).pop();
           } else {
             validate = false;
           }
@@ -93,6 +92,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
                   ? "A new password must be more than 6 character"
                   : "The confirm new password does not match");
             },
+            barrierDismissible: false,
           );
         }
       } else {
@@ -102,6 +102,7 @@ class _ChangePasswordState extends State<ChangePasswordPage> {
             return buildPopup(
                 'Please check your current password and try again.');
           },
+          barrierDismissible: false,
         );
       }
     }

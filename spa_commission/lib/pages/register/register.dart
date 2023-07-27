@@ -255,6 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           );
         },
+        barrierDismissible: false,
       );
     } else {
       _register();
@@ -317,6 +318,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 style: TextStyle(color: CustomTheme.fillColor)),
           );
         },
+        barrierDismissible: false,
       );
     }
   }

@@ -91,7 +91,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -119,7 +119,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -155,7 +155,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -191,7 +191,7 @@ namespace WebApplication13.Controllers.Mobile
             try
             {
 
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -217,7 +217,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -236,7 +236,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -255,7 +255,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())

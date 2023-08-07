@@ -79,7 +79,8 @@ namespace WebApplication13.Controllers
 
                 // login user logic here.
                 //Old logic for login by using server cache
-                //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+                //var noms = System.Runtime.Caching.
+                //;
                 //noms = checkUs.Name;
                 //System.Runtime.Caching.MemoryCache.Default["names"] = noms;
                 //return RedirectToAction("Dashboard");

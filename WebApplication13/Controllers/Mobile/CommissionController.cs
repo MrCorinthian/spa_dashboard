@@ -22,7 +22,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
@@ -82,7 +82,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth) && !string.IsNullOrEmpty(filter.year) && !string.IsNullOrEmpty(filter.month))
                 {
                     filter.status = DataDAL.GetActiveFlag(filter.status);
@@ -158,7 +158,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try 
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth) && !string.IsNullOrEmpty(filter.year) && !string.IsNullOrEmpty(filter.month))
                 {
                     DateTime monthYear = DateTime.ParseExact($"{filter.year} {filter.month} 01", "yyyy MMMM dd", CultureInfo.InvariantCulture);
@@ -191,7 +191,7 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (!string.IsNullOrEmpty(userAuth))
                 {
                     filter.status = DataDAL.GetActiveFlag(filter.status);

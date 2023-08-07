@@ -124,26 +124,22 @@ namespace WebApplication13.DAL
         {
             try
             {
-                string userAuth = UserDAL.UserLoginAuth();
-                if (!string.IsNullOrEmpty(userAuth))
+                using (var db = new spasystemdbEntities())
                 {
-                    using (var db = new spasystemdbEntities())
+                    List<Branch> result = new List<Branch>();
+
+                    List<int> ignoreBranch = new List<int>();
+                    ignoreBranch.Add(1);
+                    ignoreBranch.Add(2);
+                    ignoreBranch.Add(3);
+                    ignoreBranch.Add(9);
+                    //ignoreBranch.Add(99);
+
+                    List<Branch> query = db.Branches.Where(c => !ignoreBranch.Contains(c.Id)).OrderBy(o => o.Id).ToList();
+                    if (query.Count > 0)
                     {
-                        List<Branch> result = new List<Branch>();
-
-                        List<int> ignoreBranch = new List<int>();
-                        ignoreBranch.Add(1);
-                        ignoreBranch.Add(2);
-                        ignoreBranch.Add(3);
-                        ignoreBranch.Add(9);
-                        //ignoreBranch.Add(99);
-
-                        List<Branch> query = db.Branches.Where(c => !ignoreBranch.Contains(c.Id)).OrderBy(o => o.Id).ToList();
-                        if (query.Count > 0)
-                        {
-                            result.AddRange(query);
-                            return result;
-                        }
+                        result.AddRange(query);
+                        return result;
                     }
                 }
             }

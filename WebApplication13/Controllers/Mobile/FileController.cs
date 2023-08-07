@@ -147,7 +147,7 @@ namespace WebApplication13.Controllers.Mobile
             string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
             try
             {
-                var noms = UserDAL.UserLoginAuth();
+                var noms = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                 if (noms != null)
                 {
                     using (var db = new spasystemdbEntities())
@@ -342,7 +342,7 @@ namespace WebApplication13.Controllers.Mobile
             {
                 using (var db = new spasystemdbEntities())
                 {
-                    string userAuth = UserDAL.UserLoginAuth();
+                    string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
                     MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == data.MobileUserId);
                     if (!string.IsNullOrEmpty(userAuth) && user != null)
                     {
@@ -407,7 +407,7 @@ namespace WebApplication13.Controllers.Mobile
             var response = new HttpResponseMessage();
             string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
 
-            string userAuth = UserDAL.UserLoginAuth();
+            string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
             if (!string.IsNullOrEmpty(userAuth))
             {
                 try
@@ -442,7 +442,7 @@ namespace WebApplication13.Controllers.Mobile
             var response = new HttpResponseMessage();
             string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
 
-            string user = UserDAL.UserLoginAuth();
+            string user = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
             if (!string.IsNullOrEmpty(user))
             {
                 try
@@ -477,7 +477,7 @@ namespace WebApplication13.Controllers.Mobile
             var response = new HttpResponseMessage();
             string webRootPath = $"{HostingEnvironment.ApplicationPhysicalPath}";
 
-            string user = UserDAL.UserLoginAuth();
+            string user = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
             if (!string.IsNullOrEmpty(user) && _params.MobileUserId > 0 && !string.IsNullOrEmpty(_params.Month) && !string.IsNullOrEmpty(_params.Year))
             {
                 try

@@ -33,7 +33,10 @@ namespace WebApplication13.DAL
                     if (query != null) return query.Value;
                 }
             }
-            catch { }
+            catch (Exception ex) 
+            {
+                DataDAL.ErrorLog("GetMobileSetting", ex.ToString(), "");
+            }
             return null;
         }
 

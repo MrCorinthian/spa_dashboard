@@ -291,6 +291,10 @@
       <DependentUpon>SpaDataModel.edmx</DependentUpon>
     </Content>
     <Content Include=".env" />
+    <Content Include="fonts\ArialUnicodeMs.ttf" />
+    <Content Include="fonts\ArialUnicodeMsBold.ttf" />
+    <Content Include="fonts\ArialUnicodeMsBoldItalic.ttf" />
+    <Content Include="fonts\ArialUnicodeMsItalic.ttf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP1.pubxml" />
@@ -629,6 +633,7 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolver\CustomFontResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config">

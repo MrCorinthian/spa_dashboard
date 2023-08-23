@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image/image.dart' as img;
 import 'package:uuid/uuid.dart';
 import '../../base_client/base_client.dart';
 import '../../app_theme/app_theme.dart';
@@ -81,20 +81,22 @@ class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
   }
 
   compressImage(XFile imageFile) async {
-    int quality = 90;
     final filePath = imageFile.path;
     final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
     final compressedPath = "${filePath.substring(0, (lastIndex))}_compress.jpg";
-    final originalFile = File(filePath);
+    // Read the input image
+    final image = img.decodeImage(new File(filePath).readAsBytesSync())!;
 
-    final result = await FlutterImageCompress.compressAndGetFile(
-      originalFile.absolute.path,
-      compressedPath,
-      quality: quality,
-      minWidth: 800,
-    );
+    // Resize the image
+    final resizedImage = img.copyResize(image, width: 800);
 
-    return result!;
+    // Create a new File object for the resized image
+    final outputImage = File(compressedPath); // Specify the path and filename
+
+    // Save the resized image to the new file
+    outputImage.writeAsBytesSync(img.encodeJpg(resizedImage));
+
+    return outputImage;
   }
 
   Widget buildChooseImageSource() => Scaffold(

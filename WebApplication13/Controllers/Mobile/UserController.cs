@@ -795,5 +795,63 @@ namespace WebApplication13.Controllers.Mobile
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> DeleteAccount(ForgotPasswordParams data)
+        {
+            ResponseData response = new ResponseData();
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    if (data != null && !string.IsNullOrEmpty(data.Token) && !string.IsNullOrEmpty(data.Password))
+                    {
+                        MobileUser userAuth = UserDAL.GetUserByToken(data.Token);
+                        if (userAuth != null)
+                        {
+                            string enPassword = EncryptionDAL.EncryptString(data.Password);
+                            if (userAuth.Password == enPassword)
+                            {
+                                try
+                                {
+                                    MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == data.Token);
+                                    if (loginToken != null)
+                                    {
+                                        List<MobileUserLoginToken> allToken = db.MobileUserLoginTokens.Where(c => c.MobileUserId == loginToken.MobileUserId && c.Active == "Y").ToList();
+                                        foreach (MobileUserLoginToken _t in allToken)
+                                        {
+                                            _t.Active = "N";
+                                        }
+
+
+                                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == loginToken.MobileUserId);
+                                        if (user != null)
+                                        {
+                                            user.Active = "N";
+                                        }
+
+                                        db.SaveChanges();
+                                    }
+                                }
+                                catch { }
+
+                                response.Success = true;
+                                response.Data = "Ok.";
+                            }
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Data = "";
+                        }
+
+                        return Ok(response);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
     }
 }

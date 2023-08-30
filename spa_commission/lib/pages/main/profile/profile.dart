@@ -12,6 +12,7 @@ import '../../../shared_widget/privacy_policy.dart';
 import './edit_profile.dart';
 import './commission_tier_info.dart';
 import './change_password.dart';
+import './delete_account.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -104,6 +105,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 imageIconPath: 'assets/images/privacy-policy.png',
                 onPressed: () => Navigator.push(context,
                     CustomPageRouteBuilder.bottomToTop(PrivacyPolicy())),
+              ),
+              CustomProfileMenuButton(
+                text: 'Delete account',
+                imageIconPath: 'assets/images/delete-account.png',
+                onPressed: () => Navigator.push(context,
+                    CustomPageRouteBuilder.leftToRight(DeleteAccountPage())),
               ),
               CustomProfileMenuButton(
                 text: 'Sign out',

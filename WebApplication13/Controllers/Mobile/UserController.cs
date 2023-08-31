@@ -43,7 +43,7 @@ namespace WebApplication13.Controllers.Mobile
                         else
                         {
                             response.Success = false;
-                            response.Message = "This account has been suspended. Contact at the shop for more information.";
+                            response.Message = "This account has been suspended or deleted. Please contact at the shop for more information in 30 days.";
                             response.Data = token;
                         }
 

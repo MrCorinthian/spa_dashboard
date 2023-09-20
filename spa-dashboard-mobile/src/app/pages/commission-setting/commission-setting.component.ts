@@ -5,6 +5,7 @@ import { Colors } from '../../const-value/colors';
 import { GenerateStatusList } from '../../share-functions/generate-functions';
 import { CloneObj } from '../../share-functions/clone-functions';
 import { MobileComTier } from '../../models/data/MobileComTier';
+import { MobileDropdown } from '../../models/data/MobileDropdown';
 
 @Component({
   selector: 'commission-setting',
@@ -15,7 +16,7 @@ export class CommissionSettingComponent {
   colors: any = Colors;
 
   filter: any = { tierName: '', status: '' };
-  status: Array<string> = GenerateStatusList();
+  status: Array<MobileDropdown> = GenerateStatusList();
 
   dataTable: Array<any> = [];
   selected: MobileComTier = new MobileComTier();

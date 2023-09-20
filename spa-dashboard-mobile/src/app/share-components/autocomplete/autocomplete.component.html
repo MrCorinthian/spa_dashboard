@@ -8,7 +8,10 @@
   #auto="matAutocomplete"
   (optionSelected)="inputOnChange($event.option.value)"
 >
-  <mat-option *ngFor="let item of filtered | async" [value]="item">
-    {{ item }}
+  <mat-option
+    *ngFor="let item of filtered | async"
+    [value]="item.Id ? item.Id : item.Value"
+  >
+    {{ item.Value }}
   </mat-option>
 </mat-autocomplete>

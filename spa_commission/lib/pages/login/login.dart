@@ -155,13 +155,13 @@ class _LoginPageState extends State<LoginPage> {
                     image: AssetImage('assets/images/urban-logo.png'),
                   ),
                   CustomTextField(
-                    text: 'Telephone no.',
+                    text: 'Telephone no. / เบอร์โทรศัพท์',
                     controller: _phoneController,
                     keyboardType: 'number',
                     maxLength: 10,
                   ),
                   CustomTextField(
-                      text: 'Password',
+                      text: 'Password / รหัสผ่าน',
                       obscureText: true,
                       controller: _passwordController),
                   Container(

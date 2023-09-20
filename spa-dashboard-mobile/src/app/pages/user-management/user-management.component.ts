@@ -9,12 +9,12 @@ import { BaseUrl } from '../../const-value/base-url';
 import { Colors } from '../../const-value/colors';
 import {
   GenerateStatusList,
-  GenerateCompanyTypeOfUsageList,
-  GenerateCompanyTypeOfUsageListForEdit,
+  GenerateListWithAllOption,
 } from '../../share-functions/generate-functions';
 import { Format } from '../../share-functions/format-functions';
 import { CloneObj } from '../../share-functions/clone-functions';
 import { MobileUser } from '../../models/data/MobileUser';
+import { MobileDropdown } from '../../models/data/MobileDropdown';
 
 @Component({
   selector: 'user-management',
@@ -46,26 +46,34 @@ export class UserManagementComponent {
   isCreate: boolean = false;
   isLoading: boolean = false;
 
-  bankAccounts: Array<string> = [];
-  occupations: Array<string> = [];
-  provinces: Array<string> = [];
-  tiers: Array<string> = [];
-  status: Array<string> = GenerateStatusList();
-  companyTypeOfUsages: Array<string> = GenerateCompanyTypeOfUsageList();
-  companyTypeOfUsagesForEdit: Array<string> =
-    GenerateCompanyTypeOfUsageListForEdit();
+  dropdowns: Array<MobileDropdown> = [];
+  banks: Array<MobileDropdown> = [];
+  occupations: Array<MobileDropdown> = [];
+  provinces: Array<MobileDropdown> = [];
+  tiers: Array<MobileDropdown> = [];
+  status: Array<MobileDropdown> = GenerateStatusList();
+  companyTypeOfUsages: Array<MobileDropdown> = [];
+  companyTypeOfUsagesForEdit: Array<MobileDropdown> = [];
 
   constructor(private ref: ChangeDetectorRef, private http: HttpClient) {}
 
   async ngOnInit() {
     this.getTableIndex();
-    this.bankAccounts = await this.getDropdown('BANK_ACCOUNT');
+    this.banks = await this.getDropdown('BANK_NAME');
     this.occupations = await this.getDropdown('OCCUPATION');
     this.provinces = await this.getDropdown('PROVINCE');
     this.tiers = await this.GetTierList();
+    this.companyTypeOfUsages = [
+      ...GenerateListWithAllOption(),
+      ...(await this.getDropdown('COM_TYPE_OF_USAGE')),
+    ];
+    this.companyTypeOfUsagesForEdit = await this.getDropdown(
+      'COM_TYPE_OF_USAGE'
+    );
   }
 
   search() {
+    this.dataTable = [];
     this.http
       .post<Array<number>>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
       .subscribe((res) => {
@@ -246,7 +254,7 @@ export class UserManagementComponent {
       } else if (type === 'Email') {
         this.selectedEdit.Email = value;
       } else if (type === 'BankAccount') {
-        this.selectedEdit.BankAccount = value;
+        this.selectedEdit.Bank = value;
       } else if (type === 'BankAccountNumber') {
         this.selectedEdit.BankAccountNumber = value;
       } else if (type === 'CompanyName') {
@@ -270,17 +278,26 @@ export class UserManagementComponent {
         this.selectedEdit.BirthdayString = value;
       }
     }
+    this.selectedEdit = CloneObj(this.selectedEdit);
+  }
+
+  findDropdownValue(dropdowns: Array<MobileDropdown>, id: number | String) {
+    const find = dropdowns.find((c) => c.Id == id);
+    if (find != null) return find.Value;
+    else return id;
   }
 
   async getDropdown(code: string) {
     return await firstValueFrom(
-      this.http.get<Array<string>>(`${BaseUrl}Data/GetDropdown?code=${code}`)
+      this.http.get<Array<MobileDropdown>>(
+        `${BaseUrl}Data/GetDropdown?code=${code}`
+      )
     );
   }
 
   async GetTierList() {
     return await firstValueFrom(
-      this.http.get<Array<string>>(`${BaseUrl}Data/GetTierList`)
+      this.http.get<Array<MobileDropdown>>(`${BaseUrl}Data/GetTierList`)
     );
   }
 

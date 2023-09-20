@@ -448,6 +448,20 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="MobileExportInvoices">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileExportInvoice">
+        <MappingFragment StoreEntitySet="MobileExportInvoice">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="DocName" ColumnName="DocName" />
+          <ScalarProperty Name="DocNo" ColumnName="DocNo" />
+          <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="MobileUsers">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileUser">
         <MappingFragment StoreEntitySet="MobileUser">
@@ -459,7 +473,7 @@
           <ScalarProperty Name="Active" ColumnName="Active" />
           <ScalarProperty Name="ProfilePath" ColumnName="ProfilePath" />
           <ScalarProperty Name="BankAccountNumber" ColumnName="BankAccountNumber" />
-          <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+          <ScalarProperty Name="Bank" ColumnName="Bank" />
           <ScalarProperty Name="CompanyTaxId" ColumnName="CompanyTaxId" />
           <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
           <ScalarProperty Name="CompanyTypeOfUsage" ColumnName="CompanyTypeOfUsage" />
@@ -482,16 +496,12 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="MobileExportInvoices">
-      <EntityTypeMapping TypeName="spasystemdbModel.MobileExportInvoice">
-        <MappingFragment StoreEntitySet="MobileExportInvoice">
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="Created" ColumnName="Created" />
+    <EntitySetMapping Name="MobileDropdowns">
+      <EntityTypeMapping TypeName="spasystemdbModel.MobileDropdown">
+        <MappingFragment StoreEntitySet="MobileDropdown">
           <ScalarProperty Name="Active" ColumnName="Active" />
-          <ScalarProperty Name="DocName" ColumnName="DocName" />
-          <ScalarProperty Name="DocNo" ColumnName="DocNo" />
-          <ScalarProperty Name="DocDate" ColumnName="DocDate" />
-          <ScalarProperty Name="MobileUserId" ColumnName="MobileUserId" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="GroupName" ColumnName="GroupName" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

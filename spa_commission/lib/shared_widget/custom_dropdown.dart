@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../app_theme/app_theme.dart';
 import '../models/dropdown_option.dart';
+import '../models/dropdown.dart';
 
 class CustomDropdown extends StatefulWidget {
   final String text;
   final bool requiredField;
   final bool isExpanded;
-  final List<String> options;
+  final List<Dropdown> options;
   final Function(String?) onChanged;
   final String? selected;
 
@@ -31,10 +32,10 @@ class _CustomDropdownState extends State<CustomDropdown> {
   void initState() {
     super.initState();
     _dropdownOptions = widget.options
-        .map<DropdownMenuItem<String>>((String option) =>
-            DropdownMenuItem<String>(value: option, child: Text(option)))
+        .map<DropdownMenuItem<String>>((Dropdown option) =>
+            DropdownMenuItem<String>(
+                value: option.Id.toString(), child: Text(option.Value ?? "")))
         .toList();
-    var gg = widget.options.where((c) => c == widget.selected);
   }
 
   @override
@@ -77,7 +78,10 @@ class _CustomDropdownState extends State<CustomDropdown> {
               height: 30,
             ),
             value: widget.selected != '' &&
-                    widget.options.where((c) => c == widget.selected).length > 0
+                    _dropdownOptions
+                            .where((c) => c.value == widget.selected)
+                            .length >
+                        0
                 ? widget.selected
                 : null,
             items: _dropdownOptions,

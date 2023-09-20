@@ -19,7 +19,7 @@ export class MobileUser {
   public CompanyName!: string;
   public CompanyTaxId!: string;
   public CompanyAddress!: string;
-  public BankAccount!: string;
+  public Bank!: string;
   public BankAccountNumber!: string;
   public ProfilePath!: string;
   public Active!: string;

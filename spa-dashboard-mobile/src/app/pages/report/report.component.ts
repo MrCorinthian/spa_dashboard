@@ -6,7 +6,8 @@ import * as moment from 'moment';
 import { Colors } from '../../const-value/colors';
 import { Format } from '../../share-functions/format-functions';
 import { DataIndex } from '../../models/data-index';
-import { GenerateCompanyTypeOfUsageList } from '../../share-functions/generate-functions';
+import { MobileDropdown } from '../../models/data/MobileDropdown';
+import { GenerateListWithAllOption } from '../../share-functions/generate-functions';
 
 @Component({
   selector: 'report',
@@ -27,9 +28,9 @@ export class ReportComponent {
     tierName: 'All',
     branchName: 'All',
   };
-  companyTypeOfUsages: Array<string> = GenerateCompanyTypeOfUsageList();
-  tiers: Array<string> = [];
-  branches: Array<string> = [];
+  companyTypeOfUsages: Array<MobileDropdown> = [];
+  tiers: Array<MobileDropdown> = [];
+  branches: Array<MobileDropdown> = [];
 
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
@@ -40,7 +41,10 @@ export class ReportComponent {
   async ngOnInit() {
     this.tiers = await this.getTierList();
     this.branches = await this.getBranchList();
-
+    this.companyTypeOfUsages = [
+      ...GenerateListWithAllOption(),
+      ...(await this.getDropdown('COM_TYPE_OF_USAGE')),
+    ];
     this.getDataTable(1);
   }
 
@@ -96,12 +100,20 @@ export class ReportComponent {
 
   async getTierList() {
     return await firstValueFrom(
-      this.http.get<Array<string>>(`${BaseUrl}Data/GetTierList`)
+      this.http.get<Array<MobileDropdown>>(`${BaseUrl}Data/GetTierList`)
     );
   }
   async getBranchList() {
     return await firstValueFrom(
-      this.http.get<Array<string>>(`${BaseUrl}Data/GetBranchList`)
+      this.http.get<Array<MobileDropdown>>(`${BaseUrl}Data/GetBranchList`)
+    );
+  }
+
+  async getDropdown(code: string) {
+    return await firstValueFrom(
+      this.http.get<Array<MobileDropdown>>(
+        `${BaseUrl}Data/GetDropdown?code=${code}`
+      )
     );
   }
 

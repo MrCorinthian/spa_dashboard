@@ -132,10 +132,10 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
                             if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
                             if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
-                            if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
-                            if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
-                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
-                            if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
+                            if (!string.IsNullOrEmpty(data.Province)) user.Province = Convert.ToInt32(data.Province);
+                            if (data.PhoneNumber != null) user.PhoneNumber = data.PhoneNumber;
+                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = Convert.ToInt32(data.Occupation);
+                            if (!string.IsNullOrEmpty(data.Bank)) user.Bank = Convert.ToInt32(data.Bank);
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
 
                             if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
@@ -150,10 +150,11 @@ namespace WebApplication13.Controllers.Mobile
                             else user.LineId = null;
                             if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
                             else user.WhatsAppId = null;
-                            if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage))
+                            if (data.CompanyTypeOfUsage != null)
                             {
-                                user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                                if (data.CompanyTypeOfUsage.ToLower() == "company")
+                                int comTypeId = Convert.ToInt32(data.CompanyTypeOfUsage);
+                                user.CompanyTypeOfUsage = comTypeId;
+                                if (comTypeId == 99)
                                 {
                                     if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                     if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
@@ -363,12 +364,20 @@ namespace WebApplication13.Controllers.Mobile
                         filter.status = DataDAL.GetActiveFlag(filter.status);
                         List<int> indexTable = new List<int>();
                         decimal tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+
+                        int filterCompanyTypeOfUsage = 0;
+                        if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
+                        {
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Value == filter.companyTypeOfUsage);
+                            if (CompanyTypeOfUsage != null) filterCompanyTypeOfUsage = CompanyTypeOfUsage.Id;
+                        }
+
                         List<MobileUser> users = db.MobileUsers.Where(c =>
                             !string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true
                             && !string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true
                             && !string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true
                             && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status || c.Active == "All" : true
-                            && !string.IsNullOrEmpty(filter.companyTypeOfUsage) ? c.CompanyTypeOfUsage == filter.companyTypeOfUsage || filter.companyTypeOfUsage == "All" : true
+                            && !string.IsNullOrEmpty(filter.companyTypeOfUsage) ? c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true
                             && !string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true
                             && !string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true
                             && !string.IsNullOrEmpty(filter.IdCardNumber) ? c.IdCardNumber.Contains(filter.IdCardNumber) : true
@@ -397,8 +406,8 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 indexTable.Add(i+1);
                             }
-                            return Ok(indexTable);
                         }
+                        return Ok(indexTable);
                     }
                 }
             }
@@ -412,8 +421,8 @@ namespace WebApplication13.Controllers.Mobile
         {
             try
             {
-                var noms = Request.Headers.GetCookies("TokenCookie");
-                if (noms != null)
+                string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
+                if (!string.IsNullOrEmpty(userAuth))
                 {
                     using (var db = new spasystemdbEntities())
                     {
@@ -421,12 +430,20 @@ namespace WebApplication13.Controllers.Mobile
                         filter.status = DataDAL.GetActiveFlag(filter.status);
                         List<MobileUser> mUsers = new List<MobileUser>();
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+
+                        int filterCompanyTypeOfUsage = 0;
+                        if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
+                        {
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Value == filter.companyTypeOfUsage);
+                            if (CompanyTypeOfUsage != null) filterCompanyTypeOfUsage = CompanyTypeOfUsage.Id;
+                        }
+
                         List<MobileUser> users = db.MobileUsers.Where(c =>
                             !string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true
                             && !string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true
                             && !string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true
                             && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status || c.Active == "All" : true
-                            && !string.IsNullOrEmpty(filter.companyTypeOfUsage) ? c.CompanyTypeOfUsage == filter.companyTypeOfUsage || filter.companyTypeOfUsage == "All" : true
+                            && !string.IsNullOrEmpty(filter.companyTypeOfUsage) ? c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true
                             && !string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true
                             && !string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true
                             && !string.IsNullOrEmpty(filter.IdCardNumber) ? c.IdCardNumber.Contains(filter.IdCardNumber) : true
@@ -479,7 +496,8 @@ namespace WebApplication13.Controllers.Mobile
                                           WhatsAppId = s.WhatsAppId,
                                           CompanyName = s.CompanyName,
                                           CompanyTaxId = s.CompanyTaxId,
-                                          BankAccount = s.BankAccount,
+                                          CompanyAddress = s.CompanyAddress,
+                                          Bank = s.Bank,
                                           BankAccountNumber = s.BankAccountNumber,
                                           ProfilePath = s.ProfilePath,
                                           Created = s.Created,
@@ -543,6 +561,13 @@ namespace WebApplication13.Controllers.Mobile
                         MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username);
                         if (user == null)
                         {
+                            string companyTypeOfUsage = null;
+                            if (data.CompanyTypeOfUsage != null)
+                            {
+                                MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Id == data.CompanyTypeOfUsage);
+                                if (CompanyTypeOfUsage != null) companyTypeOfUsage = CompanyTypeOfUsage.Value;
+                            }
+
                             MobileUser newUser = new MobileUser();
                             if (!string.IsNullOrEmpty(data.Username)) newUser.Username = data.Username;
                             if (!string.IsNullOrEmpty(data.Password)) newUser.Password = EncryptionDAL.EncryptString(data.Password);
@@ -555,8 +580,8 @@ namespace WebApplication13.Controllers.Mobile
                             else user.Nationality = null;
                             if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
                             else user.Address = null;
-                            if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
-                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
+                            if (data.Province != null) user.Province = data.Province;
+                            if (data.Occupation != null) user.Occupation = data.Occupation;
                             if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
                             if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
                             else user.Email = null;
@@ -564,8 +589,8 @@ namespace WebApplication13.Controllers.Mobile
                             else user.LineId = null;
                             if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
                             else user.WhatsAppId = null;
-                            if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                            if (data.CompanyTypeOfUsage == "Company")
+                            if (data.CompanyTypeOfUsage != null) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
+                            if (companyTypeOfUsage == "Company")
                             {
                                 if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                 if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
@@ -577,7 +602,7 @@ namespace WebApplication13.Controllers.Mobile
                                 user.CompanyTaxId = null;
                                 user.CompanyAddress = null;
                             }
-                            if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
+                            if (data.Bank != null) user.Bank = data.Bank;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
                             if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
                             if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;
@@ -625,8 +650,8 @@ namespace WebApplication13.Controllers.Mobile
                             else user.Nationality = null;
                             if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
                             else user.Address = null;
-                            if (!string.IsNullOrEmpty(data.Province)) user.Province = data.Province;
-                            if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = data.Occupation;
+                            if (data.Province != null) user.Province = data.Province;
+                            if (data.Occupation != null) user.Occupation = data.Occupation;
                             if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
                             if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
                             else user.Email = null;
@@ -634,8 +659,8 @@ namespace WebApplication13.Controllers.Mobile
                             else user.LineId = null;
                             if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
                             else user.WhatsAppId = null;
-                            if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage)) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                            if (data.CompanyTypeOfUsage == "Company")
+                            if (data.CompanyTypeOfUsage != null) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
+                            if (data.CompanyTypeOfUsage == 99)
                             {
                                 if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                 if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
@@ -647,7 +672,7 @@ namespace WebApplication13.Controllers.Mobile
                                 user.CompanyTaxId = null;
                                 user.CompanyAddress = null;
                             }
-                            if (!string.IsNullOrEmpty(data.BankAccount)) user.BankAccount = data.BankAccount;
+                            if (data.Bank != null) user.Bank = data.Bank;
                             if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
                             if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
                             if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;

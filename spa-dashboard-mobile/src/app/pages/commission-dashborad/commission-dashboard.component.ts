@@ -11,6 +11,7 @@ import {
 } from '../../share-functions/generate-functions';
 
 import { ReportBranch } from '../../models/report-branch';
+import { MobileDropdown } from '../../models/data/MobileDropdown';
 
 @Component({
   selector: 'commission-dashboard',
@@ -31,8 +32,8 @@ export class CommissionDashboardComponent {
     month: this.now.toLocaleString('en-EN', { month: 'long' }),
     year: `${this.now.getFullYear()}`,
   };
-  months: Array<string> = GenerateMonthList();
-  years: Array<string> = GenerateYearList();
+  months: Array<MobileDropdown> = GenerateMonthList();
+  years: Array<MobileDropdown> = GenerateYearList();
 
   constructor(private http: HttpClient) {
     Chart.register(ChartDataLabels);

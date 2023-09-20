@@ -63,7 +63,14 @@ namespace WebApplication13.DAL
                             string cusName = db.MobileSettings.FirstOrDefault(c => c.Code == "COMPANY_NAME").Value;
                             string cusAddress = db.MobileSettings.FirstOrDefault(c => c.Code == "COMPANY_ADDRESS").Value;
                             string cusTaxId = db.MobileSettings.FirstOrDefault(c => c.Code == "COMPANY_TAX_ID").Value;
-                            if (user.CompanyTypeOfUsage.ToLower() == "company")
+
+                            string companyTypeOfUsage = null;
+                            if (user.CompanyTypeOfUsage != null)
+                            {
+                                MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Id == user.CompanyTypeOfUsage);
+                                if (CompanyTypeOfUsage != null) companyTypeOfUsage = CompanyTypeOfUsage.Value;
+                            }
+                            if (companyTypeOfUsage == "company")
                             {
                                 _name_1 = user.CompanyName;
                                 _company_name = user.CompanyName;
@@ -113,7 +120,7 @@ namespace WebApplication13.DAL
                                     ;
                                 }
 
-                                if (user.CompanyTypeOfUsage.ToLower() == "company")
+                                if (companyTypeOfUsage == "Company")
                                 {
                                     _table_vat_display = "block";
                                     _table_vat = (sumCom * 1.07).ToString("#,##0.00");
@@ -198,7 +205,14 @@ namespace WebApplication13.DAL
                     MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Id == id);
                     if (user != null)
                     {
-                        bool isCompany = user.CompanyTypeOfUsage.ToLower() == "company";
+                        string companyTypeOfUsage = null;
+                        if (user.CompanyTypeOfUsage != null)
+                        {
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Id == user.CompanyTypeOfUsage);
+                            if (CompanyTypeOfUsage != null) companyTypeOfUsage = CompanyTypeOfUsage.Value;
+                        }
+
+                        bool isCompany = companyTypeOfUsage == "Company";
 
                         #region query detail
                         string cusName = db.MobileSettings.FirstOrDefault(c => c.Code == "COMPANY_NAME").Value;
@@ -360,7 +374,7 @@ namespace WebApplication13.DAL
                             //draw table
                             double sumCom = comTrans.Sum(s => s.TotalBaht);
                             _table_sub_total = sumCom.ToString("#,##0.00");
-                            if (user.CompanyTypeOfUsage.ToLower() == "company")
+                            if (companyTypeOfUsage == "Company")
                             {
                                 _table_vat = (sumCom * 1.07).ToString("#,##0.00");
                                 _table_net_total = (sumCom * 1.07).ToString("#,##0.00");

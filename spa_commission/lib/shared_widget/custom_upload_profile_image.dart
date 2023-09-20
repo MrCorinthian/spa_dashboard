@@ -20,7 +20,7 @@ class CustomUploadProfileImage extends StatefulWidget {
   const CustomUploadProfileImage({
     Key? key,
     required this.onImageSelected,
-    this.text = 'Profile image',
+    this.text = 'Profile photo / ภาพถ่ายใบหน้า',
     this.obscureText = false,
     this.inputDecorationError = true,
     this.requiredField = false,
@@ -61,7 +61,8 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
     bool allowCamera = await requestCameraPermission();
     if (allowCamera) {
       final rawImage = await ImagePicker().pickImage(
-          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
+          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
+          preferredCameraDevice: CameraDevice.front);
 
       if (rawImage != null) {
         final compressedImage = await compressImage(rawImage);

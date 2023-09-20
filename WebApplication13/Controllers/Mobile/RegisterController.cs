@@ -36,10 +36,10 @@ namespace WebApplication13.Controllers.Mobile
                         user.FirstName = data.FirstName;
                         user.LastName = data.LastName;
                         user.IdCardNumber = data.IdCardNumber;
-                        user.Province = data.Province;
+                        if (!string.IsNullOrEmpty(data.Province)) user.Province = Convert.ToInt32(data.Province);
                         user.PhoneNumber = data.PhoneNumber;
-                        user.Occupation = data.Occupation;
-                        user.BankAccount = data.BankAccount;
+                        if (!string.IsNullOrEmpty(data.Occupation)) user.Occupation = Convert.ToInt32(data.Occupation);
+                        if (!string.IsNullOrEmpty(data.Bank)) user.Bank = Convert.ToInt32(data.Bank);
                         user.BankAccountNumber = data.BankAccountNumber;
 
                         if (!string.IsNullOrEmpty(data.Birthday)) user.Birthday = DateTime.ParseExact($"{data.Birthday}", "dd MMMM yyyy", CultureInfo.InvariantCulture);
@@ -55,10 +55,12 @@ namespace WebApplication13.Controllers.Mobile
                         else user.LineId = null;
                         if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
                         else user.WhatsAppId = null;
+
                         if (!string.IsNullOrEmpty(data.CompanyTypeOfUsage))
-                        { 
-                            user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
-                            if (data.CompanyTypeOfUsage.ToLower() == "company")
+                        {
+                            int comTypeId = Convert.ToInt32(data.CompanyTypeOfUsage);
+                            user.CompanyTypeOfUsage = comTypeId;
+                            if (comTypeId == 99)
                             {
                                 if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
                                 if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
@@ -100,6 +102,9 @@ namespace WebApplication13.Controllers.Mobile
 
                         response.Success = true;
                         response.Data = token;
+
+                        SmsDAL.SendOTP(user.PhoneNumber, $"Registration complete. Thank you for registering on Urban Thai Spa mobile application, you can now login to use a service.");
+
                         return Ok(response);
                     }
                 }

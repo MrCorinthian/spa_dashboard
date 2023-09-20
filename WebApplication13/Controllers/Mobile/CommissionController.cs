@@ -106,9 +106,16 @@ namespace WebApplication13.Controllers.Mobile
                             }
                         }
 
+                        int filterCompanyTypeOfUsage = 0;
+                        if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
+                        {
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Value == filter.companyTypeOfUsage);
+                            if (CompanyTypeOfUsage != null) filterCompanyTypeOfUsage = CompanyTypeOfUsage.Id;
+                        }
+
                         List<MobileUser> users = db.MobileUsers.Where(c => 
                                                     filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true)
-                                                    && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? filter.companyTypeOfUsage == c.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true)
+                                                    && (filter.companyTypeOfUsage != null ? filterCompanyTypeOfUsage == c.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true)
                                                     ).OrderBy(o => o.Id).Skip(tableMaxRow * (filter.page-1)).Take(tableMaxRow).ToList();
                         foreach (MobileUser user in users)
                         {
@@ -125,12 +132,12 @@ namespace WebApplication13.Controllers.Mobile
                                 pData.LastName = user.LastName;
                                 pData.ProfilePath = DataDAL.GetProfilePath(user.ProfilePath);
                                 pData.PhoneNumber = user.PhoneNumber;
-                                if (user.CompanyTypeOfUsage == "Company")
+                                if (filter.companyTypeOfUsage == "Company")
                                 {
                                     pData.CompanyName = user.CompanyName;
                                     pData.CompanyTaxId = user.CompanyTaxId;
                                 }
-                                pData.BankAccount = user.BankAccount;
+                                pData.Bank = user.Bank;
                                 pData.BankAccountNumber = user.BankAccountNumber;
                                 MobileComPayment paymentStatus = db.MobileComPayments.FirstOrDefault(c => c.MobileUserId == user.Id && c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month);
                                 pData.PaymentStatus = paymentStatus != null ? "Y" : "N";
@@ -208,6 +215,14 @@ namespace WebApplication13.Controllers.Mobile
                             filterFrom = DateTime.ParseExact($"{filter.periodFrom}", "dd MMM yyyy", CultureInfo.InvariantCulture);
                             filterTo = DateTime.ParseExact($"{filter.periodTo}", "dd MMM yyyy", CultureInfo.InvariantCulture).AddDays(1);
                         }
+
+                        int filterCompanyTypeOfUsage = 0;
+                        if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
+                        {
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Value == filter.companyTypeOfUsage);
+                            if (CompanyTypeOfUsage != null) filterCompanyTypeOfUsage = CompanyTypeOfUsage.Id;
+                        }
+
                         List<int> comTranIds = (from comTran in db.MobileComTransactions
                                                join t2 in db.MobileUsers on comTran.MobileUserId equals t2.Id into g1
                                                from user in g1.DefaultIfEmpty()
@@ -215,7 +230,7 @@ namespace WebApplication13.Controllers.Mobile
                                                && !string.IsNullOrEmpty(filter.lastName) ? user.LastName.Contains(filter.lastName) : true
                                                && !string.IsNullOrEmpty(filter.phone) ? user.PhoneNumber.Contains(filter.phone) : true
                                                && filterFrom != null && filterTo != null ? comTran.Created >= filterFrom && comTran.Created < filterTo : true
-                                               && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? filter.companyTypeOfUsage == user.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true)
+                                               && (filter.companyTypeOfUsage != null ? filterCompanyTypeOfUsage == user.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true)
                                                && !string.IsNullOrEmpty(filter.companyName) ? user.CompanyName.Contains(filter.companyName) : true
                                                 select comTran.Id).ToList();
 

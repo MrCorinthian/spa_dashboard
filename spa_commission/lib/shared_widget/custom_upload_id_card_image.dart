@@ -20,7 +20,7 @@ class CustomUploadIdCardImage extends StatefulWidget {
   const CustomUploadIdCardImage({
     Key? key,
     required this.onImageSelected,
-    this.text = 'ID card image',
+    this.text = 'ID card photo / ภาพถ่ายบัตรประชาชน',
     this.obscureText = false,
     this.inputDecorationError = true,
     this.requiredField = false,

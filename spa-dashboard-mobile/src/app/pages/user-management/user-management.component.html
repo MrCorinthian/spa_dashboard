@@ -121,17 +121,21 @@
           <td class="td__center">{{ format("idCard", item.IdCardNumber) }}</td>
           <td>{{ item.FirstName }}</td>
           <td>{{ item.LastName }}</td>
-          <td>{{ item.Occupation }}</td>
+          <td>{{ findDropdownValue(occupations, item.Occupation) }}</td>
           <td class="td__center">{{ format("phone", item.PhoneNumber) }}</td>
           <td class="td__center">{{ item.TierName }}</td>
           <td class="td__center">{{ item.LineId }}</td>
           <td class="td__center">{{ item.WhatsAppId }}</td>
           <td class="td__center">{{ item.Email }}</td>
-          <td class="td__center">{{ item.BankAccount }}</td>
+          <td class="td__center">{{ findDropdownValue(banks, item.Bank) }}</td>
           <td class="td__center">
             {{ format("bank", item.BankAccountNumber) }}
           </td>
-          <td class="td__center">{{ item.CompanyTypeOfUsage }}</td>
+          <td class="td__center">
+            {{
+              findDropdownValue(companyTypeOfUsages, item.CompanyTypeOfUsage)
+            }}
+          </td>
           <td class="td__center">{{ item.CompanyName }}</td>
           <td class="td__center">{{ format("idCard", item.CompanyTaxId) }}</td>
           <td class="td__center">{{ item.Nationality }}</td>
@@ -407,10 +411,14 @@
           </tr>
           <tr>
             <td class="td__topic">Province</td>
-            <td *ngIf="!isEdit">{{ selected.Province }}</td>
+            <td *ngIf="!isEdit">
+              {{ findDropdownValue(provinces, selected.Province) }}
+            </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
-                [value]="selectedEdit.Province"
+                [value]="
+                  findDropdownValue(provinces, selectedEdit.Province).toString()
+                "
                 [options]="provinces"
                 [sortOption]="false"
                 (onChange)="onChange('Occupation', $event)"
@@ -419,10 +427,17 @@
           </tr>
           <tr>
             <td class="td__topic">Occupation</td>
-            <td *ngIf="!isEdit">{{ selected.Occupation }}</td>
+            <td *ngIf="!isEdit">
+              {{ findDropdownValue(occupations, selected.Occupation) }}
+            </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
-                [value]="selectedEdit.Occupation"
+                [value]="
+                  findDropdownValue(
+                    occupations,
+                    selectedEdit.Occupation
+                  ).toString()
+                "
                 [options]="occupations"
                 [sortOption]="false"
                 (onChange)="onChange('Occupation', $event)"
@@ -473,10 +488,22 @@
           </tr>
           <tr>
             <td class="td__topic">Type of usage</td>
-            <td *ngIf="!isEdit">{{ selected.CompanyTypeOfUsage }}</td>
+            <td *ngIf="!isEdit">
+              {{
+                findDropdownValue(
+                  companyTypeOfUsages,
+                  selected.CompanyTypeOfUsage
+                )
+              }}
+            </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
-                [value]="selectedEdit.CompanyTypeOfUsage"
+                [value]="
+                  findDropdownValue(
+                    companyTypeOfUsages,
+                    selectedEdit.CompanyTypeOfUsage
+                  ).toString()
+                "
                 [options]="companyTypeOfUsagesForEdit"
                 [sortOption]="false"
                 (onChange)="onChange('CompanyTypeOfUsage', $event)"
@@ -517,11 +544,13 @@
           </tr>
           <tr>
             <td class="td__topic">Bank account</td>
-            <td *ngIf="!isEdit">{{ selected.BankAccount }}</td>
+            <td *ngIf="!isEdit">
+              {{ findDropdownValue(banks, selected.Bank) }}
+            </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
-                [value]="selectedEdit.BankAccount"
-                [options]="bankAccounts"
+                [value]="findDropdownValue(banks, selectedEdit.Bank).toString()"
+                [options]="banks"
                 [sortOption]="false"
                 (onChange)="onChange('Occupation', $event)"
               ></autocomplete>

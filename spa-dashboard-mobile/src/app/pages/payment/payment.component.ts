@@ -1,14 +1,16 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { BaseUrl } from '../../const-value/base-url';
 import { Colors } from '../../const-value/colors';
 import { DataIndex } from '../../models/data-index';
+import { MobileDropdown } from '../../models/data/MobileDropdown';
 import { Format } from '../../share-functions/format-functions';
 import {
   GenerateMonthList,
   GenerateYearList,
   GeneratePaymentStatusList,
-  GenerateCompanyTypeOfUsageList,
+  GenerateListWithAllOption,
 } from '../../share-functions/generate-functions';
 
 @Component({
@@ -25,10 +27,10 @@ export class PaymentComponent {
     status: 'All',
     companyTypeOfUsage: 'All',
   };
-  months: Array<string> = GenerateMonthList();
-  years: Array<string> = GenerateYearList();
-  status: Array<string> = GeneratePaymentStatusList();
-  companyTypeOfUsages: Array<string> = GenerateCompanyTypeOfUsageList();
+  months: Array<MobileDropdown> = GenerateMonthList();
+  years: Array<MobileDropdown> = GenerateYearList();
+  status: Array<MobileDropdown> = GeneratePaymentStatusList();
+  companyTypeOfUsages: Array<MobileDropdown> = [];
 
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
@@ -44,8 +46,12 @@ export class PaymentComponent {
     this.filter.year = `${this.now.getFullYear()}`;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.getDataTable(1);
+    this.companyTypeOfUsages = [
+      ...GenerateListWithAllOption(),
+      ...(await this.getDropdown('COM_TYPE_OF_USAGE')),
+    ];
   }
 
   getDataTable(page: number) {
@@ -70,6 +76,14 @@ export class PaymentComponent {
           this.currentIndex = page;
         }
       });
+  }
+
+  async getDropdown(code: string) {
+    return await firstValueFrom(
+      this.http.get<Array<MobileDropdown>>(
+        `${BaseUrl}Data/GetDropdown?code=${code}`
+      )
+    );
   }
 
   payment(id: number) {

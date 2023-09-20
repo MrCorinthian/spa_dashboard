@@ -24,16 +24,16 @@ namespace WebApplication13.Models
         public string Nationality { get; set; }
         public Nullable<System.DateTime> Birthday { get; set; }
         public string Address { get; set; }
-        public string Province { get; set; }
-        public string Occupation { get; set; }
+        public Nullable<int> Province { get; set; }
+        public Nullable<int> Occupation { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string LineId { get; set; }
         public string WhatsAppId { get; set; }
-        public string CompanyTypeOfUsage { get; set; }
+        public Nullable<int> CompanyTypeOfUsage { get; set; }
         public string CompanyName { get; set; }
         public string CompanyTaxId { get; set; }
-        public string BankAccount { get; set; }
+        public Nullable<int> Bank { get; set; }
         public string BankAccountNumber { get; set; }
         public string ProfilePath { get; set; }
         public string Active { get; set; }

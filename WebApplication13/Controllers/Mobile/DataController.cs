@@ -53,11 +53,10 @@ namespace WebApplication13.Controllers.Mobile
             {
                 using (var db = new spasystemdbEntities())
                 {
-                    string jsonString = DataDAL.GetMobileSetting(code);
-                    if (!string.IsNullOrEmpty(jsonString))
+                    List<MobileDropdown> dropdowns = db.MobileDropdowns.Where(c => c.GroupName == code).ToList();
+                    if (dropdowns.Count > 0)
                     {
-                        List<string> stringList = JsonConvert.DeserializeObject<List<string>>(jsonString);
-                        return Ok(stringList);
+                        return Ok(dropdowns);
                     }
                 }
             }
@@ -241,7 +240,11 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        return Ok(JsonConvert.DeserializeObject<List<string>>(DataDAL.GetMobileSetting(code)));
+                        List<MobileDropdown> query = db.MobileDropdowns.Where(c => c.GroupName == code && c.Active == "Y").ToList();
+                        if (query.Count > 0)
+                        {
+                            return Ok(query);
+                        }
                     }
                 }
             }
@@ -260,12 +263,26 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     using (var db = new spasystemdbEntities())
                     {
-                        List<string> result = new List<string>();
-                        List<string> query = db.MobileComTiers.Where(c => c.Active == "Y").OrderBy(o => o.ComBahtFrom).Select(s => s.TierName).ToList();
+                        List<MobileComTier> query = db.MobileComTiers.Where(c => c.Active == "Y").OrderBy(o => o.ComBahtFrom).ToList();
+
                         if (query.Count > 0)
                         {
-                            result.Add("All");
-                            result.AddRange(query);
+                            List<MobileDropdown> result = new List<MobileDropdown>();
+                            MobileDropdown all = new MobileDropdown();
+                            all.GroupName = "TIER";
+                            all.Value = "All";
+                            all.Active = "Y";
+                            result.Add(all);
+
+                            foreach (MobileComTier item in query)
+                            {
+                                MobileDropdown newDropdown = new MobileDropdown();
+                                newDropdown.GroupName = "TIER";
+                                newDropdown.Value = item.TierName;
+                                newDropdown.Active = "Y";
+                                result.Add(newDropdown);
+                            }
+
                             return Ok(result);
                         }
                     }
@@ -279,12 +296,27 @@ namespace WebApplication13.Controllers.Mobile
         [HttpGet]
         public async Task<IHttpActionResult> GetBranchList()
         {
-            List<Branch> query = DataDAL.GetBranchList();
+            List<Branch> query = DataDAL.GetBranchList().ToList();
+
             if (query.Count > 0)
             {
-                List<string> result = new List<string>();
-                result.Add("All");
-                result.AddRange(query.Select(s => s.Name).ToList());
+                List<MobileDropdown> result = new List<MobileDropdown>();
+                MobileDropdown all = new MobileDropdown();
+                all.Id = 0;
+                all.GroupName = "BRANCH";
+                all.Value = "All";
+                all.Active = "Y";
+                result.Add(all);
+
+                foreach (Branch item in query)
+                {
+                    MobileDropdown newDropdown = new MobileDropdown();
+                    newDropdown.GroupName = "BRANCH";
+                    newDropdown.Value = item.Name;
+                    newDropdown.Active = "Y";
+                    result.Add(newDropdown);
+                }
+
                 return Ok(result);
             }
 

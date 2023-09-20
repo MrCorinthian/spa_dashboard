@@ -418,15 +418,17 @@ namespace WebApplication13.Controllers.Mobile
                         if (user != null)
                         {
                             MobileFileAttachment attImage = db.MobileFileAttachments.Where(c => c.MobileUserId == user.Id && c.Type == 1 && c.Active == "Y").OrderByDescending(o => o.Created).FirstOrDefault();
-                            string imagePath = $"{webRootPath}{attImage.FileSubPath}{attImage.FileName}";
+                            if (attImage != null)
+                            {
+                                string imagePath = $"{webRootPath}{attImage.FileSubPath}{attImage.FileName}";
 
-                            var stream = File.OpenRead(imagePath);
-                            response.Content = new StreamContent(stream);
-                            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                            response.Content.Headers.ContentLength = stream.Length;
+                                var stream = File.OpenRead(imagePath);
+                                response.Content = new StreamContent(stream);
+                                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                                response.Content.Headers.ContentLength = stream.Length;
 
-                            return ResponseMessage(response);
-
+                                return ResponseMessage(response);
+                            }
                         }
                     }
                 }

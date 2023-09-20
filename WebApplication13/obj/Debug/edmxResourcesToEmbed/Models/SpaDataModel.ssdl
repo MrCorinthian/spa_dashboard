@@ -225,6 +225,17 @@
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="MobileDropdown">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="GroupName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Value" Type="nvarchar" MaxLength="100" />
+    <Property Name="Active" Type="nvarchar" MaxLength="1" />
+  </EntityType>
   <EntityType Name="MobileErrorLog">
     <Key>
       <PropertyRef Name="Id" />
@@ -308,16 +319,16 @@
     <Property Name="Nationality" Type="nvarchar" MaxLength="100" />
     <Property Name="Birthday" Type="date" />
     <Property Name="Address" Type="nvarchar" MaxLength="300" />
-    <Property Name="Province" Type="nvarchar" MaxLength="100" />
-    <Property Name="Occupation" Type="nvarchar" MaxLength="100" />
+    <Property Name="Province" Type="int" />
+    <Property Name="Occupation" Type="int" />
     <Property Name="PhoneNumber" Type="varchar" MaxLength="20" />
     <Property Name="Email" Type="nvarchar" MaxLength="100" />
     <Property Name="LineId" Type="nvarchar" MaxLength="50" />
     <Property Name="WhatsAppId" Type="nvarchar" MaxLength="50" />
-    <Property Name="CompanyTypeOfUsage" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyTypeOfUsage" Type="int" />
     <Property Name="CompanyName" Type="nvarchar" MaxLength="200" />
     <Property Name="CompanyTaxId" Type="nvarchar" MaxLength="50" />
-    <Property Name="BankAccount" Type="nvarchar" MaxLength="200" />
+    <Property Name="Bank" Type="int" />
     <Property Name="BankAccountNumber" Type="nvarchar" MaxLength="20" />
     <Property Name="ProfilePath" Type="nvarchar(max)" />
     <Property Name="Active" Type="nvarchar" MaxLength="1" Nullable="false" />
@@ -511,5 +522,13 @@
     <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Version" EntityType="Self.Version" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MobileDropdown" EntityType="Self.MobileDropdown" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [MobileDropdown].[Id] AS [Id], 
+    [MobileDropdown].[GroupName] AS [GroupName], 
+    [MobileDropdown].[Value] AS [Value], 
+    [MobileDropdown].[Active] AS [Active]
+    FROM [dbo].[MobileDropdown] AS [MobileDropdown]</DefiningQuery>
+    </EntitySet>
   </EntityContainer>
 </Schema>

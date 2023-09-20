@@ -7,6 +7,7 @@ import '../../providers/AuthProvider/auth_provider.dart';
 import '../../base_client/base_client.dart';
 import '../../models/register_data.dart';
 import '../../models/responsed_data.dart';
+import '../../models/dropdown.dart';
 import '../../app_theme/app_theme.dart';
 import '../../shared_function/shared_function.dart';
 import '../../shared_widget/custom_page_route_builder.dart';
@@ -59,10 +60,10 @@ class _RegisterPageState extends State<RegisterPage> {
   String _IdCardImagePath = '';
   File? _IdCardImage;
   bool _isChecked = false;
-  List<String> _province = [];
-  List<String> _bank = [];
-  List<String> _occupation = [];
-  List<String> _companyTypeOfUsage = [];
+  List<Dropdown> _province = [];
+  List<Dropdown> _bank = [];
+  List<Dropdown> _occupation = [];
+  List<Dropdown> _companyTypeOfUsage = [];
   final Uri _urlPrivacy =
       Uri.parse('https://manage.urban-partners-group.com/Privacy');
 
@@ -80,32 +81,37 @@ class _RegisterPageState extends State<RegisterPage> {
     final resProvince =
         await BaseClient().get('Data/GetMobileOptionSetting?code=PROVINCE');
     if (resProvince != null) {
+      final jsonData = json.decode(resProvince) as List;
       setState(() {
-        _province = List<String>.from(json.decode(resProvince));
+        _province = jsonData.map((m) => Dropdown.fromJson(m)).toList();
       });
     }
     final resBank =
-        await BaseClient().get('Data/GetMobileOptionSetting?code=BANK_ACCOUNT');
+        await BaseClient().get('Data/GetMobileOptionSetting?code=BANK_NAME');
     if (resBank != null) {
+      final jsonData = json.decode(resBank) as List;
       setState(() {
-        _bank = List<String>.from(json.decode(resBank));
+        _bank = jsonData.map((m) => Dropdown.fromJson(m)).toList();
       });
     }
     final resOccupation =
         await BaseClient().get('Data/GetMobileOptionSetting?code=OCCUPATION');
     if (resOccupation != null) {
+      final jsonData = json.decode(resOccupation) as List;
       setState(() {
-        _occupation = List<String>.from(json.decode(resOccupation));
+        _occupation = jsonData.map((m) => Dropdown.fromJson(m)).toList();
       });
     }
-    final rescompanyTypeOfUsage = await BaseClient()
+    final resCompanyTypeOfUsage = await BaseClient()
         .get('Data/GetMobileOptionSetting?code=COM_TYPE_OF_USAGE');
-    if (rescompanyTypeOfUsage != null) {
+    if (resCompanyTypeOfUsage != null) {
+      final jsonData = json.decode(resCompanyTypeOfUsage) as List;
       setState(() {
         _companyTypeOfUsage =
-            List<String>.from(json.decode(rescompanyTypeOfUsage));
+            jsonData.map((m) => Dropdown.fromJson(m)).toList();
         if (_companyTypeOfUsage.length > 0)
-          _companyTypeOfUsageController.text = _companyTypeOfUsage[0];
+          _companyTypeOfUsageController.text =
+              _companyTypeOfUsage[0].Id.toString();
       });
     }
 
@@ -155,7 +161,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (resPhoneNumber.success == false) {
           if (_profileImage == null) {
             validate = false;
-            messages.add("Profile image");
+            messages.add("Profile proto / ภาพถ่ายใบหน้า");
           }
           if (_IdCardImage != null) {
             var res = await BaseClient().uploadAttachment(_IdCardImage);
@@ -172,57 +178,57 @@ class _RegisterPageState extends State<RegisterPage> {
           }
           if (_firstNameController.text.isEmpty) {
             validate = false;
-            messages.add("First name");
+            messages.add("First name / ชื่อจริง");
           }
           if (_lastNameController.text.isEmpty) {
             validate = false;
-            messages.add("Family name");
+            messages.add("Family name / นามสกุล");
           }
           if (_idCardNumberController.text.isEmpty) {
             validate = false;
-            messages.add("ID card number");
+            messages.add("ID card no. / เลขบัตรประชาชน");
           }
           if (_provinceController.text.isEmpty) {
             validate = false;
-            messages.add("Province");
+            messages.add("Province / จังหวัด");
           }
           if (_occupationController.text.isEmpty) {
             validate = false;
-            messages.add("Occupation");
+            messages.add("Occupation / อาชีพ");
           }
           if (_companyTypeOfUsageController.text == "Company") {
             if (_companyNameController.text.isEmpty) {
               validate = false;
-              messages.add("Company name");
+              messages.add("Company name / ชื่อบริษัท");
             }
             if (_companyTaxController.text.isEmpty) {
               validate = false;
-              messages.add("Company Tax ID");
+              messages.add("Company tax ID / เลขประจำตัวผู้เสียภาษีบริษัท");
             }
             if (_companyAddressController.text.isEmpty) {
               validate = false;
-              messages.add("Company Address");
+              messages.add("Company address / ที่อยู่บริษัท");
             }
           }
           if (_bankAccountController.text.isEmpty) {
             validate = false;
-            messages.add("Bank name");
+            messages.add("Bank name / บัญชีธนาคาร");
           }
           if (_bankAccountNumberController.text.isEmpty) {
             validate = false;
-            messages.add("Bank account number");
+            messages.add("Bank account no. / เลขที่บัญชี");
           }
           if (_passwordController.text.isEmpty ||
               _confirmPasswordController.text.isEmpty ||
               _passwordController.text != _confirmPasswordController.text ||
               _passwordController.text.length < 6) {
             validate = false;
-            messages.add("Password");
+            messages.add("Password / สร้างรหัสผ่าน");
           }
           if (_emailController.text.isNotEmpty &&
               !Validator.isValidEmail(_emailController.text)) {
             validate = false;
-            messages.add("Password");
+            messages.add("Password / สร้างรหัสผ่าน");
           }
           if (!_isChecked) {
             validate = false;
@@ -235,7 +241,7 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     } else {
       validate = false;
-      messages.add("Telephone no.");
+      messages.add("Telephone no. / เบอร์โทรศัพท์");
     }
 
     if (!validate) {
@@ -293,7 +299,7 @@ class _RegisterPageState extends State<RegisterPage> {
     data.CompanyName = _companyNameController.text;
     data.CompanyTaxId = _companyTaxController.text;
     data.CompanyAddress = _companyAddressController.text;
-    data.BankAccount = _bankAccountController.text;
+    data.Bank = _bankAccountController.text;
     data.BankAccountNumber = _bankAccountNumberController.text;
     data.ProfilePath = _profilePathController.text;
     data.IdCardPath = _idCardPathController.text;
@@ -354,17 +360,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     onImageSelected: _handleUploadProfile,
                   ),
                   CustomTextField(
-                    text: 'First name',
+                    text: 'First name / ชื่อจริง',
                     requiredField: true,
                     controller: _firstNameController,
                   ),
                   CustomTextField(
-                    text: 'Family name',
+                    text: 'Family name / นามสกุล',
                     requiredField: true,
                     controller: _lastNameController,
                   ),
                   CustomTextField(
-                      text: 'ID card number',
+                      text: 'ID card no. / เลขบัตรประชาชน',
                       requiredField: true,
                       controller: _idCardNumberController,
                       keyboardType: 'number',
@@ -374,21 +380,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     onImageSelected: _handleUploadIdCard,
                   ),
                   CustomTextField(
-                    text: 'Birthday',
+                    text: 'Birthday / วันเกิด',
                     controller: _birthdayController,
                     keyboardType: 'date',
                   ),
                   CustomTextField(
-                    text: 'Nationality',
+                    text: 'Nationality / สัญชาติ',
                     controller: _nationalityController,
                   ),
                   CustomTextField(
-                    text: 'Address',
+                    text: 'Address / ที่อยู่',
                     controller: _addressController,
                   ),
                   _province.length > 0
                       ? CustomDropdown(
-                          text: 'Province',
+                          text: 'Province / จังหวัด',
                           requiredField: true,
                           options: _province,
                           selected: _provinceController.text,
@@ -401,7 +407,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       : const SizedBox(),
                   _occupation.length > 0
                       ? CustomDropdown(
-                          text: 'Occupation',
+                          text: 'Occupation / อาชีพ',
                           requiredField: true,
                           options: _occupation,
                           selected: _occupationController.text,
@@ -413,19 +419,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         )
                       : const SizedBox(),
                   CustomTextField(
-                      text: 'Telephone no.',
+                      text: 'Telephone no. / เบอร์โทรศัพท์',
                       requiredField: true,
                       controller: _phoneNumberController,
                       keyboardType: 'number',
                       maxLength: 10),
                   CustomTextField(
-                      text: 'Email address', controller: _emailController),
+                      text: 'Email address / อีเมล',
+                      controller: _emailController),
                   CustomTextField(text: 'Line ID', controller: _lineController),
                   CustomTextField(
                       text: 'Whatsapp ID', controller: _whatsappController),
                   _companyTypeOfUsage.length > 0
                       ? CustomDropdown(
-                          text: 'Type of usage',
+                          text: 'Type of usage / ประเภทผู้ใช้',
                           requiredField: true,
                           options: _companyTypeOfUsage,
                           selected: _companyTypeOfUsageController.text,
@@ -438,14 +445,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       : const SizedBox(),
                   _companyTypeOfUsageController.text == "Company"
                       ? CustomTextField(
-                          text: 'Company name',
+                          text: 'Company name / ชื่อบริษัท',
                           requiredField:
                               _companyTypeOfUsageController.text == "Company",
                           controller: _companyNameController)
                       : const SizedBox(),
                   _companyTypeOfUsageController.text == "Company"
                       ? CustomTextField(
-                          text: 'Company tax ID',
+                          text:
+                              'Company tax ID / เลขประจำตัวผู้เสียภาษีบริษัท ',
                           requiredField:
                               _companyTypeOfUsageController.text == "Company",
                           controller: _companyTaxController,
@@ -454,7 +462,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       : const SizedBox(),
                   _companyTypeOfUsageController.text == "Company"
                       ? CustomTextField(
-                          text: 'Company Address',
+                          text: 'Company address / ที่อยู่บริษัท',
                           requiredField:
                               _companyTypeOfUsageController.text == "Company",
                           controller: _companyAddressController,
@@ -462,7 +470,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       : const SizedBox(),
                   _bank.length > 0
                       ? CustomDropdown(
-                          text: 'Bank name',
+                          text: 'Bank name / บัญชีธนาคาร',
                           requiredField: true,
                           options: _bank,
                           selected: _bankAccountController.text,
@@ -474,18 +482,18 @@ class _RegisterPageState extends State<RegisterPage> {
                         )
                       : const SizedBox(),
                   CustomTextField(
-                      text: 'Bank account number',
+                      text: 'Bank account no. / เลขที่บัญชี',
                       requiredField: true,
                       controller: _bankAccountNumberController,
                       keyboardType: 'number'),
                   CustomTextField(
-                      text: 'Password',
+                      text: 'Create your password / สร้างรหัสผ่าน ',
                       placeholder: 'Must have at least 6 characters',
                       requiredField: true,
                       obscureText: true,
                       controller: _passwordController),
                   CustomTextField(
-                    text: 'Confirm password',
+                    text: 'Confirm your password / ยืนยันรหัสผ่าน',
                     requiredField: true,
                     obscureText: true,
                     controller: _confirmPasswordController,

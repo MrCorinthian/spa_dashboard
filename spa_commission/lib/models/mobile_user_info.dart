@@ -19,7 +19,7 @@ class MobileUserInfo {
   String? CompanyName;
   String? CompanyTaxId;
   String? CompanyAddress;
-  String? BankAccount;
+  String? Bank;
   String? BankAccountNumber;
   String? ProfilePath;
   String? TierName;
@@ -46,7 +46,7 @@ class MobileUserInfo {
     this.CompanyName,
     this.CompanyTaxId,
     this.CompanyAddress,
-    this.BankAccount,
+    this.Bank,
     this.BankAccountNumber,
     this.ProfilePath,
     this.TierName,
@@ -69,17 +69,17 @@ class MobileUserInfo {
       Nationality: jsonMap['Nationality'],
       Birthday: birthday,
       Address: jsonMap['Address'],
-      Province: jsonMap['Province'],
-      Occupation: jsonMap['Occupation'],
+      Province: jsonMap['Province']?.toString(),
+      Occupation: jsonMap['Occupation']?.toString(),
       PhoneNumber: jsonMap['PhoneNumber'],
       Email: jsonMap['Email'],
       LineId: jsonMap['LineId'],
       WhatsAppId: jsonMap['WhatsAppId'],
-      CompanyTypeOfUsage: jsonMap['CompanyTypeOfUsage'],
+      CompanyTypeOfUsage: jsonMap['CompanyTypeOfUsage']?.toString(),
       CompanyName: jsonMap['CompanyName'],
       CompanyTaxId: jsonMap['CompanyTaxId'],
       CompanyAddress: jsonMap['CompanyAddress'],
-      BankAccount: jsonMap['BankAccount'],
+      Bank: jsonMap['Bank']?.toString(),
       BankAccountNumber: jsonMap['BankAccountNumber'],
       ProfilePath: jsonMap['ProfilePath'],
       TierName: jsonMap['TierName'],

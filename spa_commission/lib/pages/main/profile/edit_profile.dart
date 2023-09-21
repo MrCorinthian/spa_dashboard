@@ -45,7 +45,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _companyTaxController = TextEditingController();
   final TextEditingController _companyAddressController =
       TextEditingController();
-  final TextEditingController _bankAccountController = TextEditingController();
+  final TextEditingController _bankController = TextEditingController();
   final TextEditingController _bankAccountNumberController =
       TextEditingController();
   final TextEditingController _profilePathController = TextEditingController();
@@ -140,7 +140,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _companyNameController.text = userInfo.CompanyName ?? '';
           _companyTaxController.text = userInfo.CompanyTaxId ?? '';
           _companyAddressController.text = userInfo.CompanyAddress ?? '';
-          _bankAccountController.text = userInfo.Bank ?? '';
+          _bankController.text = userInfo.Bank ?? '';
           _bankAccountNumberController.text = userInfo.BankAccountNumber ?? '';
 
           _loading = false;
@@ -230,7 +230,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               messages.add("Company address / ที่อยู่บริษัท");
             }
           }
-          if (_bankAccountController.text.isEmpty) {
+          if (_bankController.text.isEmpty) {
             validate = false;
             messages.add("Bank name / บัญชีธนาคาร");
           }
@@ -313,7 +313,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       data.CompanyName = _companyNameController.text;
       data.CompanyTaxId = _companyTaxController.text;
       data.CompanyAddress = _companyAddressController.text;
-      data.BankAccount = _bankAccountController.text;
+      data.Bank = _bankController.text;
       data.BankAccountNumber = _bankAccountNumberController.text;
       data.ProfilePath = _profilePathController.text;
       data.IdCardPath = _idCardNumberController.text;
@@ -457,14 +457,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           },
                         )
                       : const SizedBox(),
-                  _companyTypeOfUsageController.text == "Company"
+                  _companyTypeOfUsageController.text == "99"
                       ? CustomTextField(
                           text: 'Company name / ชื่อบริษัท',
                           requiredField:
                               _companyTypeOfUsageController.text == "Company",
                           controller: _companyNameController)
                       : const SizedBox(),
-                  _companyTypeOfUsageController.text == "Company"
+                  _companyTypeOfUsageController.text == "99"
                       ? CustomTextField(
                           text: 'Company tax ID / เลขประจำตัวผู้เสียภาษีบริษัท',
                           requiredField:
@@ -473,7 +473,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           keyboardType: 'number',
                         )
                       : const SizedBox(),
-                  _companyTypeOfUsageController.text == "Company"
+                  _companyTypeOfUsageController.text == "99"
                       ? CustomTextField(
                           text: 'Company address / ที่อยู่บริษัท',
                           requiredField:
@@ -486,10 +486,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           text: 'Bank name / บัญชีธนาคาร',
                           requiredField: true,
                           options: _bank,
-                          selected: _bankAccountController.text,
+                          selected: _bankController.text,
                           onChanged: (value) {
                             setState(() {
-                              _bankAccountController.text = value ?? '';
+                              _bankController.text = value ?? '';
                             });
                           },
                         )

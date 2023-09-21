@@ -267,7 +267,7 @@ namespace WebApplication13.Controllers.Mobile
                             }
                         }
 
-                        decimal rowPerPage = dataIndex.Data.Count / tableMaxRow;
+                        decimal rowPerPage = Convert.ToDecimal(comTranIds.Count) / Convert.ToDecimal(tableMaxRow);
                         for (int i = 0; i < rowPerPage || i == 0; i++)
                         {
                             dataIndex.Indices.Add(i + 1);

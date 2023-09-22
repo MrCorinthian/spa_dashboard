@@ -15,6 +15,7 @@ import { Format } from '../../share-functions/format-functions';
 import { CloneObj } from '../../share-functions/clone-functions';
 import { MobileUser } from '../../models/data/MobileUser';
 import { MobileDropdown } from '../../models/data/MobileDropdown';
+import { DataIndex } from '../../models/data-index';
 
 @Component({
   selector: 'user-management',
@@ -39,6 +40,7 @@ export class UserManagementComponent {
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
   currentIndex: number = 1;
+  rowPerPage: number = 1;
   selected: MobileUser = new MobileUser();
   selectedEdit: MobileUser = new MobileUser();
   showPopup: boolean = false;
@@ -75,10 +77,11 @@ export class UserManagementComponent {
   search() {
     this.dataTable = [];
     this.http
-      .post<Array<number>>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
+      .post<DataIndex>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
       .subscribe((res) => {
-        if (res && res.length > 0) {
-          this.indexTable = res;
+        if (res && res.Indices.length > 0) {
+          this.indexTable = res.Indices;
+          this.rowPerPage = res.RowPerPage;
           this.getDataTable(1);
         }
       });
@@ -86,11 +89,16 @@ export class UserManagementComponent {
 
   getTableIndex(sort: string = 'asc') {
     this.http
-      .post<Array<number>>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
+      .post<DataIndex>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
       .subscribe((res) => {
-        if (res && res.length > 0) {
-          this.indexTable = res;
-          this.getDataTable(sort === 'desc' ? res[res.length - 1] : res[0]);
+        if (res && res.Indices.length > 0) {
+          this.indexTable = res.Indices;
+          this.rowPerPage = res.RowPerPage;
+          this.getDataTable(
+            sort === 'desc'
+              ? res.Indices[res.Indices.length - 1]
+              : res.Indices[0]
+          );
         }
       });
   }

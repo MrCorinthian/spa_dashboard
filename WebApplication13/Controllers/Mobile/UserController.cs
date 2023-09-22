@@ -362,8 +362,10 @@ namespace WebApplication13.Controllers.Mobile
                     using (var db = new spasystemdbEntities())
                     {
                         filter.status = DataDAL.GetActiveFlag(filter.status);
-                        List<int> indexTable = new List<int>();
+
+                        CommissionReportDataIndex dataIndex = new CommissionReportDataIndex();
                         decimal tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        dataIndex.RowPerPage = Convert.ToInt32(tableMaxRow);
 
                         int filterCompanyTypeOfUsage = 0;
                         if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
@@ -404,10 +406,10 @@ namespace WebApplication13.Controllers.Mobile
                         {
                             for(int i = 0; i < rowPerPage; i++)
                             {
-                                indexTable.Add(i+1);
+                                dataIndex.Indices.Add(i+1);
                             }
                         }
-                        return Ok(indexTable);
+                        return Ok(dataIndex);
                     }
                 }
             }

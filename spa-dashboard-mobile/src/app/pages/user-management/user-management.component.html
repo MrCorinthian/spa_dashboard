@@ -114,7 +114,9 @@
           class="tr__option"
           (click)="openPopup(item)"
         >
-          <td class="td__center">{{ i + 1 }}</td>
+          <td class="td__center">
+            {{ (currentIndex - 1) * rowPerPage + i + 1 }}
+          </td>
           <td class="td__center">
             <img class="td__profile__img" src="{{ item.ProfilePath }}" />
           </td>

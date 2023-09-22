@@ -35,6 +35,7 @@ export class ReportComponent {
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
   currentIndex: number = 1;
+  rowPerPage: number = 1;
 
   constructor(private http: HttpClient) {}
 
@@ -59,6 +60,7 @@ export class ReportComponent {
           this.dataTable = [];
           this.indexTable = res.Indices;
           this.currentIndex = res.Index;
+          this.rowPerPage = res.RowPerPage;
           for (let item of res.Data) {
             this.dataTable.push(item);
           }

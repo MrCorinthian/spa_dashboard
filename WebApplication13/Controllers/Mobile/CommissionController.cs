@@ -208,6 +208,7 @@ namespace WebApplication13.Controllers.Mobile
                         CommissionReportDataIndex dataIndex = new CommissionReportDataIndex();
                         dataIndex.Index = filter.page;
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        dataIndex.RowPerPage = tableMaxRow;
                         Nullable<DateTime> filterFrom = null;
                         Nullable<DateTime> filterTo = null;
                         if (!string.IsNullOrEmpty(filter.periodFrom) && !string.IsNullOrEmpty(filter.periodTo))

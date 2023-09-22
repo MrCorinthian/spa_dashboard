@@ -35,6 +35,7 @@ export class PaymentComponent {
   dataTable: Array<any> = [];
   indexTable: Array<number> = [];
   currentIndex: number = 1;
+  rowPerPage: number = 1;
 
   showPopup: boolean = false;
   paymentSelected: any = null;
@@ -65,6 +66,7 @@ export class PaymentComponent {
           this.dataTable = [];
           this.indexTable = res.Indices;
           this.currentIndex = res.Index;
+          this.rowPerPage = res.RowPerPage;
           for (let item of res.Data) {
             if (item.ProfilePath) {
               item.ProfilePath = `${BaseUrl}${item.ProfilePath}`;

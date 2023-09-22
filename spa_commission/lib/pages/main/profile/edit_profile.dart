@@ -216,7 +216,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             validate = false;
             messages.add("Occupation / อาชีพ");
           }
-          if (_companyTypeOfUsageController.text == "Company") {
+          if (_companyTypeOfUsageController.text == "99") {
             if (_companyNameController.text.isEmpty) {
               validate = false;
               messages.add(" Company name / ชื่อบริษัท");
@@ -461,14 +461,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ? CustomTextField(
                           text: 'Company name / ชื่อบริษัท',
                           requiredField:
-                              _companyTypeOfUsageController.text == "Company",
+                              _companyTypeOfUsageController.text == "99",
                           controller: _companyNameController)
                       : const SizedBox(),
                   _companyTypeOfUsageController.text == "99"
                       ? CustomTextField(
                           text: 'Company tax ID / เลขประจำตัวผู้เสียภาษีบริษัท',
                           requiredField:
-                              _companyTypeOfUsageController.text == "Company",
+                              _companyTypeOfUsageController.text == "99",
                           controller: _companyTaxController,
                           keyboardType: 'number',
                         )
@@ -477,7 +477,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ? CustomTextField(
                           text: 'Company address / ที่อยู่บริษัท',
                           requiredField:
-                              _companyTypeOfUsageController.text == "Company",
+                              _companyTypeOfUsageController.text == "99",
                           controller: _companyAddressController,
                         )
                       : const SizedBox(),

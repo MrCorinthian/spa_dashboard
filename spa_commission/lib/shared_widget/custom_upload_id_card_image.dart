@@ -62,22 +62,24 @@ class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
   }
 
   void _handleImageSelection(String type) async {
-    bool allowCamera = await requestCameraPermission();
-    if (allowCamera) {
-      final rawImage = await ImagePicker().pickImage(
-          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
+    final rawImage = await ImagePicker().pickImage(
+        source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
 
-      if (rawImage != null) {
-        final compressedImage = await compressImage(rawImage);
-        if (compressedImage != null) {
-          setState(() {
-            _image = File(compressedImage.path);
-          });
+    if (rawImage != null) {
+      final compressedImage = await compressImage(rawImage);
+      if (compressedImage != null) {
+        setState(() {
+          _image = File(compressedImage.path);
+        });
 
-          widget.onImageSelected(_image);
-        }
+        widget.onImageSelected(_image);
       }
     }
+
+    bool allowCamera = await requestCameraPermission();
+    // if (allowCamera) {
+
+    // }
   }
 
   compressImage(XFile imageFile) async {

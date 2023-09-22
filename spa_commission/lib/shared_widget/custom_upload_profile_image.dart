@@ -36,6 +36,9 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
   String _currentImagePath = '';
   File? _image;
 
+  String _status = "";
+  String _request = "";
+
   @override
   void initState() {
     super.initState();
@@ -194,9 +197,31 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
   Future requestCameraPermission() async {
     bool allowCamera = false;
     var status = await Permission.camera.status;
+    if (status.isDenied)
+      _status = "isDenied";
+    else if (status.isGranted)
+      _status = "isGranted";
+    else if (status.isLimited)
+      _status = "isLimited";
+    else if (status.isPermanentlyDenied)
+      _status = "isPermanentlyDenied";
+    else if (status.isProvisional)
+      _status = "isProvisional";
+    else if (status.isRestricted) _status = "isRestricted";
     if (status.isDenied || status.isPermanentlyDenied) {
       var request = await Permission.camera.request();
-      if (status.isDenied || status.isPermanentlyDenied) {
+      if (request.isDenied)
+        _request = "isDenied";
+      else if (request.isGranted)
+        _request = "isGranted";
+      else if (request.isLimited)
+        _request = "isLimited";
+      else if (request.isPermanentlyDenied)
+        _request = "isPermanentlyDenied";
+      else if (request.isProvisional)
+        _request = "isProvisional";
+      else if (request.isRestricted) _request = "isRestricted";
+      if (request.isDenied || request.isPermanentlyDenied) {
         Navigator.push(
           context,
           CustomPageRouteBuilder.bottomToTop(RequestCamera()),

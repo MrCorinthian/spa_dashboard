@@ -3,7 +3,13 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../app_theme/app_theme.dart';
 
 class RequestCamera extends StatefulWidget {
-  const RequestCamera({super.key});
+  final String status;
+  final String request;
+  const RequestCamera({
+    Key? key,
+    this.status = "",
+    this.request = "",
+  }) : super(key: key);
 
   @override
   State<RequestCamera> createState() => _RequestCameraState();
@@ -52,6 +58,30 @@ class _RequestCameraState extends State<RequestCamera> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text(
+              'To scan QR code, we need access to your device\'s camera',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'status : ' + widget.status,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'request : ' + widget.request,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: CustomTheme.fillColor, fontSize: 16),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             const Text(
               'To scan QR code, we need access to your device\'s camera',
               textAlign: TextAlign.center,

@@ -208,7 +208,7 @@ class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
     var status = await Permission.camera.status;
     if (status.isDenied || status.isPermanentlyDenied) {
       var request = await Permission.camera.request();
-      if (status.isDenied || status.isPermanentlyDenied) {
+      if (request.isDenied || request.isPermanentlyDenied) {
         Navigator.push(
           context,
           CustomPageRouteBuilder.bottomToTop(RequestCamera()),

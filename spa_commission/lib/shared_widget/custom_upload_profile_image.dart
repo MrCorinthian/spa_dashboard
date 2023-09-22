@@ -224,7 +224,10 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
       if (request.isDenied || request.isPermanentlyDenied) {
         Navigator.push(
           context,
-          CustomPageRouteBuilder.bottomToTop(RequestCamera()),
+          CustomPageRouteBuilder.bottomToTop(RequestCamera(
+            status: _status,
+            request: _request,
+          )),
         );
       } else {
         allowCamera = true;

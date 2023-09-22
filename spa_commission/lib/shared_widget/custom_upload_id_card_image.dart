@@ -62,24 +62,22 @@ class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
   }
 
   void _handleImageSelection(String type) async {
-    final rawImage = await ImagePicker().pickImage(
-        source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
+    bool allowCamera = await requestCameraPermission();
+    if (allowCamera) {
+      final rawImage = await ImagePicker().pickImage(
+          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
 
-    if (rawImage != null) {
-      final compressedImage = await compressImage(rawImage);
-      if (compressedImage != null) {
-        setState(() {
-          _image = File(compressedImage.path);
-        });
+      if (rawImage != null) {
+        final compressedImage = await compressImage(rawImage);
+        if (compressedImage != null) {
+          setState(() {
+            _image = File(compressedImage.path);
+          });
 
-        widget.onImageSelected(_image);
+          widget.onImageSelected(_image);
+        }
       }
     }
-
-    bool allowCamera = await requestCameraPermission();
-    // if (allowCamera) {
-
-    // }
   }
 
   compressImage(XFile imageFile) async {
@@ -208,13 +206,13 @@ class _CustomUploadIdCardImageState extends State<CustomUploadIdCardImage> {
     var status = await Permission.camera.status;
     if (status.isDenied || status.isPermanentlyDenied) {
       var request = await Permission.camera.request();
-      if (status.isDenied || status.isPermanentlyDenied) {
+      if (request.isGranted || request.isLimited) {
+        allowCamera = true;
+      } else {
         Navigator.push(
           context,
           CustomPageRouteBuilder.bottomToTop(RequestCamera()),
         );
-      } else {
-        allowCamera = true;
       }
     } else {
       allowCamera = true;

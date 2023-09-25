@@ -170,11 +170,11 @@ class _RegisterPageState extends State<RegisterPage> {
               _idCardPathController.text = response.data;
             } else {
               validate = false;
-              messages.add("ID card image");
+              messages.add("ID card photo / ภาพถ่ายบัตรประชาชน ");
             }
           } else {
             validate = false;
-            messages.add("ID card image");
+            messages.add("ID card photo / ภาพถ่ายบัตรประชาชน ");
           }
           if (_firstNameController.text.isEmpty) {
             validate = false;
@@ -223,12 +223,12 @@ class _RegisterPageState extends State<RegisterPage> {
               _passwordController.text != _confirmPasswordController.text ||
               _passwordController.text.length < 6) {
             validate = false;
-            messages.add("Password / สร้างรหัสผ่าน");
+            messages.add("Create your password / สร้างรหัสผ่าน");
           }
           if (_emailController.text.isNotEmpty &&
               !Validator.isValidEmail(_emailController.text)) {
             validate = false;
-            messages.add("Password / สร้างรหัสผ่าน");
+            messages.add("Create your password / สร้างรหัสผ่าน");
           }
           if (!_isChecked) {
             validate = false;

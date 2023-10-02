@@ -93,6 +93,7 @@ namespace WebApplication13.Controllers.Mobile
                         PaymentDataIndex dataIndex = new PaymentDataIndex();
                         dataIndex.Index = filter.page;
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
+                        dataIndex.RowPerPage = tableMaxRow;
                         List<int> userTransCompleted = db.MobileComPayments
                             .Where(c => c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month)
                             .Select(s => s.MobileUserId).ToList();

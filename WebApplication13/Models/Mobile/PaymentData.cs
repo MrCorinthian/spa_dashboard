@@ -28,6 +28,7 @@ namespace WebApplication13.Models.Mobile
     {
         public int Index { get; set; }
         public List<int> Indices = new List<int>();
+        public int RowPerPage = new int();
         public List<PaymentData> Data = new List<PaymentData>();
     }
 }

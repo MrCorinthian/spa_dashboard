@@ -102,7 +102,7 @@ namespace WebApplication13.DAL
                         mobileUserInfo.BankAccountNumber = user.BankAccountNumber;
                         if (!string.IsNullOrEmpty(user.ProfilePath)) mobileUserInfo.ProfilePath = $"File/ProfileImageWeb/{user.Id}";
 
-                        List<MobileComTier> comTiers = db.MobileComTiers.OrderBy(o => o.ComBahtFrom).ToList();
+                        List<MobileComTier> comTiers = db.MobileComTiers.Where(c => c.Active == "Y").OrderBy(o => o.ComBahtFrom).ToList();
                         List<double> userComs = db.MobileComTransactions.Where(c => c.MobileUserId == user.Id).Select(s => s.TotalBaht).ToList();
                         double comTotal = userComs.Sum();
                         foreach (MobileComTier comTier in comTiers)
@@ -156,7 +156,7 @@ namespace WebApplication13.DAL
                                 ).ToList();
 
                     double sumCom = comTrans.Sum(s => s.TotalBaht);
-                    MobileComTier tier = db.MobileComTiers.Where(c => sumCom >= c.ComBahtFrom && c.ComBahtTo != null ? sumCom <= c.ComBahtTo : true).OrderBy(o => o.ComBahtFrom).FirstOrDefault();
+                    MobileComTier tier = db.MobileComTiers.Where(c => c.Active == "Y" && (sumCom >= c.ComBahtFrom && c.ComBahtTo != null ? sumCom <= c.ComBahtTo : true)).OrderBy(o => o.ComBahtFrom).FirstOrDefault();
 
                     return tier;
                 }

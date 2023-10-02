@@ -32,7 +32,7 @@ namespace WebApplication13.Controllers.Mobile
                         MobileUserLoginToken loginToken = db.MobileUserLoginTokens.FirstOrDefault(c => c.Token == token.Data);
                         if (loginToken != null)
                         {
-                            var comTier = db.MobileComTiers.OrderBy(o => o.ComBahtFrom).ToList();
+                            var comTier = db.MobileComTiers.Where(c => c.Active == "Y").OrderBy(o => o.ComBahtFrom).ToList();
                             if (comTier.Count > 0)
                             {
                                 return Ok(comTier);

@@ -198,7 +198,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           }
           if (_firstNameController.text.isEmpty) {
             validate = false;
-            messages.add(" First name / ชื่อจริง");
+            messages.add("First name / ชื่อจริง");
           }
           if (_lastNameController.text.isEmpty) {
             validate = false;

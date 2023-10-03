@@ -18,11 +18,11 @@ class _QrCodePageState extends State<QrCodePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        QrImage(
-          data: _qrData,
-          version: QrVersions.auto,
-          size: 200.0,
-        ),
+        // QrImage(
+        //   data: _qrData,
+        //   version: QrVersions.auto,
+        //   size: 200.0,
+        // ),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

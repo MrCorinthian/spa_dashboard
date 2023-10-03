@@ -61,7 +61,8 @@ class _CustomUploadProfileImageState extends State<CustomUploadProfileImage> {
     bool allowCamera = await requestCameraPermission();
     if (allowCamera) {
       final rawImage = await ImagePicker().pickImage(
-          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery);
+          source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
+          preferredCameraDevice: CameraDevice.front);
 
       if (rawImage != null) {
         final compressedImage = await compressImage(rawImage);

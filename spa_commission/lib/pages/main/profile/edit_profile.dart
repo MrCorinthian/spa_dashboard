@@ -219,11 +219,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           if (_companyTypeOfUsageController.text == "99") {
             if (_companyNameController.text.isEmpty) {
               validate = false;
-              messages.add(" Company name / ชื่อบริษัท");
+              messages.add("Company name / ชื่อบริษัท");
             }
             if (_companyTaxController.text.isEmpty) {
               validate = false;
-              messages.add("Company tax ID / เลขประจำตัวผู้เสียภาษีบริษัท *");
+              messages.add("Company tax ID / เลขประจำตัวผู้เสียภาษีบริษัท");
             }
             if (_companyAddressController.text.isEmpty) {
               validate = false;

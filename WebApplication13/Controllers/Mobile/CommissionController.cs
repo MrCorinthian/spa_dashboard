@@ -302,7 +302,7 @@ namespace WebApplication13.Controllers.Mobile
                         DateTime? receiptExpired = receipt?.Created?.ToLocalTime().AddMinutes(15);
                         if (userTier != null && receipt != null && receiptExpired != null && receiptExpired >= now)
                         {
-                            List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id).ToList();
+                            List<OrderRecord> orders = db.OrderRecords.Where(c => c.ReceiptId == receipt.Id && c.BranchId == receipt.BranchId).ToList();
                             if (orders.Count > 0)
                             {
                                 OrderRecord order = orders.FirstOrDefault();

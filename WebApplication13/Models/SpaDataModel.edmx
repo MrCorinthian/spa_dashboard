@@ -229,6 +229,7 @@
           <Property Name="Longitude" Type="float" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReceiptId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1006,6 +1007,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="Longitude" Type="Double" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiptId" Type="Int32" />
         </EntityType>
         <EntityType Name="MobileExportInvoice">
           <Key>
@@ -1504,6 +1506,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="MobileComTransactions">
             <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
               <MappingFragment StoreEntitySet="MobileComTransaction">
+                <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />

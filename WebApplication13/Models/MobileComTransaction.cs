@@ -22,5 +22,6 @@ namespace WebApplication13.Models
         public Nullable<double> Longitude { get; set; }
         public System.DateTime Created { get; set; }
         public string CreatedBy { get; set; }
+        public Nullable<int> ReceiptId { get; set; }
     }
 }

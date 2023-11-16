@@ -219,16 +219,20 @@ class _RegisterPageState extends State<RegisterPage> {
             messages.add("Bank account no. / เลขที่บัญชี");
           }
           if (_passwordController.text.isEmpty ||
-              _confirmPasswordController.text.isEmpty ||
-              _passwordController.text != _confirmPasswordController.text ||
-              _passwordController.text.length < 6) {
+              _confirmPasswordController.text.isEmpty) {
             validate = false;
             messages.add("Create your password / สร้างรหัสผ่าน");
+          } else if (_passwordController.text !=
+                  _confirmPasswordController.text ||
+              _passwordController.text.length < 6) {
+            validate = false;
+            messages.add(
+                "Your password and confirmation password do not match, please check again");
           }
           if (_emailController.text.isNotEmpty &&
               !Validator.isValidEmail(_emailController.text)) {
             validate = false;
-            messages.add("Create your password / สร้างรหัสผ่าน");
+            messages.add("Email address / อีเมล");
           }
           if (!_isChecked) {
             validate = false;

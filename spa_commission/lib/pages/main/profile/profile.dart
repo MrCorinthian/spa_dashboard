@@ -9,6 +9,7 @@ import '../../../shared_widget/custom_profile_menu_button.dart';
 import '../../../shared_widget/custom_profile_widget.dart';
 import '../../../shared_widget/custom_page_route_builder.dart';
 import '../../../shared_widget/privacy_policy.dart';
+import '../../../shared_widget/app_version_widget.dart';
 import './edit_profile.dart';
 import './commission_tier_info.dart';
 import './change_password.dart';
@@ -111,6 +112,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 imageIconPath: 'assets/images/delete-account.png',
                 onPressed: () => Navigator.push(context,
                     CustomPageRouteBuilder.leftToRight(DeleteAccountPage())),
+              ),
+              CustomProfileMenuButton(
+                text: 'Application version',
+                imageIconPath: 'assets/images/info.png',
+                onPressed: () => Navigator.push(context,
+                    CustomPageRouteBuilder.bottomToTop(AppVersionWidget())),
               ),
               CustomProfileMenuButton(
                 text: 'Sign out',

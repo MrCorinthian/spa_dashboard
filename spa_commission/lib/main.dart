@@ -16,6 +16,7 @@ import '../../../models/mobile_user_info.dart';
 // import './pages/main/qr_scan.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeNotifier(AppTheme.customTheme),

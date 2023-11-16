@@ -63,7 +63,7 @@ export class AutocompleteComponent {
 
   inputOnChange(option: number) {
     this.onChange.emit(option);
-    if (option) this.control.setValue(this.findDropdownValue(option));
+    // if (option) this.control.setValue(this.findDropdownValue(option));
   }
 
   inputBlur() {

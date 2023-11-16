@@ -466,7 +466,7 @@ namespace WebApplication13.Controllers.Mobile
                         {
                             filterUsers.AddRange(users);
                         }
-                        filterUsers.OrderBy(o => o.Id).Skip(tableMaxRow * filter.page).Take(tableMaxRow).ToList();
+                        filterUsers = filterUsers.OrderBy(o => o.Id).Skip(tableMaxRow * filter.page).Take(tableMaxRow).ToList();
                         foreach (MobileUser user in filterUsers)
                         {
                             if (!string.IsNullOrEmpty(user.ProfilePath))

@@ -74,8 +74,8 @@ button {
 .side__container {
   width: calc(100vw - 300px);
   max-height: calc(100vh - 180px);
-  overflow: scroll;
-  overflow-y: hidden;
+  overflow: auto;
+  // overflow-y: hidden;
   // -ms-overflow-style: none; /* Internet Explorer 10+ */
   // scrollbar-width: none; /* Firefox */
 }

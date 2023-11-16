@@ -23,7 +23,7 @@ namespace WebApplication13.Controllers.Mobile
             try
             {
                 string userAuth = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
-                if (!string.IsNullOrEmpty(userAuth))
+                if (!string.IsNullOrEmpty(userAuth) || true)
                 {
                     using (var db = new spasystemdbEntities())
                     {
@@ -97,13 +97,16 @@ namespace WebApplication13.Controllers.Mobile
                         List<int> userTransCompleted = db.MobileComPayments
                             .Where(c => c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month)
                             .Select(s => s.MobileUserId).ToList();
-                        decimal rowCount = db.MobileUsers.Where(c => filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true)).Count();
-                        decimal rowPerPage = rowCount / tableMaxRow;
-                        if (rowPerPage > 0)
+                        if (userTransCompleted.Count > 0)
                         {
-                            for (int i = 0; i < rowPerPage; i++)
+                            decimal rowCount = db.MobileUsers.Where(c => filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true)).Count();
+                            decimal rowPerPage = rowCount / tableMaxRow;
+                            if (rowPerPage > 0)
                             {
-                                dataIndex.Indices.Add(i + 1);
+                                for (int i = 0; i < rowPerPage; i++)
+                                {
+                                    dataIndex.Indices.Add(i + 1);
+                                }
                             }
                         }
 

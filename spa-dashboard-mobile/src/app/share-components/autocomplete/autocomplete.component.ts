@@ -55,15 +55,15 @@ export class AutocompleteComponent {
     return value.toLowerCase().replace(/\s/g, '');
   }
 
-  findDropdownValue(id: number): string | null {
-    const find = this.options.find((c) => c.Id == id);
+  findDropdownValue(id: number | string): string | null {
+    const find = this.options.find((c) => c.Id == id || c.Value == id);
     if (find != null) return find.Value;
     else return null;
   }
 
   inputOnChange(option: number) {
     this.onChange.emit(option);
-    // if (option) this.control.setValue(this.findDropdownValue(option));
+    if (option) this.control.setValue(this.findDropdownValue(option));
   }
 
   inputBlur() {

@@ -11,6 +11,7 @@
         ></daterangepicker>
         <div class="heard__field">Type of usage</div>
         <autocomplete
+          *ngIf="companyTypeOfUsages.length > 0"
           placeholder="Type of usage"
           [value]="filter.companyTypeOfUsage"
           [options]="companyTypeOfUsages"

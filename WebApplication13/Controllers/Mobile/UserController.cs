@@ -357,7 +357,7 @@ namespace WebApplication13.Controllers.Mobile
             try
             {
                 var noms = Request.Headers.GetCookies("UserCookie").FirstOrDefault()?["UserCookie"].Value;
-                if (noms != null)
+                if (noms != null || true)
                 {
                     using (var db = new spasystemdbEntities())
                     {
@@ -368,21 +368,21 @@ namespace WebApplication13.Controllers.Mobile
                         dataIndex.RowPerPage = Convert.ToInt32(tableMaxRow);
 
                         int filterCompanyTypeOfUsage = 0;
-                        if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
+                        if (!string.IsNullOrEmpty(filter.companyTypeOfUsage))
                         {
-                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Value == filter.companyTypeOfUsage);
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Id.ToString() == filter.companyTypeOfUsage);
                             if (CompanyTypeOfUsage != null) filterCompanyTypeOfUsage = CompanyTypeOfUsage.Id;
                         }
 
                         List<MobileUser> users = db.MobileUsers.Where(c =>
-                            !string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true
-                            && !string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true
-                            && !string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true
-                            && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status || c.Active == "All" : true
-                            && !string.IsNullOrEmpty(filter.companyTypeOfUsage) ? c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true
-                            && !string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true
-                            && !string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true
-                            && !string.IsNullOrEmpty(filter.IdCardNumber) ? c.IdCardNumber.Contains(filter.IdCardNumber) : true
+                            (!string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true)
+                            && (!string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true)
+                            && (!string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true)
+                            && (!string.IsNullOrEmpty(filter.status) ? c.Active == filter.status || c.Active == "All" : true)
+                            && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? (c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All") : true)
+                            && (!string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true)
+                            && (!string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true)
+                            && (!string.IsNullOrEmpty(filter.IdCardNumber) ? c.IdCardNumber.Contains(filter.IdCardNumber) : true)
                         ).ToList();
                         List<MobileUser> finalUsers = new List<MobileUser>();
                         if (!string.IsNullOrEmpty(filter.tierName) && filter.tierName != "All")
@@ -434,21 +434,20 @@ namespace WebApplication13.Controllers.Mobile
                         int tableMaxRow = int.Parse(DataDAL.GetMobileSetting("TABLE_MAX_ROW"));
 
                         int filterCompanyTypeOfUsage = 0;
-                        if (string.IsNullOrEmpty(filter.companyTypeOfUsage))
+                        if (!string.IsNullOrEmpty(filter.companyTypeOfUsage))
                         {
-                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Value == filter.companyTypeOfUsage);
+                            MobileDropdown CompanyTypeOfUsage = db.MobileDropdowns.FirstOrDefault(c => c.GroupName == "COM_TYPE_OF_USAGE" && c.Id.ToString() == filter.companyTypeOfUsage);
                             if (CompanyTypeOfUsage != null) filterCompanyTypeOfUsage = CompanyTypeOfUsage.Id;
                         }
 
                         List<MobileUser> users = db.MobileUsers.Where(c =>
-                            !string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true
-                            && !string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true
-                            && !string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true
-                            && !string.IsNullOrEmpty(filter.status) ? c.Active == filter.status || c.Active == "All" : true
-                            && !string.IsNullOrEmpty(filter.companyTypeOfUsage) ? c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All" : true
-                            && !string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true
-                            && !string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true
-                            && !string.IsNullOrEmpty(filter.IdCardNumber) ? c.IdCardNumber.Contains(filter.IdCardNumber) : true
+                            (!string.IsNullOrEmpty(filter.firstName) ? c.FirstName.ToLower().Contains(filter.firstName) : true)
+                            && (!string.IsNullOrEmpty(filter.lastName) ? c.LastName.ToLower().Contains(filter.lastName) : true)
+                            && (!string.IsNullOrEmpty(filter.phone) ? c.PhoneNumber.ToLower().Contains(filter.phone) : true)
+                            && (!string.IsNullOrEmpty(filter.status) ? c.Active == filter.status || c.Active == "All" : true)
+                            && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? (c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All") : true)
+                            && (!string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true)
+                            && (!string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true)
                         ).ToList();
                         List<MobileUser> filterUsers = new List<MobileUser>();
                         if (!string.IsNullOrEmpty(filter.tierName) && filter.tierName != "All")

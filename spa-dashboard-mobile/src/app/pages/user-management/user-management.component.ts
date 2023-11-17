@@ -79,26 +79,28 @@ export class UserManagementComponent {
     this.http
       .post<DataIndex>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
       .subscribe((res) => {
-        if (res && res.Indices.length > 0) {
+        if (res) {
           this.indexTable = res.Indices;
           this.rowPerPage = res.RowPerPage;
-          this.getDataTable(1);
+          if (res.Indices.length > 0) this.getDataTable(1);
         }
       });
   }
 
   getTableIndex(sort: string = 'asc') {
+    this.dataTable = [];
     this.http
       .post<DataIndex>(`${BaseUrl}User/GetMoblieUserIndex`, this.filter)
       .subscribe((res) => {
-        if (res && res.Indices.length > 0) {
+        if (res) {
           this.indexTable = res.Indices;
           this.rowPerPage = res.RowPerPage;
-          this.getDataTable(
-            sort === 'desc'
-              ? res.Indices[res.Indices.length - 1]
-              : res.Indices[0]
-          );
+          if (res.Indices.length > 0)
+            this.getDataTable(
+              sort === 'desc'
+                ? res.Indices[res.Indices.length - 1]
+                : res.Indices[0]
+            );
         }
       });
   }

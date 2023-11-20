@@ -222,12 +222,6 @@ class _RegisterPageState extends State<RegisterPage> {
               _confirmPasswordController.text.isEmpty) {
             validate = false;
             messages.add("Create your password / สร้างรหัสผ่าน");
-          } else if (_passwordController.text !=
-                  _confirmPasswordController.text ||
-              _passwordController.text.length < 6) {
-            validate = false;
-            messages.add(
-                "Your password and confirmation password do not match, please check again");
           }
           if (_emailController.text.isNotEmpty &&
               !Validator.isValidEmail(_emailController.text)) {
@@ -260,6 +254,25 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 for (int i = 0; i < messages.length; i++)
                   Text(' - ' + messages[i],
+                      style: TextStyle(color: CustomTheme.fillColor))
+              ],
+            ),
+          );
+        },
+        barrierDismissible: false,
+      );
+    } else if (_passwordController.text != _confirmPasswordController.text ||
+        _passwordController.text.length < 6) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomAlertDialog(
+            title: 'Password do not match',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Your password and confirmation password do not match, please check again',
                       style: TextStyle(color: CustomTheme.fillColor))
               ],
             ),

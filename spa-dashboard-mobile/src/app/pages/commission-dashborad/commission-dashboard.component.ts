@@ -60,6 +60,7 @@ export class CommissionDashboardComponent {
     const canvas: HTMLCanvasElement = this.chartCanvas.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      this.branchChart?.destroy();
       this.branchChart = new Chart(ctx, {
         type: 'pie',
         data: {

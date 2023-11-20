@@ -50,21 +50,23 @@ export class ReportComponent {
   }
 
   getDataTable(page: number) {
+    this.dataTable = [];
     this.http
       .post<DataIndex>(`${BaseUrl}Commission/GetCommissionReportIndex`, {
         page: page,
         ...this.filter,
       })
       .subscribe((res) => {
-        if (res && res?.Data?.length >= 0) {
-          this.dataTable = [];
+        if (res) {
           this.indexTable = res.Indices;
           this.currentIndex = res.Index;
-          this.rowPerPage = res.RowPerPage;
-          for (let item of res.Data) {
-            this.dataTable.push(item);
+          if (res?.Data?.length >= 0) {
+            this.rowPerPage = res.RowPerPage;
+            for (let item of res.Data) {
+              this.dataTable.push(item);
+            }
+            this.currentIndex = page;
           }
-          this.currentIndex = page;
         }
       });
   }

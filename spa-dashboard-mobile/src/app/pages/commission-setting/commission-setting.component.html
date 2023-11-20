@@ -3,11 +3,13 @@
   <div class="side__container">
     <div class="column__container">
       <div class="filter__container">
+        <div>Tier name</div>
         <input-text
-          placeholder="Tier name"
+          placeholder="Tier"
           [value]="filter.tierName"
           (onChange)="onChangeFilter('filterTierName', $event)"
         ></input-text>
+        <div>Active status</div>
         <autocomplete
           placeholder="Active status"
           [value]="filter.status"

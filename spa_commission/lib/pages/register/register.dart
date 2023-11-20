@@ -267,7 +267,7 @@ class _RegisterPageState extends State<RegisterPage> {
         context: context,
         builder: (BuildContext context) {
           return CustomAlertDialog(
-            title: 'Password do not match',
+            title: 'Passwords do not match',
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

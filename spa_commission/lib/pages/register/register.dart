@@ -272,7 +272,7 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Your password and confirmation password do not match, please check again',
+                Text('Your password and confirmation password do not match, please enter again',
                       style: TextStyle(color: CustomTheme.fillColor))
               ],
             ),

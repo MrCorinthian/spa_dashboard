@@ -16,6 +16,7 @@ import { CloneObj } from '../../share-functions/clone-functions';
 import { MobileUser } from '../../models/data/MobileUser';
 import { MobileDropdown } from '../../models/data/MobileDropdown';
 import { DataIndex } from '../../models/data-index';
+import { validateHorizontalPosition } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'user-management',
@@ -24,7 +25,7 @@ import { DataIndex } from '../../models/data-index';
 })
 export class UserManagementComponent {
   colors: any = Colors;
-
+  baseUrl: string = BaseUrl;
   filter: any = {
     firstName: '',
     lastName: '',
@@ -47,6 +48,10 @@ export class UserManagementComponent {
   isEdit: boolean = false;
   isCreate: boolean = false;
   isLoading: boolean = false;
+
+  showPopupRqf: boolean = false;
+  popupMessage: string = '';
+  message: Array<string> = [];
 
   dropdowns: Array<MobileDropdown> = [];
   banks: Array<MobileDropdown> = [];
@@ -116,12 +121,14 @@ export class UserManagementComponent {
         if (res?.length > 0) {
           for (let item of res) {
             if (item.ProfilePath) {
-              item.ProfilePath = `${BaseUrl}${item.ProfilePath}`;
+              item.ProfilePath = `${item.ProfilePath}`;
             }
             if (item.Birthday) {
               item.BirthdayString = moment(item.Birthday).format('DD MMM YYYY');
             }
-            item.IdCardPath = `${BaseUrl}File/UserAttachmentImageWeb?id=${item.Id}`;
+            item.IdCardPath = `${BaseUrl}File/UserAttachmentImageWeb?id=${
+              item.Id
+            }&time=${Date.now()}`;
             this.dataTable.push(item);
           }
           this.currentIndex = page;
@@ -138,7 +145,7 @@ export class UserManagementComponent {
         .post<any>(`${BaseUrl}File/UploadImage`, formData)
         .subscribe((res) => {
           if (res || res?.Data) {
-            this.selectedEdit.ProfilePath = `${BaseUrl}File/ProfileImageWebUpload?fileName=${res.Data}`;
+            this.selectedEdit.ProfilePath = `${res.Data}`;
             this.selectedEdit = CloneObj(this.selectedEdit);
           }
         });
@@ -155,54 +162,176 @@ export class UserManagementComponent {
         .subscribe((res) => {
           if (res || res?.Data) {
             this.selectedEdit.idCardFilename = res.Data;
-            this.selectedEdit.IdCardPath = `${BaseUrl}File/AttachmentImageWeb?filename=${this.selectedEdit.idCardFilename}`;
+            this.selectedEdit.IdCardPath = `${BaseUrl}File/AttachmentImageWeb?filename=${res.Data}`;
             this.selectedEdit = CloneObj(this.selectedEdit);
           }
         });
     }
   }
 
-  createUser() {
-    let fromData = CloneObj(this.selectedEdit);
-    this.http
-      .post<MobileUser>(`${BaseUrl}User/CreateUser`, fromData)
-      .subscribe((res) => {
-        if (res?.Id) {
-          this.getTableIndex('desc');
-          this.closePopup();
+  async checkRequiredField() {
+    let validate = true;
+    this.popupMessage = 'Required fields is missing';
+    this.message = new Array<string>();
+    if (!this.selectedEdit.ProfilePath) {
+      validate = false;
+      this.message.push('- Profile photo');
+    }
+    if (!this.selectedEdit.FirstName) {
+      validate = false;
+      this.message.push('- First name');
+    }
+    if (!this.selectedEdit.LastName) {
+      validate = false;
+      this.message.push('- Family name');
+    }
+    if (!this.selectedEdit.IdCardNumber) {
+      validate = false;
+      this.message.push('- ID card no.');
+    }
+    if (!this.selectedEdit.IdCardPath) {
+      validate = false;
+      this.message.push('- ID card photo');
+    }
+    if (!this.selectedEdit.Province) {
+      validate = false;
+      this.message.push('- Province');
+    }
+    if (!this.selectedEdit.Occupation) {
+      validate = false;
+      this.message.push('- Occupation');
+    }
+    if (this.selectedEdit.PhoneNumber) {
+      const res = await firstValueFrom(
+        this.http.post<any>(`${BaseUrl}User/TelephoneWeb`, {
+          Id: this.selectedEdit.Id ? this.selectedEdit.Id : 0,
+          PhoneNumber: this.selectedEdit.PhoneNumber,
+        })
+      );
+      console.log(res);
+      if (res) {
+        if (res.Success) {
+          validate = false;
+          this.message.push('- Telephone no. already exists');
         }
-      });
+      }
+    } else {
+      validate = false;
+      this.message.push('- Telephone no.');
+    }
+    if (!this.selectedEdit.CompanyTypeOfUsage) {
+      validate = false;
+      this.message.push('- Type of usage');
+    }
+    if (this.selectedEdit.CompanyTypeOfUsage == '99') {
+      if (!this.selectedEdit.CompanyName) {
+        validate = false;
+        this.message.push('- Company name');
+      }
+      if (!this.selectedEdit.CompanyTaxId) {
+        validate = false;
+        this.message.push('- Company tax ID');
+      }
+      if (!this.selectedEdit.CompanyAddress) {
+        validate = false;
+        this.message.push('- Company address');
+      }
+    }
+    if (!this.selectedEdit.Bank) {
+      validate = false;
+      this.message.push('- Bank name');
+    }
+    if (!this.selectedEdit.BankAccountNumber) {
+      validate = false;
+      this.message.push('- Bank account no.');
+    }
+    if (this.isCreate) {
+      if (!this.selectedEdit.Password) {
+        validate = false;
+        this.message.push('- Password');
+      }
+      if (!this.selectedEdit.ConfirmPassword) {
+        validate = false;
+        this.message.push('- Confirm password');
+      }
+      if (
+        this.selectedEdit.Password &&
+        this.selectedEdit.ConfirmPassword &&
+        (this.selectedEdit.Password !== this.selectedEdit.ConfirmPassword ||
+          this.selectedEdit.Password.length < 6)
+      ) {
+        this.message = new Array<string>();
+        validate = false;
+        this.popupMessage = 'Passwords do not match';
+        this.message.push(
+          'Your password and confirmation password do not match, please enter again'
+        );
+      }
+    }
+    if (!validate) this.openPopupRqf();
+    return validate;
   }
 
-  updateUser() {
-    let fromData = CloneObj(this.selectedEdit);
-    const fileName = fromData?.ProfilePath?.split('fileName=');
-    if (fileName) fromData.ProfilePath = fileName[fileName.length - 1];
-    this.http
-      .post<any>(`${BaseUrl}User/UpdateUserInformation`, fromData)
-      .subscribe((res) => {
-        if (res?.Id) {
-          //update id card
-          this.http
-            .post<any>(`${BaseUrl}File/UpdateUserAttachment`, {
-              MobileUserId: res.Id,
-              Filename: this.selectedEdit.idCardFilename ?? '',
-            })
-            .subscribe((resUserAtt) => {
-              if (resUserAtt != null && resUserAtt?.Data)
-                this.selected.IdCardPath = `${BaseUrl}${resUserAtt.Data}`;
-            });
-
-          let tier = this.dataTable.find((c) => c.Id === res.Id);
-          if (tier) {
-            this.getDataTable(this.currentIndex);
-            res.ProfilePath = `${BaseUrl}${res.ProfilePath}`;
-            this.selected = res;
-            this.isEdit = false;
-            this.isCreate = false;
+  async createUser() {
+    if (await this.checkRequiredField()) {
+      let fromData = CloneObj(this.selectedEdit);
+      this.http
+        .post<MobileUser>(`${BaseUrl}User/CreateUser`, fromData)
+        .subscribe((res) => {
+          if (res?.Id) {
+            //update id card
+            this.http
+              .post<any>(`${BaseUrl}File/UpdateUserAttachment`, {
+                MobileUserId: res.Id,
+                Filename: fromData.idCardFilename ?? '',
+              })
+              .subscribe((resUserAtt) => {
+                console.log(resUserAtt);
+                if (resUserAtt != null && resUserAtt?.Data)
+                  this.selected.IdCardPath = `${BaseUrl}${resUserAtt.Data}`;
+              });
+            this.getTableIndex('desc');
+            this.closePopup();
           }
-        }
-      });
+        });
+    }
+  }
+
+  async updateUser() {
+    if (await this.checkRequiredField()) {
+      let fromData = CloneObj(this.selectedEdit);
+      const fileName = fromData?.ProfilePath?.split('fileName=');
+      if (fileName) fromData.ProfilePath = fileName[fileName.length - 1];
+      this.http
+        .post<any>(`${BaseUrl}User/UpdateUserInformation`, fromData)
+        .subscribe((res) => {
+          if (res?.Id) {
+            //update id card
+            this.http
+              .post<any>(`${BaseUrl}File/UpdateUserAttachment`, {
+                MobileUserId: res.Id,
+                Filename: this.selectedEdit.idCardFilename ?? '',
+              })
+              .subscribe((resUserAtt) => {
+                if (resUserAtt != null && resUserAtt?.Data)
+                  this.selected.IdCardPath = `${BaseUrl}${resUserAtt.Data}`;
+              });
+
+            if (res.Birthday) {
+              res.BirthdayString = moment(res.Birthday).format('DD MMM YYYY');
+            }
+
+            let tier = this.dataTable.find((c) => c.Id === res.Id);
+            if (tier) {
+              this.getDataTable(this.currentIndex);
+              res.ProfilePath = `${res.ProfilePath}`;
+              this.selected = res;
+              this.isEdit = false;
+              this.isCreate = false;
+            }
+          }
+        });
+    }
   }
 
   deleteUser() {
@@ -240,7 +369,7 @@ export class UserManagementComponent {
   }
 
   onChange(type: string, value: any) {
-    if (this.selected && (value || value === 0)) {
+    if (this.selected) {
       if (type === 'Username') {
         this.selectedEdit.Username = value;
       } else if (type === 'Password') {
@@ -263,7 +392,7 @@ export class UserManagementComponent {
         this.selectedEdit.WhatsAppId = value;
       } else if (type === 'Email') {
         this.selectedEdit.Email = value;
-      } else if (type === 'BankAccount') {
+      } else if (type === 'BankName') {
         this.selectedEdit.Bank = value;
       } else if (type === 'BankAccountNumber') {
         this.selectedEdit.BankAccountNumber = value;
@@ -285,6 +414,8 @@ export class UserManagementComponent {
         this.selectedEdit.CompanyTypeOfUsage = value;
       } else if (type === 'Birthday') {
         this.selectedEdit.Birthday = moment(value, 'DD MMM YYYY').toDate();
+        console.log(value);
+        console.log(this.selectedEdit.Birthday);
         this.selectedEdit.BirthdayString = value;
       }
     }
@@ -357,5 +488,15 @@ export class UserManagementComponent {
     this.isCreate = false;
     this.selected = new MobileUser();
     this.selectedEdit = new MobileUser();
+  }
+
+  openPopupRqf() {
+    this.showPopupRqf = true;
+  }
+
+  closePopupRqf() {
+    this.showPopupRqf = false;
+    this.popupMessage = '';
+    this.message = new Array<string>();
   }
 }

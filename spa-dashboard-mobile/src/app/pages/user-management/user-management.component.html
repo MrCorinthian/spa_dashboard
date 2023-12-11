@@ -5,7 +5,7 @@
       <div class="filter__container">
         <div class="heard__field">Type of usage</div>
         <autocomplete
-          *ngIf="companyTypeOfUsages.length > 0"
+          *ngIf="companyTypeOfUsages && companyTypeOfUsages.length > 0"
           placeholder="Type of usage"
           [value]="filter.companyTypeOfUsage"
           [options]="companyTypeOfUsages"
@@ -20,7 +20,7 @@
         ></input-text>
         <div class="heard__field">Tier</div>
         <autocomplete
-          *ngIf="tiers.length > 0"
+          *ngIf="tiers && tiers.length > 0"
           placeholder="Tier"
           [value]="filter.tierName"
           [options]="tiers"
@@ -41,7 +41,7 @@
           [value]="filter.lastName"
           (onChange)="onChangeFilter('filterLastName', $event)"
         ></input-text>
-        <div class="heard__field">Id card no.</div>
+        <div class="heard__field">ID card no.</div>
         <input-text
           placeholder="Id card no."
           [value]="filter.IdCardNumber"
@@ -55,7 +55,7 @@
           [value]="filter.companyName"
           (onChange)="onChangeFilter('filterCompanyName', $event)"
         ></input-text>
-        <div class="heard__field">Company tax id</div>
+        <div class="heard__field">Company tax ID</div>
         <input-text
           placeholder="Company tax id"
           [value]="filter.companyTaxId"
@@ -89,21 +89,21 @@
       <thead>
         <tr>
           <th>No.</th>
-          <th>Profile image</th>
-          <th>ID card number</th>
+          <th>Profile photo</th>
+          <th>ID card no.</th>
           <th>First name</th>
           <th>Family name</th>
           <th>Occupation</th>
           <th>Telephone no.</th>
           <th>Tier</th>
-          <th>Line id</th>
-          <th>Whatsapp id</th>
+          <th>Line ID</th>
+          <th>Whatsapp ID</th>
           <th>Email</th>
-          <th>Bank account</th>
+          <th>Bank name</th>
           <th>Bank account no.</th>
           <th>Type of usage</th>
           <th>Company name</th>
-          <th>Company tax Id</th>
+          <th>Company tax ID</th>
           <th>Nationality</th>
           <th>Active status</th>
         </tr>
@@ -118,7 +118,14 @@
             {{ (currentIndex - 1) * rowPerPage + i + 1 }}
           </td>
           <td class="td__center">
-            <img class="td__profile__img" src="{{ item.ProfilePath }}" />
+            <img
+              class="td__profile__img"
+              src="{{
+                baseUrl +
+                  'File/ProfileImageWebUpload?fileName=' +
+                  item.ProfilePath
+              }}"
+            />
           </td>
           <td class="td__center">{{ format("idCard", item.IdCardNumber) }}</td>
           <td>{{ item.FirstName }}</td>
@@ -250,9 +257,18 @@
       <table>
         <tbody>
           <tr>
-            <td class="td__topic">Profile image</td>
+            <td class="td__topic">
+              Profile photo <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit" class="td__data">
-              <img class="td__img" src="{{ selected.ProfilePath }}" />
+              <img
+                class="td__img"
+                src="{{
+                  baseUrl +
+                    'File/ProfileImageWebUpload?fileName=' +
+                    selected.ProfilePath
+                }}"
+              />
             </td>
             <td
               *ngIf="isEdit"
@@ -262,7 +278,11 @@
               <img
                 *ngIf="selectedEdit.ProfilePath"
                 class="td__img"
-                src="{{ selectedEdit.ProfilePath }}"
+                src="{{
+                  baseUrl +
+                    'File/ProfileImageWebUpload?fileName=' +
+                    selectedEdit.ProfilePath
+                }}"
               />
               <input
                 type="file"
@@ -283,7 +303,7 @@
               </div>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td *ngIf="isCreate" class="td__topic">Username</td>
             <td *ngIf="isEdit && isCreate" class="td__data">
               <input-text
@@ -291,27 +311,11 @@
                 (onChange)="onChange('Username', $event)"
               ></input-text>
             </td>
-          </tr>
+          </tr> -->
           <tr>
-            <td *ngIf="isCreate" class="td__topic">Password</td>
-            <td *ngIf="isEdit && isCreate" class="td__data">
-              <input-text
-                [value]="selectedEdit.Password"
-                (onChange)="onChange('Password', $event)"
-              ></input-text>
+            <td class="td__topic">
+              First name <span style="color: red">*</span>
             </td>
-          </tr>
-          <tr>
-            <td *ngIf="isCreate" class="td__topic">Confirm password</td>
-            <td *ngIf="isEdit && isCreate" class="td__data">
-              <input-text
-                [value]="selectedEdit.ConfirmPassword"
-                (onChange)="onChange('ConfirmPassword', $event)"
-              ></input-text>
-            </td>
-          </tr>
-          <tr>
-            <td class="td__topic">First name</td>
             <td *ngIf="!isEdit">{{ selected.FirstName }}</td>
             <td *ngIf="isEdit" class="td__data">
               <input-text
@@ -321,7 +325,9 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Family name</td>
+            <td class="td__topic">
+              Family name <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">{{ selected.LastName }}</td>
             <td *ngIf="isEdit" class="td__data">
               <input-text
@@ -331,7 +337,9 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">ID card no.</td>
+            <td class="td__topic">
+              ID card no. <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ format("idCard", selected.IdCardNumber) }}
             </td>
@@ -345,7 +353,9 @@
 
           <!-- ID card image -->
           <tr>
-            <td class="td__topic">ID card image</td>
+            <td class="td__topic">
+              ID card photo <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit" class="td__data">
               <img class="td__img" src="{{ selected.IdCardPath }}" />
             </td>
@@ -412,33 +422,44 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Province</td>
+            <td class="td__topic">
+              Province <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ findDropdownValue(provinces, selected.Province) }}
             </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
                 [value]="
-                  findDropdownValue(provinces, selectedEdit.Province).toString()
+                  findDropdownValue(provinces, selectedEdit.Province)
+                    ? findDropdownValue(
+                        provinces,
+                        selectedEdit.Province
+                      ).toString()
+                    : undefined
                 "
                 [options]="provinces"
                 [sortOption]="false"
-                (onChange)="onChange('Occupation', $event)"
+                (onChange)="onChange('Province', $event)"
               ></autocomplete>
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Occupation</td>
+            <td class="td__topic">
+              Occupation <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ findDropdownValue(occupations, selected.Occupation) }}
             </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
                 [value]="
-                  findDropdownValue(
-                    occupations,
-                    selectedEdit.Occupation
-                  ).toString()
+                  findDropdownValue(occupations, selectedEdit.Occupation)
+                    ? findDropdownValue(
+                        occupations,
+                        selectedEdit.Occupation
+                      ).toString()
+                    : undefined
                 "
                 [options]="occupations"
                 [sortOption]="false"
@@ -447,7 +468,9 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Telephone no.</td>
+            <td class="td__topic">
+              Telephone no. <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ format("phone", selected.PhoneNumber) }}
             </td>
@@ -489,7 +512,9 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Type of usage</td>
+            <td class="td__topic">
+              Type of usage <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{
                 findDropdownValue(
@@ -504,7 +529,12 @@
                   findDropdownValue(
                     companyTypeOfUsages,
                     selectedEdit.CompanyTypeOfUsage
-                  ).toString()
+                  )
+                    ? findDropdownValue(
+                        companyTypeOfUsages,
+                        selectedEdit.CompanyTypeOfUsage
+                      ).toString()
+                    : undefined
                 "
                 [options]="companyTypeOfUsagesForEdit"
                 [sortOption]="false"
@@ -512,8 +542,15 @@
               ></autocomplete>
             </td>
           </tr>
-          <tr>
-            <td class="td__topic">Company name</td>
+          <tr
+            *ngIf="
+              (isEdit && selectedEdit.CompanyTypeOfUsage == '99') ||
+              (!isEdit && selected.CompanyTypeOfUsage == '99')
+            "
+          >
+            <td class="td__topic">
+              Company name <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">{{ selected.CompanyName }}</td>
             <td *ngIf="isEdit" class="td__data">
               <input-text
@@ -522,8 +559,15 @@
               ></input-text>
             </td>
           </tr>
-          <tr>
-            <td class="td__topic">Company tax ID</td>
+          <tr
+            *ngIf="
+              (isEdit && selectedEdit.CompanyTypeOfUsage == '99') ||
+              (!isEdit && selected.CompanyTypeOfUsage == '99')
+            "
+          >
+            <td class="td__topic">
+              Company tax ID <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ format("idCard", selected.CompanyTaxId) }}
             </td>
@@ -534,8 +578,15 @@
               ></input-text>
             </td>
           </tr>
-          <tr>
-            <td class="td__topic">Company address</td>
+          <tr
+            *ngIf="
+              (isEdit && selectedEdit.CompanyTypeOfUsage == '99') ||
+              (!isEdit && selected.CompanyTypeOfUsage == '99')
+            "
+          >
+            <td class="td__topic">
+              Company address <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">{{ selected.CompanyAddress }}</td>
             <td *ngIf="isEdit" class="td__data">
               <input-text
@@ -545,21 +596,29 @@
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Bank account</td>
+            <td class="td__topic">
+              Bank name <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ findDropdownValue(banks, selected.Bank) }}
             </td>
             <td *ngIf="isEdit" class="td__data">
               <autocomplete
-                [value]="findDropdownValue(banks, selectedEdit.Bank).toString()"
+                [value]="
+                  findDropdownValue(banks, selectedEdit.Bank)
+                    ? findDropdownValue(banks, selectedEdit.Bank).toString()
+                    : undefined
+                "
                 [options]="banks"
                 [sortOption]="false"
-                (onChange)="onChange('Occupation', $event)"
+                (onChange)="onChange('BankName', $event)"
               ></autocomplete>
             </td>
           </tr>
           <tr>
-            <td class="td__topic">Bank account no.</td>
+            <td class="td__topic">
+              Bank account no. <span style="color: red">*</span>
+            </td>
             <td *ngIf="!isEdit">
               {{ format("bank", selected.BankAccountNumber) }}
             </td>
@@ -567,6 +626,30 @@
               <input-text
                 [value]="selectedEdit.BankAccountNumber"
                 (onChange)="onChange('BankAccountNumber', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="isCreate" class="td__topic">
+              Password <span style="color: red">*</span>
+            </td>
+            <td *ngIf="isEdit && isCreate" class="td__data">
+              <input-text
+                [type]="'password'"
+                [value]="selectedEdit.Password"
+                (onChange)="onChange('Password', $event)"
+              ></input-text>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="isCreate" class="td__topic">
+              Confirm password <span style="color: red">*</span>
+            </td>
+            <td *ngIf="isEdit && isCreate" class="td__data">
+              <input-text
+                [type]="'password'"
+                [value]="selectedEdit.ConfirmPassword"
+                (onChange)="onChange('ConfirmPassword', $event)"
               ></input-text>
             </td>
           </tr>
@@ -590,3 +673,16 @@
     </div>
   </div>
 </popup>
+<popup
+  [openPopup]="showPopupRqf"
+  [header]="popupMessage"
+  (closePopup)="closePopupRqf()"
+>
+  <div class="popup__container">
+    <div class="flex__row__start">
+      <div *ngFor="let item of message">
+        {{ item }}
+      </div>
+    </div>
+  </div></popup
+>

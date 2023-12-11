@@ -448,6 +448,7 @@ namespace WebApplication13.Controllers.Mobile
                             && (!string.IsNullOrEmpty(filter.companyTypeOfUsage) ? (c.CompanyTypeOfUsage == filterCompanyTypeOfUsage || filter.companyTypeOfUsage == "All") : true)
                             && (!string.IsNullOrEmpty(filter.companyName) ? c.CompanyName.ToLower().Contains(filter.companyName) : true)
                             && (!string.IsNullOrEmpty(filter.companyTaxId) ? c.CompanyTaxId.Contains(filter.companyTaxId) : true)
+                            && (!string.IsNullOrEmpty(filter.IdCardNumber) ? c.IdCardNumber.Contains(filter.IdCardNumber) : true)
                         ).ToList();
                         List<MobileUser> filterUsers = new List<MobileUser>();
                         if (!string.IsNullOrEmpty(filter.tierName) && filter.tierName != "All")
@@ -472,7 +473,7 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 List<string> file = new List<string>();
                                 if(!string.IsNullOrEmpty(user.ProfilePath)) file = user.ProfilePath.Split(new[] { "\\" }, StringSplitOptions.None).ToList();
-                                if(file.Count > 0) user.ProfilePath = $"File/ProfileImageWebUpload?fileName={file.LastOrDefault()}";
+                                if(file.Count > 0) user.ProfilePath = $"{file.LastOrDefault()}";
                             }
                             mUsers.Add(user);
                         }
@@ -559,7 +560,7 @@ namespace WebApplication13.Controllers.Mobile
                     using (var db = new spasystemdbEntities())
                     {
                         DateTime now = DataDAL.GetDateTimeNow();
-                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.Username == data.Username);
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
                         if (user == null)
                         {
                             string companyTypeOfUsage = null;
@@ -572,41 +573,47 @@ namespace WebApplication13.Controllers.Mobile
                             MobileUser newUser = new MobileUser();
                             if (!string.IsNullOrEmpty(data.Username)) newUser.Username = data.Username;
                             if (!string.IsNullOrEmpty(data.Password)) newUser.Password = EncryptionDAL.EncryptString(data.Password);
-                            if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
-                            if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
-                            if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
-                            if (data.Birthday != null) user.Birthday = data.Birthday;
-                            else user.Birthday = null;
-                            if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
-                            else user.Nationality = null;
-                            if (!string.IsNullOrEmpty(data.Address)) user.Address = data.Address;
-                            else user.Address = null;
-                            if (data.Province != null) user.Province = data.Province;
-                            if (data.Occupation != null) user.Occupation = data.Occupation;
-                            if (!string.IsNullOrEmpty(data.PhoneNumber)) user.PhoneNumber = data.PhoneNumber;
-                            if (!string.IsNullOrEmpty(data.Email)) user.Email = data.Email;
-                            else user.Email = null;
-                            if (!string.IsNullOrEmpty(data.LineId)) user.LineId = data.LineId;
-                            else user.LineId = null;
-                            if (!string.IsNullOrEmpty(data.WhatsAppId)) user.WhatsAppId = data.WhatsAppId;
-                            else user.WhatsAppId = null;
-                            if (data.CompanyTypeOfUsage != null) user.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
+                            if (!string.IsNullOrEmpty(data.FirstName)) newUser.FirstName = data.FirstName;
+                            if (!string.IsNullOrEmpty(data.LastName)) newUser.LastName = data.LastName;
+                            if (!string.IsNullOrEmpty(data.IdCardNumber)) newUser.IdCardNumber = data.IdCardNumber;
+                            if (data.Birthday != null)
+                            {
+                                TimeZoneInfo bangkokTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                                Nullable<System.DateTime> bangkokTime = TimeZoneInfo.ConvertTimeFromUtc(data.Birthday ?? DateTime.Now, bangkokTimeZone);
+                                newUser.Birthday = bangkokTime;
+                            }
+                            else newUser.Birthday = null;
+                            if (!string.IsNullOrEmpty(data.Nationality)) newUser.Nationality = data.Nationality;
+                            else newUser.Nationality = null;
+                            if (!string.IsNullOrEmpty(data.Address)) newUser.Address = data.Address;
+                            else newUser.Address = null;
+                            if (data.Province != null) newUser.Province = data.Province;
+                            if (data.Occupation != null) newUser.Occupation = data.Occupation;
+                            if (!string.IsNullOrEmpty(data.PhoneNumber)) newUser.PhoneNumber = data.PhoneNumber;
+                            if (!string.IsNullOrEmpty(data.Email)) newUser.Email = data.Email;
+                            else newUser.Email = null;
+                            if (!string.IsNullOrEmpty(data.LineId)) newUser.LineId = data.LineId;
+                            else newUser.LineId = null;
+                            if (!string.IsNullOrEmpty(data.WhatsAppId)) newUser.WhatsAppId = data.WhatsAppId;
+                            else newUser.WhatsAppId = null;
+                            if (data.CompanyTypeOfUsage != null) newUser.CompanyTypeOfUsage = data.CompanyTypeOfUsage;
                             if (companyTypeOfUsage == "Company")
                             {
-                                if (!string.IsNullOrEmpty(data.CompanyName)) user.CompanyName = data.CompanyName;
-                                if (!string.IsNullOrEmpty(data.CompanyTaxId)) user.CompanyTaxId = data.CompanyTaxId;
-                                if (!string.IsNullOrEmpty(data.CompanyAddress)) user.CompanyAddress = data.CompanyAddress;
+                                if (!string.IsNullOrEmpty(data.CompanyName)) newUser.CompanyName = data.CompanyName;
+                                if (!string.IsNullOrEmpty(data.CompanyTaxId)) newUser.CompanyTaxId = data.CompanyTaxId;
+                                if (!string.IsNullOrEmpty(data.CompanyAddress)) newUser.CompanyAddress = data.CompanyAddress;
                             }
                             else
                             {
-                                user.CompanyName = null;
-                                user.CompanyTaxId = null;
-                                user.CompanyAddress = null;
+                                newUser.CompanyName = null;
+                                newUser.CompanyTaxId = null;
+                                newUser.CompanyAddress = null;
                             }
-                            if (data.Bank != null) user.Bank = data.Bank;
-                            if (!string.IsNullOrEmpty(data.BankAccountNumber)) user.BankAccountNumber = data.BankAccountNumber;
-                            if (!string.IsNullOrEmpty(data.ProfilePath)) user.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
-                            if (!string.IsNullOrEmpty(data.Active)) user.Active = data.Active;
+                            if (data.Bank != null) newUser.Bank = data.Bank;
+                            if (!string.IsNullOrEmpty(data.BankAccountNumber)) newUser.BankAccountNumber = data.BankAccountNumber;
+                            if (!string.IsNullOrEmpty(data.ProfilePath)) newUser.ProfilePath = $"UPLOAD\\MOBILE_USER_PROFILE_IMAGES\\{data.ProfilePath}";
+                            if (!string.IsNullOrEmpty(data.Active)) newUser.Active = data.Active;
+                            else newUser.Active = "N";
                             newUser.Created = now;
                             newUser.CreatedBy = userAuth;
                             newUser.Updated = now;
@@ -616,14 +623,17 @@ namespace WebApplication13.Controllers.Mobile
 
                             db.SaveChanges();
 
-                            newUser.ProfilePath = $"File/ProfileImageWebUpload?fileName={data.ProfilePath}";
+                            newUser.ProfilePath = $"{data.ProfilePath}";
 
                             return Ok(newUser);
                         }
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) 
+            {
+            
+            }
 
             return Content(HttpStatusCode.NoContent, "No content.");
         }
@@ -645,7 +655,12 @@ namespace WebApplication13.Controllers.Mobile
                             if (!string.IsNullOrEmpty(data.FirstName)) user.FirstName = data.FirstName;
                             if (!string.IsNullOrEmpty(data.LastName)) user.LastName = data.LastName;
                             if (!string.IsNullOrEmpty(data.IdCardNumber)) user.IdCardNumber = data.IdCardNumber;
-                            if (data.Birthday != null) user.Birthday = data.Birthday;
+                            if (data.Birthday != null)
+                            {
+                                TimeZoneInfo bangkokTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                                Nullable<System.DateTime> bangkokTime = TimeZoneInfo.ConvertTimeFromUtc(data.Birthday ?? DateTime.Now, bangkokTimeZone);
+                                user.Birthday = bangkokTime;
+                            }
                             else user.Birthday = null;
                             if (!string.IsNullOrEmpty(data.Nationality)) user.Nationality = data.Nationality;
                             else user.Nationality = null;
@@ -682,7 +697,7 @@ namespace WebApplication13.Controllers.Mobile
 
                             db.SaveChanges();
 
-                            user.ProfilePath = $"File/ProfileImageWebUpload?fileName={data.ProfilePath}";
+                            user.ProfilePath = $"{data.ProfilePath}";
 
                             return Ok(user);
                         }
@@ -770,6 +785,42 @@ namespace WebApplication13.Controllers.Mobile
                             {
                                 response.Success = true;
                                 response.Data = userFromPhoneNumber.PhoneNumber;
+                            }
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Data = "";
+                        }
+
+                        return Ok(response);
+                    }
+                }
+            }
+            catch { }
+
+            return Content(HttpStatusCode.NoContent, "No content.");
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> TelephoneWeb(ForgotPasswordParams data)
+        {
+            ResponseData response = new ResponseData();
+            try
+            {
+                using (var db = new spasystemdbEntities())
+                {
+                    if (data != null && !string.IsNullOrEmpty(data.PhoneNumber))
+                    {
+                        MobileUser user = db.MobileUsers.FirstOrDefault(c => c.PhoneNumber == data.PhoneNumber);
+                        if (user != null)
+                        {
+                            response.Success = true;
+                            response.Data = user.PhoneNumber;
+                            if (data.Id > 0 && user.Id == data.Id)
+                            {
+                                response.Success = false;
+                                response.Data = "";
                             }
                         }
                         else

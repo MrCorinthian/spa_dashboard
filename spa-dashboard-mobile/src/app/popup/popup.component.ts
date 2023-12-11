@@ -7,5 +7,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class PopupComponent {
   @Input() openPopup!: boolean;
+  @Input() header!: string;
   @Output() closePopup: EventEmitter<any> = new EventEmitter();
 }

@@ -131,6 +131,7 @@ namespace WebApplication13.Controllers.Mobile
                         if (data.ComBahtFrom!= null) newTier.ComBahtFrom = data.ComBahtFrom;
                         if (data.ComBahtTo != null) newTier.ComBahtTo = data.ComBahtTo;
                         if (!string.IsNullOrEmpty(data.Active)) newTier.Active = data.Active;
+                        else newTier.Active = "N";
                         newTier.Updated = now;
                         newTier.UpdatedBy = userAuth;
                         newTier.Created = now;

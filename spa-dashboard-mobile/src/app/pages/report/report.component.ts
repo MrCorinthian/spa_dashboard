@@ -72,33 +72,33 @@ export class ReportComponent {
   }
 
   onChangeFilter(type: string, value: string) {
-    if (value) {
-      if (type === 'filterFirstName') {
-        this.filter.firstName = value;
-      } else if (type === 'filterLastName') {
-        this.filter.lastName = value;
-      } else if (type === 'filterPhone') {
-        this.filter.phoneNumber = value;
-      } else if (type === 'filterPeriod') {
+    if (type === 'filterFirstName') {
+      this.filter.firstName = value;
+    } else if (type === 'filterLastName') {
+      this.filter.lastName = value;
+    } else if (type === 'filterPhone') {
+      this.filter.phone = value;
+    } else if (type === 'filterPeriod') {
+      if (value) {
         let fromTo = value.split(' - ');
         if (fromTo.length === 2) {
           this.filter.periodFromTo = value;
           this.filter.periodFrom = fromTo[0];
           this.filter.periodTo = fromTo[1];
         }
-      } else if (type === 'filterCompanyTypeOfUsages') {
-        this.filter.companyTypeOfUsage = value;
-      } else if (type === 'filterCompanyName') {
-        this.filter.companyName = value;
-      } else if (type === 'filterTierName') {
-        this.filter.tierName = value;
-      } else if (type === 'filterBranchName') {
-        this.filter.branchName = value;
+      } else {
+        this.filter.periodFromTo = null;
+        this.filter.periodFrom = null;
+        this.filter.periodTo = null;
       }
-    } else if (type === 'filterPeriod') {
-      this.filter.periodFromTo = null;
-      this.filter.periodFrom = null;
-      this.filter.periodTo = null;
+    } else if (type === 'filterCompanyTypeOfUsages') {
+      this.filter.companyTypeOfUsage = value;
+    } else if (type === 'filterCompanyName') {
+      this.filter.companyName = value;
+    } else if (type === 'filterTierName') {
+      this.filter.tierName = value;
+    } else if (type === 'filterBranchName') {
+      this.filter.branchName = value;
     }
   }
 

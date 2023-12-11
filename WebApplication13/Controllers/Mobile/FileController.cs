@@ -498,20 +498,21 @@ namespace WebApplication13.Controllers.Mobile
                         MobileExportInvoice exportInvoiceByUser = exportInvoices.FirstOrDefault(c => c.MobileUserId == _params.MobileUserId && c.Active == "Y");
                         if (exportInvoiceByUser != null)
                         {
-                            filename = $"{exportInvoiceByUser.DocName}.pdf";
+                            filename = $"INVOICE_{exportInvoiceByUser.DocName}.pdf";
+                            filePath = PdfDAL.GenerateExportInvoice2(_params.MobileUserId, exportInvoiceByUser.DocName, comDate, webRootPath, $"{webRootPath}{subPath}{docDate.Year}\\", $"{webRootPath}{subPath}{docDate.Year}{filename}");
                         }
                         else
                         {
                             docCount = exportInvoices.Count + 1;
                             docNo = $"BN{docDate.Year}{docDate.Month.ToString("00")}{docDate.Day.ToString("00")}{docCount.ToString("000")}";
                             filename = $"INVOICE_{docNo}.pdf";
-                            filePath = PdfDAL.GenerateExportInvoice2(_params.MobileUserId, docNo, comDate, webRootPath, $"{webRootPath}{subPath}", $"{webRootPath}{subPath}{filename}");
+                            filePath = PdfDAL.GenerateExportInvoice2(_params.MobileUserId, docNo, comDate, webRootPath, $"{webRootPath}{subPath}{docDate.Year}\\", $"{webRootPath}{subPath}{docDate.Year}\\{filename}");
 
                             if (!string.IsNullOrEmpty(filePath))
                             {
                                 MobileExportInvoice newExportInvoice = new MobileExportInvoice();
                                 newExportInvoice.MobileUserId = _params.MobileUserId;
-                                newExportInvoice.DocDate = comDate;
+                                newExportInvoice.DocDate = docDate;
                                 newExportInvoice.DocNo = docCount;
                                 newExportInvoice.DocName = docNo;
                                 newExportInvoice.Active = "Y";

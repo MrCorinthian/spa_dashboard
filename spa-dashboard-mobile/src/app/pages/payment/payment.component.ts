@@ -101,48 +101,47 @@ export class PaymentComponent {
       });
   }
 
-  exportInvoiceAll() {
+  async exportInvoiceAll() {
     for (let item of this.dataTable) {
-      this.exportInvoice(item.Id, item.month, item.year);
+      await this.exportInvoice(item.Id, item.month, item.year);
     }
   }
 
-  exportInvoice(id: number, month: string, year: string) {
+  async exportInvoice(id: number, month: string, year: string) {
     this.loading++;
-    this.http
-      .post(
+    const response = await firstValueFrom(
+      this.http.post(
         `${BaseUrl}File/ExportInvoice`,
         { MobileUserId: id, Month: month, Year: year },
         { responseType: 'blob', observe: 'response' }
       )
-      .subscribe((response: any) => {
-        if (response && response?.body) {
-          // Extract the filename from the response headers
-          const contentDispositionHeader = response.headers.get(
-            'content-disposition'
-          );
-          let filename = contentDispositionHeader?.split('filename=')[1];
-          filename = filename?.split(';')[0];
+    );
+    if (response && response?.body) {
+      // Extract the filename from the response headers
+      const contentDispositionHeader = response.headers.get(
+        'content-disposition'
+      );
+      let filename = contentDispositionHeader?.split('filename=')[1];
+      filename = filename?.split(';')[0];
 
-          // Create a URL object from the response blob
-          const blob = new Blob([response.body], {
-            type: 'application/octet-stream',
-          });
-          const url = window.URL.createObjectURL(blob);
-
-          // Create an anchor element and set its properties
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = filename ? filename : `INVOICE_00000000000.pdf`;
-
-          // Programmatically click the anchor element to trigger the file download
-          link.click();
-
-          // Clean up the URL object
-          window.URL.revokeObjectURL(url);
-        }
-        this.loading--;
+      // Create a URL object from the response blob
+      const blob = new Blob([response.body], {
+        type: 'application/octet-stream',
       });
+      const url = window.URL.createObjectURL(blob);
+
+      // Create an anchor element and set its properties
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename ? filename : `INVOICE_00000000000.pdf`;
+
+      // Programmatically click the anchor element to trigger the file download
+      link.click();
+
+      // Clean up the URL object
+      window.URL.revokeObjectURL(url);
+    }
+    this.loading--;
   }
 
   onChange(type: string, value: string) {

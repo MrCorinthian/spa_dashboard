@@ -9,6 +9,7 @@ import { Colors } from '../../const-value/colors';
 })
 export class InputTextComponent {
   @Input() value?: string | number;
+  @Input() type: string = 'text';
   @Input() requireMark: boolean = false;
   @Input() disabled: boolean = false;
   @Input() placeholder: string = '';

@@ -167,7 +167,12 @@ namespace WebApplication13.DAL
         {
             try
             {
-                GlobalFontSettings.FontResolver = new CustomFontResolver(webRootPath);
+                try
+                {
+                    GlobalFontSettings.FontResolver = new CustomFontResolver(webRootPath);
+                }
+                catch { }
+
                 using (var db = new spasystemdbEntities())
                 {
                     System.IO.Directory.CreateDirectory(directoryPath);
@@ -233,6 +238,7 @@ namespace WebApplication13.DAL
                         }
                         _name_2 = $"{user.FirstName} {user.LastName}";
                         _tel = user.PhoneNumber;
+                        _email = user.Email;
                         if (!string.IsNullOrEmpty(docNo)) _doc_no = docNo;
                         if (docDate != null) _doc_date = docDate.ToString("d MMMM yyyy");
                         if (!string.IsNullOrEmpty(cusName)) _customer_name = cusName;

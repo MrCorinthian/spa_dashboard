@@ -7,6 +7,7 @@ namespace WebApplication13.Models.Mobile
 {
     public class ForgotPasswordParams
     {
+        public int Id { get; set; }
         public string Token { get; set; }
         public string Ref { get; set; }
         public string Otp { get; set; }

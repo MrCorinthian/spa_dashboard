@@ -107,8 +107,8 @@ namespace WebApplication13.Controllers.Mobile
 
                         List<MobileUser> users = db.MobileUsers.Where(c => 
                                                     (filter.status == "Y" ? userTransCompleted.Contains(c.Id) : (filter.status == "N" ? !userTransCompleted.Contains(c.Id) : true))
-                                                    && (filter.companyTypeOfUsage != null ? (filterCompanyTypeOfUsage == c.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All") : true)
-                                                    ).OrderBy(o => o.Id).Skip(tableMaxRow * (filter.page-1)).Take(tableMaxRow).ToList();
+                                                    && (filterCompanyTypeOfUsage > 0 ? (filterCompanyTypeOfUsage == c.CompanyTypeOfUsage || filter.companyTypeOfUsage == "All") : true)
+                                                    ).OrderBy(o => o.Id).ToList();
                         foreach (MobileUser user in users)
                         {
                             List<MobileComTransaction> comTrans = db.MobileComTransactions.Where(c =>
@@ -142,6 +142,8 @@ namespace WebApplication13.Controllers.Mobile
                                 dataIndex.Data.Add(pData);
                             }
                         }
+
+                        dataIndex.Data = dataIndex.Data.Skip(tableMaxRow * (filter.page - 1)).Take(tableMaxRow).ToList();
 
                         if (dataIndex.Data.Count > 0)
                         {

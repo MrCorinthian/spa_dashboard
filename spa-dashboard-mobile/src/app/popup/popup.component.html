@@ -2,12 +2,22 @@
   <div class="popup__overlay"></div>
   <div class="popup__body">
     <div class="popup__header">
-      <img
-        class="popup__close"
-        src="../Content/AngularViews/assets/images/xmark.png"
-        [width]="20"
-        (click)="closePopup.emit()"
-      />
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          width: 100%;
+        "
+      >
+        <div style="font-weight: bold">{{ header }}</div>
+        <img
+          class="popup__close"
+          src="../Content/AngularViews/assets/images/xmark.png"
+          [width]="20"
+          (click)="closePopup.emit()"
+        />
+      </div>
     </div>
     <div class="popup__content">
       <ng-content></ng-content>

@@ -41,7 +41,7 @@
         <div class="heard__field">Telephone no.</div>
         <input-text
           placeholder="Telephone no."
-          [value]="filter.lastName"
+          [value]="filter.phone"
           (onChange)="onChangeFilter('filterPhone', $event)"
         ></input-text>
         <div *ngIf="tiers.length > 0" class="heard__field">Tier</div>

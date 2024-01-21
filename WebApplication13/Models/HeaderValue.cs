@@ -31,5 +31,8 @@ namespace WebApplication13.Models
         public string strBalanceNet { get; set; }
         public string strVipCount { get; set; }
         public string strLoginName { get; set; }
+        public string strCash { get; set; }
+        public string strCredit { get; set; }
+        public string strVoucher { get; set; }
     }
 }

@@ -1597,6 +1597,11 @@ namespace WebApplication13.Controllers
 
                     tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
                     tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -1623,7 +1628,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -1781,6 +1789,33 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
                     //string tComs = getTotalCommission(branchIds, ac.Id);
@@ -1867,6 +1902,12 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
@@ -1888,7 +1929,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -3047,6 +3091,11 @@ namespace WebApplication13.Controllers
 
                     tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
                     tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -3073,7 +3122,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -3231,6 +3283,33 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
                     //string tComs = getTotalCommission(branchIds, ac.Id);
@@ -3317,6 +3396,12 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
@@ -3338,7 +3423,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -3515,6 +3603,11 @@ namespace WebApplication13.Controllers
 
                     tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
                     tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -3541,7 +3634,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -3699,6 +3795,33 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
                     //string tComs = getTotalCommission(branchIds, ac.Id);
@@ -3785,6 +3908,12 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
@@ -3806,7 +3935,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -3983,6 +4115,11 @@ namespace WebApplication13.Controllers
 
                     tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
                     tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -4009,7 +4146,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -4167,6 +4307,33 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
                     //string tComs = getTotalCommission(branchIds, ac.Id);
@@ -4253,6 +4420,12 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
@@ -4274,7 +4447,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -4451,6 +4627,11 @@ namespace WebApplication13.Controllers
 
                     tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
                     tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -4477,7 +4658,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -4635,6 +4819,33 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
                     //string tComs = getTotalCommission(branchIds, ac.Id);
@@ -4721,6 +4932,12 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
@@ -4742,7 +4959,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -4919,6 +5139,11 @@ namespace WebApplication13.Controllers
 
                     tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
                     tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -4945,7 +5170,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -5103,6 +5331,33 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
 
                     //int tPaxNum = getPaxNum(branchIds, ac.Id);
                     //string tComs = getTotalCommission(branchIds, ac.Id);
@@ -5189,6 +5444,12 @@ namespace WebApplication13.Controllers
 
                     }
 
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
@@ -5210,7 +5471,10 @@ namespace WebApplication13.Controllers
                         strOilIncome = tOil,
                         strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
                         strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
                     };
 
 
@@ -7564,6 +7828,141 @@ namespace WebApplication13.Controllers
             }
 
             return totalVip;
+        }
+
+        public int getCash(int branchId, int accountId)
+        {
+            int totalCash = 0;
+            List<OrderRecord> orderCash;
+
+            using (var context = new spasystemdbEntities())
+            {
+                // Query for all blogs with names starting with B 
+                //var blogs = from b in context.Accounts
+                //            where b.Date.Equals(2016-12-22)
+                //            select b;
+
+                //ac.Add((Account)blogs);
+                // Query for the Blog named ADO.NET Blog
+
+                orderCash = context.OrderRecords
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "false")
+                                .ToList();
+            }
+
+            foreach (OrderRecord orc in orderCash)
+            {
+                totalCash += orc.Price;
+            }
+
+            return totalCash;
+        }
+        public int getCredit(int branchId, int accountId)
+        {
+            int totalCredit = 0;
+            List<OrderRecord> orderCredit;
+
+            using (var context = new spasystemdbEntities())
+            {
+                // Query for all blogs with names starting with B 
+                //var blogs = from b in context.Accounts
+                //            where b.Date.Equals(2016-12-22)
+                //            select b;
+
+                //ac.Add((Account)blogs);
+                // Query for the Blog named ADO.NET Blog
+
+                orderCredit = context.OrderRecords
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "true")
+                                .ToList();
+            }
+
+            foreach (OrderRecord ord in orderCredit)
+            {
+                totalCredit += ord.Price;
+            }
+
+            return totalCredit;
+        }
+
+        public int getVoucherCash(int branchId, int accountId)
+        {
+            //int totalVoucher = 0;
+
+            int discountWithCash = 0;
+            List<DiscountRecord> discountRecC;
+
+            //int discountWithCredit = 0;
+            //List<DiscountRecord> discountRecCr;
+
+            using (var context = new spasystemdbEntities())
+            {
+
+                discountRecC = context.DiscountRecords
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "false")
+                                .ToList();
+            }
+
+            foreach (DiscountRecord dr in discountRecC)
+            {
+                discountWithCash += Int32.Parse(dr.Value);
+            }
+
+            //using (var context = new spasystemdbEntities())
+            //{
+
+            //    discountRecCr = context.DiscountRecords
+            //                    .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "true")
+            //                    .ToList();
+            //}
+
+            //foreach (DiscountRecord drc in discountRecCr)
+            //{
+            //    discountWithCredit += Int32.Parse(drc.Value);
+            //}
+
+
+            return discountWithCash;
+        }
+
+        public int getVoucherCredit(int branchId, int accountId)
+        {
+            //int totalVoucher = 0;
+
+            //int discountWithCash = 0;
+            //List<DiscountRecord> discountRecC;
+
+            int discountWithCredit = 0;
+            List<DiscountRecord> discountRecCr;
+
+            //using (var context = new spasystemdbEntities())
+            //{
+
+            //    discountRecC = context.DiscountRecords
+            //                    .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "false")
+            //                    .ToList();
+            //}
+
+            //foreach (DiscountRecord dr in discountRecC)
+            //{
+            //    discountWithCash += Int32.Parse(dr.Value);
+            //}
+
+            using (var context = new spasystemdbEntities())
+            {
+
+                discountRecCr = context.DiscountRecords
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "true")
+                                .ToList();
+            }
+
+            foreach (DiscountRecord drc in discountRecCr)
+            {
+                discountWithCredit += Int32.Parse(drc.Value);
+            }
+
+
+            return discountWithCredit;
         }
 
         public void RemoveCookie()

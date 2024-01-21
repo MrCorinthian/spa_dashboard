@@ -329,25 +329,25 @@
                 </div>
 
                 <!-- Total Sale -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-pie-chart fa-4x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
-                                    <div>Total Sales</div>
-                                </div>
-                            </div>
+                @*<div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-pie-chart fa-4x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                            <div>Total Sales</div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>*@
 
                 <!-- Total Staff -->
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
+                    <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -356,6 +356,23 @@
                                 <div class="col-xs-9 text-right">
                                     <div class="quitehuge">@Html.DisplayFor(model => model.strStaff)</div>
                                     <div>Total Staff</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total VIP -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-gift fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
+                                    <div>Total VIP</div>
                                 </div>
                             </div>
                         </div>
@@ -378,14 +395,80 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Total Oil Income -->
+                <!-- Cash -->
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
                                     <i class="fa fa-bitcoin fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCash)</div>
+                                    <div>Cash</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Credit -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-credit-card fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCredit)</div>
+                                    <div>Credit</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voucher -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-newspaper-o fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVoucher)</div>
+                                    <div>Voucher</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Sale -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-pie-chart fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                                    <div>Total Sales</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Total Oil Income -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-battery-full fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="quitehuge">@Html.DisplayFor(model => model.strOilIncome)</div>
@@ -448,21 +531,21 @@
                 </div>
 
                 <!-- Total VIP -->
-                <div class="col-lg-12 col-md-6">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-gift fa-4x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
-                                    <div>Total VIP</div>
-                                </div>
-                            </div>
+                @*<div class="col-lg-12 col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-gift fa-4x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
+                            <div>Total VIP</div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>*@
                 <!-- Other Sale -->
                 <!--
     <div class="col-lg-12 col-md-6">
@@ -481,7 +564,244 @@
         </div>
     </div>-->
             </div>
-            <!-- /.container-fluid -->
+            <!--<div class="row">-->
+                <!-- Initial Money -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-money fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strInitMoney)</div>
+                                    <div>Initial Money</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Total Sale -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-pie-chart fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                                    <div>Total Sales</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Total Staff -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-user fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strStaff)</div>
+                                    <div>Total Staff</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Total Pax -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strPax)</div>
+                                    <div>Total Pax</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+                <!-- Cash -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-money fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCash)</div>
+                                    <div>Cash</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Credit -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-user fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCredit)</div>
+                                    <div>Credit</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Voucher -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVoucher)</div>
+                                    <div>Voucher</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Total Sale -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-pie-chart fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                                    <div>Total Sales</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+                <!-- Total Oil Income -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-bitcoin fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strOilIncome)</div>
+                                    <div>Total Oil Income</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Total Commission -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-exchange fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCommission)</div>
+                                    <div>Total Commission</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Other Sale -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-bar-chart fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strOtherSale)</div>
+                                    <div>Other Sales</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Balance Net -->
+                <!--<div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-area-chart fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strBalanceNet)</div>
+                                    <div>Balance Net</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- Total VIP -->
+                <!--<div class="col-lg-12 col-md-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-gift fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
+                                    <div>Total VIP</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+                <!-- Other Sale -->
+                <!--
+    <div class="col-lg-12 col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-dollar fa-4x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="quitehuge">@Html.DisplayFor(model => model.strOtherSale)</div>
+                        <div>Other Sales</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+            <!--</div>-->        
+    <!-- /.container-fluid -->
             <div class="row">
                 <div id="mygraph"></div>
 

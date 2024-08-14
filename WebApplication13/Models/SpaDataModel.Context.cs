@@ -60,5 +60,6 @@ namespace WebApplication13.Models
         public virtual DbSet<MobileExportInvoice> MobileExportInvoices { get; set; }
         public virtual DbSet<MobileUser> MobileUsers { get; set; }
         public virtual DbSet<MobileDropdown> MobileDropdowns { get; set; }
+        public virtual DbSet<OrderReceipt> OrderReceipts { get; set; }
     }
 }

@@ -373,6 +373,37 @@ namespace WebApplication13.Controllers
             };
             return Json(response, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult SendOrderReceiptData(string data)
+        {
+            string status = "false";
+            string error = "-";
+            try
+            {
+                RootSingleOrderReceipt rootObj = JsonConvert.DeserializeObject<RootSingleOrderReceipt>(data);
+
+                //Insert Receipt
+                OrderReceipt getOrderReceiptRecord = rootObj.OrderReceiptData;
+                db.OrderReceipts.Add(getOrderReceiptRecord);
+
+                db.SaveChanges();
+                status = "true";
+            }
+            catch (Exception ie)
+            {
+                status = "false";
+                error = ie.ToString();
+            }
+
+            //int latestReceiptId = getLatestReceipt().Id;
+
+            var response = new
+            {
+                Status = status,
+                Error_Message = error
+            };
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
 
         public int getVersionNo(int branchId)
         {
@@ -653,6 +684,12 @@ namespace WebApplication13.Controllers
         public class RootSingleReceipt
         {
             public Receipt ReceiptData { get; set; }
+
+        }
+
+        public class RootSingleOrderReceipt
+        {
+            public OrderReceipt OrderReceiptData { get; set; }
 
         }
     }

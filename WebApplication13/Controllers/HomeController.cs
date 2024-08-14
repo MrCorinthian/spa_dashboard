@@ -126,6 +126,14 @@ namespace WebApplication13.Controllers
                 if (cookie_user != null)
                 {
                     userName = cookie_user.Value;
+
+                    //Check user is current enabled
+                    if(CheckUserIsEnable(userName).Equals("false"))
+                    {
+                        RemoveCookie();
+                        return RedirectToAction("Index");
+                    }
+
                 }
                 else
                 {
@@ -1945,988 +1953,6 @@ namespace WebApplication13.Controllers
             }
         }
 
-        public ActionResult Member(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            
-            //Check lout out button
-            //No log out button in this page
-            //if (cmd != null)
-            //{
-            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-            //    {
-            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-            //    }
-            //}
-
-            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            //if (noms == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    List<Member> listMem = new List<Member>();
-
-            //    using (var context = new spasystemdbEntities())
-            //    {
-
-            //        listMem = context.Members
-            //                        .OrderBy(b => b.Id)
-            //                        .ToList();
-            //    }
-
-            //    List<MemberItem> listMemForView = new List<MemberItem>();
-
-            //    foreach(Member mem in listMem)
-            //    {
-                    
-            //        string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
-            //        string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
-
-            //        MemberItem memItem = new MemberItem() { Id=mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire= splitExpire[0] };
-            //        if(mem.ActiveStatus.Equals("true"))
-            //        {
-            //            memItem.Status = "Active";
-            //        }
-            //        else
-            //        {
-            //            memItem.Status = "Inactive";
-            //        }
-
-            //        if(!string.IsNullOrEmpty(mem.Birth.ToString()))
-            //        {
-            //            string[] splitBirth = mem.Birth.ToString().Split(' ');
-            //            memItem.Birth = splitBirth[0];
-            //        }
-                    
-            //        listMemForView.Add(memItem);
-            //    };
-
-            //    HeaderValueVIP hv = new HeaderValueVIP()
-            //    {
-            //        MemberList = listMemForView
-            //    };
-
-
-            //    return View(hv);
-            //}
-
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                List<Member> listMem = new List<Member>();
-
-                using (var context = new spasystemdbEntities())
-                {
-
-                    listMem = context.Members
-                                    .OrderBy(b => b.Id)
-                                    .ToList();
-                }
-
-                List<MemberItem> listMemForView = new List<MemberItem>();
-
-                foreach (Member mem in listMem)
-                {
-
-                    string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
-                    string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
-
-                    MemberItem memItem = new MemberItem() { Id = mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
-                    if (mem.ActiveStatus.Equals("true"))
-                    {
-                        memItem.Status = "Active";
-                    }
-                    else
-                    {
-                        memItem.Status = "Inactive";
-                    }
-
-                    if (!string.IsNullOrEmpty(mem.Birth.ToString()))
-                    {
-                        string[] splitBirth = mem.Birth.ToString().Split(' ');
-                        memItem.Birth = splitBirth[0];
-                    }
-
-                    listMemForView.Add(memItem);
-                };
-
-                HeaderValueVIP hv = new HeaderValueVIP()
-                {
-                    MemberList = listMemForView,
-                    strLoginName = userName
-                };
-
-
-                return View(hv);
-
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult ManageMemberType(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            //Check lout out button
-            //No log out button in this page
-            //if (cmd != null)
-            //{
-            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-            //    {
-            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-            //    }
-            //}
-
-            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            //if (noms == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    List<MemberGroup> listMemG = new List<MemberGroup>();
-
-            //    using (var context = new spasystemdbEntities())
-            //    {
-
-            //        listMemG = context.MemberGroups
-            //                        .OrderBy(b => b.Id)
-            //                        .ToList();
-            //    }
-
-            //    List<MemberGroupItem> listMemGForView = new List<MemberGroupItem>();
-
-            //    foreach (MemberGroup memG in listMemG)
-            //    {
-            //        MemberGroupItem memGItem = new MemberGroupItem();
-            //        memGItem.MemberGroupId = memG.Id.ToString();
-            //        memGItem.MemberGroupName = memG.Name;
-            //        memGItem.MemberGroupShowName = memG.ShowName;
-            //        if (memG.Status.Equals("true"))
-            //        {
-            //            memGItem.Status = "Active";
-            //        }
-            //        else
-            //        {
-            //            memGItem.Status = "Inactive";
-            //        }
-
-            //        if(getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
-            //        {
-            //            memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
-            //            memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
-            //            memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
-            //        }
-            //        //else
-            //        //{
-            //        //    memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
-            //        //    memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
-            //        //    memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
-            //        //}
-
-            //        listMemGForView.Add(memGItem);
-            //    };
-
-            //    HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
-            //    {
-            //        MemberGroupList = listMemGForView
-            //    };
-
-
-            //    return View(hvg);
-            //}
-
-            //Check user token
-            //Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                List<MemberGroup> listMemG = new List<MemberGroup>();
-
-                using (var context = new spasystemdbEntities())
-                {
-
-                    listMemG = context.MemberGroups
-                                    .OrderBy(b => b.Id)
-                                    .ToList();
-                }
-
-                List<MemberGroupItem> listMemGForView = new List<MemberGroupItem>();
-
-                foreach (MemberGroup memG in listMemG)
-                {
-                    MemberGroupItem memGItem = new MemberGroupItem();
-                    memGItem.MemberGroupId = memG.Id.ToString();
-                    memGItem.MemberGroupName = memG.Name;
-                    memGItem.MemberGroupShowName = memG.ShowName;
-                    if (memG.Status.Equals("true"))
-                    {
-                        memGItem.Status = "Active";
-                    }
-                    else
-                    {
-                        memGItem.Status = "Inactive";
-                    }
-
-                    if (getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
-                    {
-                        memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
-                        memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
-                        memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
-                    }
-                    //else
-                    //{
-                    //    memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
-                    //    memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
-                    //    memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
-                    //}
-
-                    listMemGForView.Add(memGItem);
-                };
-
-                HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
-                {
-                    MemberGroupList = listMemGForView,
-                    strLoginName = userName
-                };
-
-
-                return View(hvg);
-
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult ManagePriviledge(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            //Check lout out button
-            //No log out button in this page
-            //if (cmd != null)
-            //{
-            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-            //    {
-            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-            //    }
-            //}
-
-            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            //if (noms == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
-
-            //    List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
-
-            //    foreach (MemberPriviledge memP in listMemPriv)
-            //    {
-            //        MemberPriviledgeItem memPrivItem = new MemberPriviledgeItem();
-            //        memPrivItem.Id = memP.Id.ToString();
-            //        memPrivItem.ShowName = memP.ShowName;
-            //        memPrivItem.PriviledgeTypeId = memP.PriviledgeTypeId.ToString();
-            //        memPrivItem.PriviledgeTypeName = getPriviledgeTypeDetail(memP.PriviledgeTypeId).Name;
-            //        memPrivItem.Value = memP.Value.ToString();
-            //        memPrivItem.StartDate = memP.StartDate.ToString();
-            //        memPrivItem.ExpireDate = memP.ExpireDate.ToString();
-
-            //        if (memP.Status.Equals("true"))
-            //        {
-            //            memPrivItem.Status = "Active";
-            //        }
-            //        else
-            //        {
-            //            memPrivItem.Status = "Inactive";
-            //        }
-
-            //        listMemPrivForView.Add(memPrivItem);
-            //    };
-
-            //    HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
-            //    {
-            //        MemberPriviledgeList = listMemPrivForView
-            //    };
-
-
-            //    return View(hvp);
-            //}
-
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
-
-                List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
-
-                foreach (MemberPriviledge memP in listMemPriv)
-                {
-                    MemberPriviledgeItem memPrivItem = new MemberPriviledgeItem();
-                    memPrivItem.Id = memP.Id.ToString();
-                    memPrivItem.ShowName = memP.ShowName;
-                    memPrivItem.PriviledgeTypeId = memP.PriviledgeTypeId.ToString();
-                    memPrivItem.PriviledgeTypeName = getPriviledgeTypeDetail(memP.PriviledgeTypeId).Name;
-                    memPrivItem.Value = memP.Value.ToString();
-                    memPrivItem.StartDate = memP.StartDate.ToString();
-                    memPrivItem.ExpireDate = memP.ExpireDate.ToString();
-
-                    if (memP.Status.Equals("true"))
-                    {
-                        memPrivItem.Status = "Active";
-                    }
-                    else
-                    {
-                        memPrivItem.Status = "Inactive";
-                    }
-
-                    listMemPrivForView.Add(memPrivItem);
-                };
-
-                HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
-                {
-                    MemberPriviledgeList = listMemPrivForView,
-                    strLoginName = userName
-                };
-
-
-                return View(hvp);
-
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult MemberDetail(string accountId, string cmd, string MemberId)
-        {
-            //Check lout out button
-            //No log out button in this page
-            //if (cmd != null)
-            //{
-            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-            //    {
-            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-            //    }
-            //}
-
-            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            //if (noms == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    Member myMem = getMember(Int32.Parse(MemberId));
-            //    string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
-            //    string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
-
-            //    List<MemberItem> listMemForView = new List<MemberItem>();
-
-            //    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
-            //    if (myMem.ActiveStatus.Equals("true"))
-            //    {
-            //        memItem.Status = "Active";
-            //    }
-            //    else
-            //    {
-            //        memItem.Status = "Inactive";
-            //    }
-
-            //    if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
-            //    {
-            //        string[] splitBirth = myMem.Birth.ToString().Split(' ');
-            //        string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
-            //        memItem.Birth = splitBirthInEach[1]+"/"+ splitBirthInEach[0]+"/"+ splitBirthInEach[2];
-            //    }
-                
-
-            //    listMemForView.Add(memItem);
-
-            //    HeaderValueVIP hv = new HeaderValueVIP()
-            //    {
-            //        MemberList = listMemForView
-            //    };
-
-
-            //    return View(hv);
-            //}
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                Member myMem = getMember(Int32.Parse(MemberId));
-                string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
-                string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
-
-                List<MemberItem> listMemForView = new List<MemberItem>();
-
-                MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
-                if (myMem.ActiveStatus.Equals("true"))
-                {
-                    memItem.Status = "Active";
-                }
-                else
-                {
-                    memItem.Status = "Inactive";
-                }
-
-                if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
-                {
-                    string[] splitBirth = myMem.Birth.ToString().Split(' ');
-                    string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
-                    memItem.Birth = splitBirthInEach[1] + "/" + splitBirthInEach[0] + "/" + splitBirthInEach[2];
-                }
-
-
-                listMemForView.Add(memItem);
-
-                HeaderValueVIP hv = new HeaderValueVIP()
-                {
-                    MemberList = listMemForView,
-                    strLoginName = userName
-                };
-
-
-                return View(hv);
-
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-
-        }
-
-        [HttpPost]
-        public string SaveMember(ForInsertMember myData)
-        {
-            if(myData.pageMode.Equals("New"))
-            {
-                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDayVal) || string.IsNullOrEmpty(myData.expireDayVal) || string.IsNullOrEmpty(myData.statusVal))
-                {
-                    return "NoReq";
-                }
-                else
-                {
-                    using (var db = new spasystemdbEntities())
-                    {
-                        Member newMem = new Member()
-                        {
-                            MemberNo = myData.memberNoVal,
-                            Title = myData.titleVal,
-                            FirstName = myData.firstNameVal,
-                            FamilyName = myData.familyNameVal,
-                            AddressInTH = myData.addressVal,
-                            City = myData.cityVal,
-                            TelephoneNo = myData.telephoneVal,
-                            WhatsAppId = myData.whatsappVal,
-                            LineId = myData.lineVal,
-                            CreatedBy = "Admin",
-                            CreateDateTime = DateTime.Now
-                        };
-                        if (myData.statusVal.Equals("Active"))
-                        {
-                            newMem.ActiveStatus = "true";
-                        }
-                        else
-                        {
-                            newMem.ActiveStatus = "false";
-                        }
-
-                        if(!string.IsNullOrEmpty(myData.birthDayVal))
-                        {
-                            string fullBirthday = myData.birthMonthVal + "/" + myData.birthDayVal + "/" + myData.birthYearVal;
-                            newMem.Birth = DateTime.Parse(fullBirthday);
-                        }
-                        
-
-                        db.Members.Add(newMem);
-                        db.SaveChanges();
-
-                        string fullVipStart = myData.startMonthVal + "/" + myData.startDayVal + "/" + myData.startYearVal;
-                        string fullVipExpire = myData.expireMonthVal + "/" + myData.expireDayVal + "/" + myData.expireYearVal;
-
-                        MemberDetail newMemDetail = new MemberDetail()
-                        {
-                            MemberId = getLastestMember().Id,
-                            MemberGroupId = Int32.Parse(myData.vipTypeVal),
-                            StartDate = DateTime.Parse(fullVipStart),
-                            ExpireDate = DateTime.Parse(fullVipExpire),
-                            Status = "true",
-                            CreateDateTime = DateTime.Now,
-                            CreatedBy = "Admin"
-                        };
-                        db.MemberDetails.Add(newMemDetail);
-                        db.SaveChanges();
-
-                        return "Success";
-                    }
-                }
-                
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDayVal) || string.IsNullOrEmpty(myData.expireDayVal) || string.IsNullOrEmpty(myData.statusVal))
-                {
-                    return "NoReq";
-                }
-                else
-                {
-                    int usedMemId = Int32.Parse(myData.Id);
-                    using (var db = new spasystemdbEntities())
-                    {
-                        Member curMem = db.Members
-                                .Where(b => b.Id == usedMemId)
-                                .FirstOrDefault();
-
-                        //Member curMem = getMember(Int32.Parse(myData.Id));
-                        curMem.MemberNo = myData.memberNoVal;
-                        curMem.Title = myData.titleVal;
-                        curMem.FirstName = myData.firstNameVal;
-                        curMem.FamilyName = myData.familyNameVal;
-
-                        if (!string.IsNullOrEmpty(myData.birthDayVal))
-                        {
-                            string fullBirthday = myData.birthMonthVal + "/" + myData.birthDayVal + "/" + myData.birthYearVal;
-                            curMem.Birth = DateTime.Parse(fullBirthday);
-                        }
-                        
-                        curMem.AddressInTH = myData.addressVal;
-                        curMem.City = myData.cityVal;
-                        curMem.TelephoneNo = myData.telephoneVal;
-                        curMem.WhatsAppId = myData.whatsappVal;
-                        curMem.LineId = myData.lineVal;
-                        curMem.UpdatedBy = "Admin";
-                        curMem.UpdateDateTime = DateTime.Now;
-
-                        if (myData.statusVal.Equals("Active"))
-                        {
-                            curMem.ActiveStatus = "true";
-                        }
-                        else
-                        {
-                            curMem.ActiveStatus = "false";
-                        }
-
-                        string fullVipStart = myData.startMonthVal + "/" + myData.startDayVal + "/" + myData.startYearVal;
-                        string fullVipExpire = myData.expireMonthVal + "/" + myData.expireDayVal + "/" + myData.expireYearVal;
-
-                        //db.SaveChanges();
-                        MemberDetail curMemDetail = db.MemberDetails
-                                            .Where(b => b.MemberId == usedMemId)
-                                            .FirstOrDefault();
-                        //MemberDetail curMemDetail = getMemberDetail(Int32.Parse(myData.Id));
-                        curMemDetail.MemberGroupId = Int32.Parse(myData.vipTypeVal);
-                        curMemDetail.StartDate = DateTime.Parse(fullVipStart);
-                        curMemDetail.ExpireDate = DateTime.Parse(fullVipExpire);
-                        //curMemDetail.Status = "true";
-                        curMemDetail.UpdateDateTime = DateTime.Now;
-                        curMemDetail.UpdatedBy = "Admin";
-
-                        //db.MemberDetails.Add(newMemDetail);
-                        db.SaveChanges();
-
-                        return "Success";
-                    }
-                }
-                
-            }
-            
-        }
-        [HttpPost]
-        public string DeleteMember(string id)
-        {
-            
-            
-                if (string.IsNullOrEmpty(id))
-                {
-                    return "IdNull";
-                }
-                else
-                {
-                    int usedMemId = Int32.Parse(id);
-                    using (var db = new spasystemdbEntities())
-                    {
-                        MemberDetail curMemDetail = db.MemberDetails
-                                                .Where(b => b.MemberId == usedMemId)
-                                                .FirstOrDefault();
-
-                        db.MemberDetails.Remove(curMemDetail);
-                        db.SaveChanges();
-
-                        // Decrease the auto-increment seed
-                        //var tableName = db.Model.GetEntityTypes().First().Relational().TableName;
-                        //var command = $"DBCC CHECKIDENT ('Member', RESEED, {id - 1});";
-                        //db.Database.ExecuteSqlRaw(command);
-
-                    Member curMem = db.Members
-                                    .Where(b => b.Id == usedMemId)
-                                    .FirstOrDefault();
-
-                        db.Members.Remove(curMem);
-                        db.SaveChanges();
-
-                            return "Success";
-                    }
-                }
-
-            
-        }
-
-        [HttpPost]
-        public ActionResult UpdateMemberTable(string selectedOption)
-        {
-            //Console.WriteLine("print from c#"+selectedOption);
-            List<Member> listMem = new List<Member>();
-
-            if(selectedOption.Equals("1"))
-            {
-                using (var context = new spasystemdbEntities())
-                {
-
-                    listMem = context.Members
-                                    .OrderBy(b => b.Id)
-                                    .ToList();
-                }
-            }
-            else if(selectedOption.Equals("2"))
-            {
-                using (var context = new spasystemdbEntities())
-                {
-
-                    listMem = context.Members
-                                    .Where(b => b.ActiveStatus == "true")
-                                    .OrderBy(b => b.Id)
-                                    .ToList();
-                }
-            }
-            else
-            {
-                using (var context = new spasystemdbEntities())
-                {
-
-                    listMem = context.Members
-                                    .Where(b => b.ActiveStatus == "false")
-                                    .OrderBy(b => b.Id)
-                                    .ToList();
-                }
-            }
-
-            List<MemberItem> listMemForView = new List<MemberItem>();
-
-            foreach (Member mem in listMem)
-            {
-                
-                string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
-                string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
-
-                MemberItem memItem = new MemberItem() { Id = mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
-                if (mem.ActiveStatus.Equals("true"))
-                {
-                    memItem.Status = "Active";
-                }
-                else
-                {
-                    memItem.Status = "Inactive";
-                }
-
-                if(!string.IsNullOrEmpty(mem.Birth.ToString()))
-                {
-                    string[] splitBirth = mem.Birth.ToString().Split(' ');
-                    memItem.Birth = splitBirth[0];
-                }
-
-                listMemForView.Add(memItem);
-            };
-
-            HeaderValueVIP hv = new HeaderValueVIP()
-            {
-                MemberList = listMemForView
-            };
-
-
-            return View("Member",hv);
-        }
-        public ActionResult EditMemberDetail(string accountId, string cmd, string MemberId, string Mode)
-        {
-            //Check lout out button
-            //No log out button in this page
-            //if (cmd != null)
-            //{
-            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-            //    {
-            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-            //    }
-            //}
-
-            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            //if (noms == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    if(Mode.Equals("Edit"))
-            //    {
-            //        Member myMem = getMember(Int32.Parse(MemberId));
-                    
-            //        string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
-            //        string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
-
-                    
-            //        string[] splitVipStartPart = splitStart[0].Split('/');
-            //        string[] splitVipExpirePart = splitExpire[0].Split('/');
-
-            //        List<MemberItem> listMemForView = new List<MemberItem>();
-
-            //        MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(),VipStart = splitStart[0], VipExpire = splitExpire[0],VipStartDay=splitVipStartPart[1],VipStartMonth=splitVipStartPart[0],VipStartYear=splitVipStartPart[2],VipExpireDay=splitVipExpirePart[1],VipExpireMonth=splitVipExpirePart[0],VipExpireYear=splitVipExpirePart[2] };
-            //        if (myMem.ActiveStatus.Equals("true"))
-            //        {
-            //            memItem.Status = "Active";
-            //        }
-            //        else
-            //        {
-            //            memItem.Status = "Inactive";
-            //        }
-
-            //        if(!string.IsNullOrEmpty(myMem.Birth.ToString()))
-            //        {
-            //            string[] splitBirth = myMem.Birth.ToString().Split(' ');
-            //            string[] splitBirthPart = splitBirth[0].Split('/');
-            //            memItem.Birth = splitBirth[0];
-            //            memItem.BirthDay = splitBirthPart[1];
-            //            memItem.BirthMonth = splitBirthPart[0];
-            //            memItem.BirthYear = splitBirthPart[2];
-            //        }
-
-            //        memItem.MemberGroupForSelect = getAllMemberGroup();
-            //        memItem.MemberGroupId = getMemberDetail(myMem.Id).MemberGroupId.ToString();
-            //        memItem.PageMode = Mode;
-
-            //        listMemForView.Add(memItem);
-
-            //        HeaderValueVIP hv = new HeaderValueVIP()
-            //        {
-            //            MemberList = listMemForView
-            //        };
-
-
-            //        return View(hv);
-            //    }
-            //    else
-            //    {
-            //        List<MemberItem> listMemForView = new List<MemberItem>();
-
-            //        MemberItem memItem = new MemberItem();
-            //        memItem.MemberGroupForSelect = getAllMemberGroup();
-            //        memItem.PageMode = Mode;
-
-            //        listMemForView.Add(memItem);
-
-            //        HeaderValueVIP hv = new HeaderValueVIP()
-            //        {
-            //            MemberList = listMemForView
-            //        };
-
-
-            //        return View(hv);
-            //    }
-            //}
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (Mode.Equals("Edit"))
-                {
-                    Member myMem = getMember(Int32.Parse(MemberId));
-
-                    string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
-                    string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
-
-
-                    string[] splitVipStartPart = splitStart[0].Split('/');
-                    string[] splitVipExpirePart = splitExpire[0].Split('/');
-
-                    List<MemberItem> listMemForView = new List<MemberItem>();
-
-                    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0], VipStartDay = splitVipStartPart[1], VipStartMonth = splitVipStartPart[0], VipStartYear = splitVipStartPart[2], VipExpireDay = splitVipExpirePart[1], VipExpireMonth = splitVipExpirePart[0], VipExpireYear = splitVipExpirePart[2] };
-                    if (myMem.ActiveStatus.Equals("true"))
-                    {
-                        memItem.Status = "Active";
-                    }
-                    else
-                    {
-                        memItem.Status = "Inactive";
-                    }
-
-                    if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
-                    {
-                        string[] splitBirth = myMem.Birth.ToString().Split(' ');
-                        string[] splitBirthPart = splitBirth[0].Split('/');
-                        memItem.Birth = splitBirth[0];
-                        memItem.BirthDay = splitBirthPart[1];
-                        memItem.BirthMonth = splitBirthPart[0];
-                        memItem.BirthYear = splitBirthPart[2];
-                    }
-
-                    memItem.MemberGroupForSelect = getAllMemberGroup();
-                    memItem.MemberGroupId = getMemberDetail(myMem.Id).MemberGroupId.ToString();
-                    memItem.PageMode = Mode;
-
-                    listMemForView.Add(memItem);
-
-                    HeaderValueVIP hv = new HeaderValueVIP()
-                    {
-                        MemberList = listMemForView,
-                        strLoginName = userName
-                    };
-
-
-                    return View(hv);
-                }
-                else
-                {
-                    List<MemberItem> listMemForView = new List<MemberItem>();
-
-                    MemberItem memItem = new MemberItem();
-                    memItem.MemberGroupForSelect = getAllMemberGroup();
-                    memItem.PageMode = Mode;
-
-                    listMemForView.Add(memItem);
-
-                    HeaderValueVIP hv = new HeaderValueVIP()
-                    {
-                        MemberList = listMemForView,
-                        strLoginName = userName
-                    };
-
-
-                    return View(hv);
-                }
-
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        //public ActionResult AccountChosen(string accountId)
-        //{
-        //    // if credentials are correct.
-        //    return View();
-        //}
         public ActionResult UrbanFour(string accountId, string monthNo, string yearNo, string cmd)
         {
             int branchIds = 5;
@@ -5487,6 +4513,2012 @@ namespace WebApplication13.Controllers
             }
         }
 
+        public ActionResult ThaiGardenOne(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            int branchIds = 12;
+
+            //Check if Log out button is clicked
+            if (cmd != null)
+            {
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
+
+                //Remove cookie when log out
+                RemoveCookie();
+                return RedirectToAction("Index");
+            }
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                if (accountId != null)
+                {
+                    string tSales = " ";
+                    string tPaxes = " ";
+                    string tAverage = " ";
+                    string tStaff = " ";
+                    string topAname = " ";
+                    string topBname = " ";
+                    string tComs = " ";
+                    string tOtherS = " ";
+                    string tInitMoney = " ";
+                    string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
+
+                    SqlCommand command;
+                    SqlDataReader dataReader;
+                    String sql = " ";
+                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+                    connetionString = ConfigurationManager.AppSettings["cString"];
+                    cnn = new SqlConnection(connetionString);
+                    cnn.Open();
+                    command = new SqlCommand(sql, cnn);
+
+                    dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                        topAname = dataReader.GetValue(6).ToString();
+                        topBname = dataReader.GetValue(7).ToString();
+                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                    }
+
+                    dataReader.Close();
+                    command.Dispose();
+                    cnn.Close();
+
+                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+                    string tSales_trim = tSales.Replace(",", "");
+                    string tOil_trim = tOil.Replace(",", "");
+                    string tOtherS_trim = tOtherS.Replace(",", "");
+                    string tComs_trim = tComs.Replace(",", "");
+
+                    if (string.IsNullOrEmpty(tSales_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tSales = Int32.Parse(tSales_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tOtherS_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+                    }
+
+
+                    if (string.IsNullOrEmpty(tOil_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOil = Int32.Parse(tOil_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tComs_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tComs = Int32.Parse(tComs_trim);
+
+                    }
+
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
+                        strPax = tPaxes,
+                        strStaff = tStaff,
+                        strCommission = tComs,
+                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+                        strPieTopAName = topAname,
+                        strPieTopBName = topBname,
+                        //arrPieTopAVal = getTopAForAday(branchIds),
+                        //arrPieTopBVal = getTopBForAday(branchIds),
+                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAverage,
+                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+                        strInitMoney = tInitMoney,
+                        strOilIncome = tOil,
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
+                    };
+
+
+                    return View(hv);
+                }
+                else if (monthNo != null)
+                {
+                    int selectedMonth = Int32.Parse(monthNo);
+                    int selectedYear = Int32.Parse(yearNo);
+                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+                    List<Account> listAccountInMonth = new List<Account>();
+
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listAccountInMonth = context.Accounts
+                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    Account ac = new Account();
+                    int tSales = 0;
+                    int tPaxNum = 0;
+                    int tComs = 0;
+                    int tStaff = 0;
+                    int tOtherS = 0;
+                    int tInitMoney = 0;
+                    int tOil = 0;
+                    int tBalanceNet = 0;
+
+                    for (int p = 0; p < listAccountInMonth.Count(); p++)
+                    {
+                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
+                        tPaxNum += getPaxNum(branchIds, ac.Id);
+                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+                        tStaff += (int)ac.StaffAmount;
+                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+                        tInitMoney += (int)ac.StartMoney;
+                        tOil += tStaff * getOilPrice(branchIds);
+                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                    }
+
+                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+                    float tSalesInFloat = (float)tSales;
+                    float tPaxNumInFloat = (float)tPaxNum;
+                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //System.Diagnostics.Debug.WriteLine("f");
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = String.Format("{0:n0}", tSales),
+                        strPax = String.Format("{0:n0}", tPaxNum),
+                        strStaff = String.Format("{0:n0}", tStaff),
+                        strCommission = String.Format("{0:n0}", tComs),
+                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAvg.ToString(),
+                        strOtherSale = String.Format("{0:n0}", tOtherS),
+                        strInitMoney = String.Format("{0:n0}", tInitMoney),
+                        strOilIncome = String.Format("{0:n0}", tOil),
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
+                    };
+
+                    return View(hv);
+                }
+                else if (yearNo != null)
+                {
+                    int selectedYear = Int32.Parse(yearNo);
+                    DateTime dts = new DateTime(selectedYear, 1, 1);
+                    List<Account> listAccountInYear = new List<Account>();
+
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listAccountInYear = context.Accounts
+                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    Account ac = new Account();
+                    int tSales = 0;
+                    int tPaxNum = 0;
+                    int tComs = 0;
+                    int tStaff = 0;
+                    int tOtherS = 0;
+                    int tInitMoney = 0;
+                    int tOil = 0;
+                    int tBalanceNet = 0;
+
+                    for (int p = 0; p < listAccountInYear.Count(); p++)
+                    {
+                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+                        tSales += getTotalSaleInYear(branchIds, ac.Id);
+                        tPaxNum += getPaxNum(branchIds, ac.Id);
+                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
+                        tStaff += (int)ac.StaffAmount;
+                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+                        tInitMoney += (int)ac.StartMoney;
+                        tOil += tStaff * getOilPrice(branchIds);
+                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                    }
+
+                    float tSalesInFloat = (float)tSales;
+                    float tPaxNumInFloat = (float)tPaxNum;
+                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = String.Format("{0:n0}", tSales),
+                        strPax = String.Format("{0:n0}", tPaxNum),
+                        strStaff = String.Format("{0:n0}", tStaff),
+                        strCommission = String.Format("{0:n0}", tComs),
+                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAvg.ToString(),
+                        strOtherSale = String.Format("{0:n0}", tOtherS),
+                        strInitMoney = String.Format("{0:n0}", tInitMoney),
+                        strOilIncome = String.Format("{0:n0}", tOil),
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
+                    };
+
+                    return View(hv);
+                }
+                else
+                {
+
+                    Account ac = getAccountValue(branchIds);
+                    string tSales = " ";
+                    string tPaxes = " ";
+                    string tAverage = " ";
+                    string tStaff = " ";
+                    string topAname = " ";
+                    string topBname = " ";
+                    string tComs = " ";
+                    string tOtherS = " ";
+                    string tInitMoney = " ";
+                    string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    SqlCommand command;
+                    SqlDataReader dataReader;
+                    String sql = " ";
+                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+                    connetionString = ConfigurationManager.AppSettings["cString"];
+                    cnn = new SqlConnection(connetionString);
+                    cnn.Open();
+                    command = new SqlCommand(sql, cnn);
+
+                    dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                        topAname = dataReader.GetValue(6).ToString();
+                        topBname = dataReader.GetValue(7).ToString();
+                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                    }
+
+                    dataReader.Close();
+                    command.Dispose();
+                    cnn.Close();
+
+                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+                    string tSales_trim = tSales.Replace(",", "");
+                    string tOil_trim = tOil.Replace(",", "");
+                    string tOtherS_trim = tOtherS.Replace(",", "");
+                    string tComs_trim = tComs.Replace(",", "");
+
+                    if (string.IsNullOrEmpty(tSales_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tSales = Int32.Parse(tSales_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tOtherS_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+                    }
+
+
+                    if (string.IsNullOrEmpty(tOil_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOil = Int32.Parse(tOil_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tComs_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tComs = Int32.Parse(tComs_trim);
+
+                    }
+
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = tSales,
+                        strPax = tPaxes,
+                        strStaff = tStaff,
+                        strCommission = tComs,
+                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+                        strPieTopAName = topAname,
+                        strPieTopBName = topBname,
+                        //arrPieTopAVal = getTopAForAday(branchIds),
+                        //arrPieTopBVal = getTopBForAday(branchIds),
+                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAverage,
+                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+                        strInitMoney = tInitMoney,
+                        strOilIncome = tOil,
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
+                    };
+
+
+                    return View(hv);
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        public ActionResult ThaiBeautyOne(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            int branchIds = 13;
+
+            //Check if Log out button is clicked
+            if (cmd != null)
+            {
+                //Old logic for Log out by clear all host memory cache
+                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+                //{
+                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+                //}
+
+                //Remove cookie when log out
+                RemoveCookie();
+                return RedirectToAction("Index");
+            }
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                if (accountId != null)
+                {
+                    string tSales = " ";
+                    string tPaxes = " ";
+                    string tAverage = " ";
+                    string tStaff = " ";
+                    string topAname = " ";
+                    string topBname = " ";
+                    string tComs = " ";
+                    string tOtherS = " ";
+                    string tInitMoney = " ";
+                    string tOil = " ";
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
+                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+                    /////////////////////////
+
+                    SqlCommand command;
+                    SqlDataReader dataReader;
+                    String sql = " ";
+                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+                    connetionString = ConfigurationManager.AppSettings["cString"];
+                    cnn = new SqlConnection(connetionString);
+                    cnn.Open();
+                    command = new SqlCommand(sql, cnn);
+
+                    dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                        topAname = dataReader.GetValue(6).ToString();
+                        topBname = dataReader.GetValue(7).ToString();
+                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                    }
+
+                    dataReader.Close();
+                    command.Dispose();
+                    cnn.Close();
+
+                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+                    string tSales_trim = tSales.Replace(",", "");
+                    string tOil_trim = tOil.Replace(",", "");
+                    string tOtherS_trim = tOtherS.Replace(",", "");
+                    string tComs_trim = tComs.Replace(",", "");
+
+                    if (string.IsNullOrEmpty(tSales_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tSales = Int32.Parse(tSales_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tOtherS_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+                    }
+
+
+                    if (string.IsNullOrEmpty(tOil_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOil = Int32.Parse(tOil_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tComs_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tComs = Int32.Parse(tComs_trim);
+
+                    }
+
+                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
+                        strPax = tPaxes,
+                        strStaff = tStaff,
+                        strCommission = tComs,
+                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+                        strPieTopAName = topAname,
+                        strPieTopBName = topBname,
+                        //arrPieTopAVal = getTopAForAday(branchIds),
+                        //arrPieTopBVal = getTopBForAday(branchIds),
+                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAverage,
+                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+                        strInitMoney = tInitMoney,
+                        strOilIncome = tOil,
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
+                    };
+
+
+                    return View(hv);
+                }
+                else if (monthNo != null)
+                {
+                    int selectedMonth = Int32.Parse(monthNo);
+                    int selectedYear = Int32.Parse(yearNo);
+                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+                    List<Account> listAccountInMonth = new List<Account>();
+
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listAccountInMonth = context.Accounts
+                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    Account ac = new Account();
+                    int tSales = 0;
+                    int tPaxNum = 0;
+                    int tComs = 0;
+                    int tStaff = 0;
+                    int tOtherS = 0;
+                    int tInitMoney = 0;
+                    int tOil = 0;
+                    int tBalanceNet = 0;
+
+                    for (int p = 0; p < listAccountInMonth.Count(); p++)
+                    {
+                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
+                        tPaxNum += getPaxNum(branchIds, ac.Id);
+                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+                        tStaff += (int)ac.StaffAmount;
+                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+                        tInitMoney += (int)ac.StartMoney;
+                        tOil += tStaff * getOilPrice(branchIds);
+                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                    }
+
+                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+                    float tSalesInFloat = (float)tSales;
+                    float tPaxNumInFloat = (float)tPaxNum;
+                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //System.Diagnostics.Debug.WriteLine("f");
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = String.Format("{0:n0}", tSales),
+                        strPax = String.Format("{0:n0}", tPaxNum),
+                        strStaff = String.Format("{0:n0}", tStaff),
+                        strCommission = String.Format("{0:n0}", tComs),
+                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAvg.ToString(),
+                        strOtherSale = String.Format("{0:n0}", tOtherS),
+                        strInitMoney = String.Format("{0:n0}", tInitMoney),
+                        strOilIncome = String.Format("{0:n0}", tOil),
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
+                    };
+
+                    return View(hv);
+                }
+                else if (yearNo != null)
+                {
+                    int selectedYear = Int32.Parse(yearNo);
+                    DateTime dts = new DateTime(selectedYear, 1, 1);
+                    List<Account> listAccountInYear = new List<Account>();
+
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listAccountInYear = context.Accounts
+                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    Account ac = new Account();
+                    int tSales = 0;
+                    int tPaxNum = 0;
+                    int tComs = 0;
+                    int tStaff = 0;
+                    int tOtherS = 0;
+                    int tInitMoney = 0;
+                    int tOil = 0;
+                    int tBalanceNet = 0;
+
+                    for (int p = 0; p < listAccountInYear.Count(); p++)
+                    {
+                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+                        tSales += getTotalSaleInYear(branchIds, ac.Id);
+                        tPaxNum += getPaxNum(branchIds, ac.Id);
+                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
+                        tStaff += (int)ac.StaffAmount;
+                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+                        tInitMoney += (int)ac.StartMoney;
+                        tOil += tStaff * getOilPrice(branchIds);
+                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                    }
+
+                    float tSalesInFloat = (float)tSales;
+                    float tPaxNumInFloat = (float)tPaxNum;
+                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = String.Format("{0:n0}", tSales),
+                        strPax = String.Format("{0:n0}", tPaxNum),
+                        strStaff = String.Format("{0:n0}", tStaff),
+                        strCommission = String.Format("{0:n0}", tComs),
+                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAvg.ToString(),
+                        strOtherSale = String.Format("{0:n0}", tOtherS),
+                        strInitMoney = String.Format("{0:n0}", tInitMoney),
+                        strOilIncome = String.Format("{0:n0}", tOil),
+                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                        strLoginName = userName
+                    };
+
+                    return View(hv);
+                }
+                else
+                {
+
+                    Account ac = getAccountValue(branchIds);
+                    string tSales = " ";
+                    string tPaxes = " ";
+                    string tAverage = " ";
+                    string tStaff = " ";
+                    string topAname = " ";
+                    string topBname = " ";
+                    string tComs = " ";
+                    string tOtherS = " ";
+                    string tInitMoney = " ";
+                    string tOil = " ";
+                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    // Updated 11 October 2022
+                    using (var context = new spasystemdbEntities())
+                    {
+
+                        listDiscount = context.DiscountRecords
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .OrderBy(b => b.Id)
+                                        .ToList();
+                    }
+
+                    for (int m = 0; m < listDiscount.Count(); m++)
+                    {
+                        sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    }
+
+                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
+                    //string tComs = getTotalCommission(branchIds, ac.Id);
+                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+                    //float tSalesInFloat = (float)tSalesInInteger;
+                    //float tPaxNumInFloat = (float)tPaxNum;
+                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+                    SqlCommand command;
+                    SqlDataReader dataReader;
+                    String sql = " ";
+                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+                    connetionString = ConfigurationManager.AppSettings["cString"];
+                    cnn = new SqlConnection(connetionString);
+                    cnn.Open();
+                    command = new SqlCommand(sql, cnn);
+
+                    dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                        topAname = dataReader.GetValue(6).ToString();
+                        topBname = dataReader.GetValue(7).ToString();
+                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                    }
+
+                    dataReader.Close();
+                    command.Dispose();
+                    cnn.Close();
+
+                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+                    string tSales_trim = tSales.Replace(",", "");
+                    string tOil_trim = tOil.Replace(",", "");
+                    string tOtherS_trim = tOtherS.Replace(",", "");
+                    string tComs_trim = tComs.Replace(",", "");
+
+                    if (string.IsNullOrEmpty(tSales_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tSales = Int32.Parse(tSales_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tOtherS_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+                    }
+
+
+                    if (string.IsNullOrEmpty(tOil_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tOil = Int32.Parse(tOil_trim);
+
+                    }
+
+                    if (string.IsNullOrEmpty(tComs_trim))
+                    {
+
+                    }
+                    else
+                    {
+                        convert_tComs = Int32.Parse(tComs_trim);
+
+                    }
+
+                    string strDis = String.Format("{0:n0}", sumDiscount);
+                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+                    String strCash = String.Format("{0:n0}", totalCash);
+                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+                    String strCredit = String.Format("{0:n0}", totalCredit);
+
+                    HeaderValue hv = new HeaderValue()
+                    {
+                        strSales = tSales,
+                        strPax = tPaxes,
+                        strStaff = tStaff,
+                        strCommission = tComs,
+                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+                        strPieTopAName = topAname,
+                        strPieTopBName = topBname,
+                        //arrPieTopAVal = getTopAForAday(branchIds),
+                        //arrPieTopBVal = getTopBForAday(branchIds),
+                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+                        listAllAccounts = getAllAccountInSelectionList(branchIds),
+                        listAllMonths = getAllMonthList(),
+                        listAllYears = getAllYearList(),
+                        strAverage = tAverage,
+                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+                        strInitMoney = tInitMoney,
+                        strOilIncome = tOil,
+                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+                        strLoginName = userName,
+                        strVoucher = strDis,
+                        strCash = strCash,
+                        strCredit = strCredit
+                    };
+
+
+                    return View(hv);
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        public ActionResult Member(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
+
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    List<Member> listMem = new List<Member>();
+
+            //    using (var context = new spasystemdbEntities())
+            //    {
+
+            //        listMem = context.Members
+            //                        .OrderBy(b => b.Id)
+            //                        .ToList();
+            //    }
+
+            //    List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //    foreach(Member mem in listMem)
+            //    {
+                    
+            //        string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
+            //        string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
+
+            //        MemberItem memItem = new MemberItem() { Id=mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire= splitExpire[0] };
+            //        if(mem.ActiveStatus.Equals("true"))
+            //        {
+            //            memItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memItem.Status = "Inactive";
+            //        }
+
+            //        if(!string.IsNullOrEmpty(mem.Birth.ToString()))
+            //        {
+            //            string[] splitBirth = mem.Birth.ToString().Split(' ');
+            //            memItem.Birth = splitBirth[0];
+            //        }
+                    
+            //        listMemForView.Add(memItem);
+            //    };
+
+            //    HeaderValueVIP hv = new HeaderValueVIP()
+            //    {
+            //        MemberList = listMemForView
+            //    };
+
+
+            //    return View(hv);
+            //}
+
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                List<Member> listMem = new List<Member>();
+
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+
+                List<MemberItem> listMemForView = new List<MemberItem>();
+
+                foreach (Member mem in listMem)
+                {
+
+                    string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
+                    string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
+
+                    MemberItem memItem = new MemberItem() { Id = mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+                    if (mem.ActiveStatus.Equals("true"))
+                    {
+                        memItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memItem.Status = "Inactive";
+                    }
+
+                    if (!string.IsNullOrEmpty(mem.Birth.ToString()))
+                    {
+                        string[] splitBirth = mem.Birth.ToString().Split(' ');
+                        memItem.Birth = splitBirth[0];
+                    }
+
+                    listMemForView.Add(memItem);
+                };
+
+                HeaderValueVIP hv = new HeaderValueVIP()
+                {
+                    MemberList = listMemForView,
+                    strLoginName = userName
+                };
+
+
+                return View(hv);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public ActionResult ManageMemberType(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
+
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    List<MemberGroup> listMemG = new List<MemberGroup>();
+
+            //    using (var context = new spasystemdbEntities())
+            //    {
+
+            //        listMemG = context.MemberGroups
+            //                        .OrderBy(b => b.Id)
+            //                        .ToList();
+            //    }
+
+            //    List<MemberGroupItem> listMemGForView = new List<MemberGroupItem>();
+
+            //    foreach (MemberGroup memG in listMemG)
+            //    {
+            //        MemberGroupItem memGItem = new MemberGroupItem();
+            //        memGItem.MemberGroupId = memG.Id.ToString();
+            //        memGItem.MemberGroupName = memG.Name;
+            //        memGItem.MemberGroupShowName = memG.ShowName;
+            //        if (memG.Status.Equals("true"))
+            //        {
+            //            memGItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memGItem.Status = "Inactive";
+            //        }
+
+            //        if(getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
+            //        {
+            //            memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+            //            memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+            //            memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+            //        }
+            //        //else
+            //        //{
+            //        //    memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+            //        //    memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+            //        //    memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+            //        //}
+
+            //        listMemGForView.Add(memGItem);
+            //    };
+
+            //    HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
+            //    {
+            //        MemberGroupList = listMemGForView
+            //    };
+
+
+            //    return View(hvg);
+            //}
+
+            //Check user token
+            //Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                List<MemberGroup> listMemG = new List<MemberGroup>();
+
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMemG = context.MemberGroups
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+
+                List<MemberGroupItem> listMemGForView = new List<MemberGroupItem>();
+
+                foreach (MemberGroup memG in listMemG)
+                {
+                    MemberGroupItem memGItem = new MemberGroupItem();
+                    memGItem.MemberGroupId = memG.Id.ToString();
+                    memGItem.MemberGroupName = memG.Name;
+                    memGItem.MemberGroupShowName = memG.ShowName;
+                    if (memG.Status.Equals("true"))
+                    {
+                        memGItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memGItem.Status = "Inactive";
+                    }
+
+                    if (getMemberGroupPriviledge(memG.Id) != null && getMemberGroupPriviledge(memG.Id).Any())
+                    {
+                        memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+                        memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+                        memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+                    }
+                    //else
+                    //{
+                    //    memGItem.MemberGroupPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].Id.ToString();
+                    //    memGItem.MemberPriviledgeId = getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId.ToString();
+                    //    memGItem.MemberPriviledgeName = getMemberPriviledgeDetail(getMemberGroupPriviledge(memG.Id)[0].MemberPriviledgeId).ShowName;
+                    //}
+
+                    listMemGForView.Add(memGItem);
+                };
+
+                HeaderValueVIPGroup hvg = new HeaderValueVIPGroup()
+                {
+                    MemberGroupList = listMemGForView,
+                    strLoginName = userName
+                };
+
+
+                return View(hvg);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public ActionResult ManagePriviledge(string accountId, string monthNo, string yearNo, string cmd)
+        {
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
+
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
+
+            //    List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
+
+            //    foreach (MemberPriviledge memP in listMemPriv)
+            //    {
+            //        MemberPriviledgeItem memPrivItem = new MemberPriviledgeItem();
+            //        memPrivItem.Id = memP.Id.ToString();
+            //        memPrivItem.ShowName = memP.ShowName;
+            //        memPrivItem.PriviledgeTypeId = memP.PriviledgeTypeId.ToString();
+            //        memPrivItem.PriviledgeTypeName = getPriviledgeTypeDetail(memP.PriviledgeTypeId).Name;
+            //        memPrivItem.Value = memP.Value.ToString();
+            //        memPrivItem.StartDate = memP.StartDate.ToString();
+            //        memPrivItem.ExpireDate = memP.ExpireDate.ToString();
+
+            //        if (memP.Status.Equals("true"))
+            //        {
+            //            memPrivItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memPrivItem.Status = "Inactive";
+            //        }
+
+            //        listMemPrivForView.Add(memPrivItem);
+            //    };
+
+            //    HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
+            //    {
+            //        MemberPriviledgeList = listMemPrivForView
+            //    };
+
+
+            //    return View(hvp);
+            //}
+
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                List<MemberPriviledge> listMemPriv = getAllMemberPriviledge();
+
+                List<MemberPriviledgeItem> listMemPrivForView = new List<MemberPriviledgeItem>();
+
+                foreach (MemberPriviledge memP in listMemPriv)
+                {
+                    MemberPriviledgeItem memPrivItem = new MemberPriviledgeItem();
+                    memPrivItem.Id = memP.Id.ToString();
+                    memPrivItem.ShowName = memP.ShowName;
+                    memPrivItem.PriviledgeTypeId = memP.PriviledgeTypeId.ToString();
+                    memPrivItem.PriviledgeTypeName = getPriviledgeTypeDetail(memP.PriviledgeTypeId).Name;
+                    memPrivItem.Value = memP.Value.ToString();
+                    memPrivItem.StartDate = memP.StartDate.ToString();
+                    memPrivItem.ExpireDate = memP.ExpireDate.ToString();
+
+                    if (memP.Status.Equals("true"))
+                    {
+                        memPrivItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memPrivItem.Status = "Inactive";
+                    }
+
+                    listMemPrivForView.Add(memPrivItem);
+                };
+
+                HeaderValueVIPPriv hvp = new HeaderValueVIPPriv()
+                {
+                    MemberPriviledgeList = listMemPrivForView,
+                    strLoginName = userName
+                };
+
+
+                return View(hvp);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public ActionResult MemberDetail(string accountId, string cmd, string MemberId)
+        {
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
+
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    Member myMem = getMember(Int32.Parse(MemberId));
+            //    string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+            //    string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+            //    List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+            //    if (myMem.ActiveStatus.Equals("true"))
+            //    {
+            //        memItem.Status = "Active";
+            //    }
+            //    else
+            //    {
+            //        memItem.Status = "Inactive";
+            //    }
+
+            //    if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
+            //    {
+            //        string[] splitBirth = myMem.Birth.ToString().Split(' ');
+            //        string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
+            //        memItem.Birth = splitBirthInEach[1]+"/"+ splitBirthInEach[0]+"/"+ splitBirthInEach[2];
+            //    }
+                
+
+            //    listMemForView.Add(memItem);
+
+            //    HeaderValueVIP hv = new HeaderValueVIP()
+            //    {
+            //        MemberList = listMemForView
+            //    };
+
+
+            //    return View(hv);
+            //}
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                Member myMem = getMember(Int32.Parse(MemberId));
+                string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+                string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+                List<MemberItem> listMemForView = new List<MemberItem>();
+
+                MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+                if (myMem.ActiveStatus.Equals("true"))
+                {
+                    memItem.Status = "Active";
+                }
+                else
+                {
+                    memItem.Status = "Inactive";
+                }
+
+                if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
+                {
+                    string[] splitBirth = myMem.Birth.ToString().Split(' ');
+                    string[] splitBirthInEach = splitBirth[0].ToString().Split('/');
+                    memItem.Birth = splitBirthInEach[1] + "/" + splitBirthInEach[0] + "/" + splitBirthInEach[2];
+                }
+
+
+                listMemForView.Add(memItem);
+
+                HeaderValueVIP hv = new HeaderValueVIP()
+                {
+                    MemberList = listMemForView,
+                    strLoginName = userName
+                };
+
+
+                return View(hv);
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+        }
+
+        [HttpPost]
+        public string SaveMember(ForInsertMember myData)
+        {
+            if(myData.pageMode.Equals("New"))
+            {
+                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDayVal) || string.IsNullOrEmpty(myData.expireDayVal) || string.IsNullOrEmpty(myData.statusVal))
+                {
+                    return "NoReq";
+                }
+                else
+                {
+                    using (var db = new spasystemdbEntities())
+                    {
+                        Member newMem = new Member()
+                        {
+                            MemberNo = myData.memberNoVal,
+                            Title = myData.titleVal,
+                            FirstName = myData.firstNameVal,
+                            FamilyName = myData.familyNameVal,
+                            AddressInTH = myData.addressVal,
+                            City = myData.cityVal,
+                            TelephoneNo = myData.telephoneVal,
+                            WhatsAppId = myData.whatsappVal,
+                            LineId = myData.lineVal,
+                            CreatedBy = "Admin",
+                            CreateDateTime = DateTime.Now
+                        };
+                        if (myData.statusVal.Equals("Active"))
+                        {
+                            newMem.ActiveStatus = "true";
+                        }
+                        else
+                        {
+                            newMem.ActiveStatus = "false";
+                        }
+
+                        if(!string.IsNullOrEmpty(myData.birthDayVal))
+                        {
+                            string fullBirthday = myData.birthMonthVal + "/" + myData.birthDayVal + "/" + myData.birthYearVal;
+                            newMem.Birth = DateTime.Parse(fullBirthday);
+                        }
+                        
+
+                        db.Members.Add(newMem);
+                        db.SaveChanges();
+
+                        string fullVipStart = myData.startMonthVal + "/" + myData.startDayVal + "/" + myData.startYearVal;
+                        string fullVipExpire = myData.expireMonthVal + "/" + myData.expireDayVal + "/" + myData.expireYearVal;
+
+                        MemberDetail newMemDetail = new MemberDetail()
+                        {
+                            MemberId = getLastestMember().Id,
+                            MemberGroupId = Int32.Parse(myData.vipTypeVal),
+                            StartDate = DateTime.Parse(fullVipStart),
+                            ExpireDate = DateTime.Parse(fullVipExpire),
+                            Status = "true",
+                            CreateDateTime = DateTime.Now,
+                            CreatedBy = "Admin"
+                        };
+                        db.MemberDetails.Add(newMemDetail);
+                        db.SaveChanges();
+
+                        return "Success";
+                    }
+                }
+                
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(myData.memberNoVal) || string.IsNullOrEmpty(myData.titleVal) || string.IsNullOrEmpty(myData.firstNameVal) || string.IsNullOrEmpty(myData.familyNameVal) || string.IsNullOrEmpty(myData.vipTypeVal) || string.IsNullOrEmpty(myData.startDayVal) || string.IsNullOrEmpty(myData.expireDayVal) || string.IsNullOrEmpty(myData.statusVal))
+                {
+                    return "NoReq";
+                }
+                else
+                {
+                    int usedMemId = Int32.Parse(myData.Id);
+                    using (var db = new spasystemdbEntities())
+                    {
+                        Member curMem = db.Members
+                                .Where(b => b.Id == usedMemId)
+                                .FirstOrDefault();
+
+                        //Member curMem = getMember(Int32.Parse(myData.Id));
+                        curMem.MemberNo = myData.memberNoVal;
+                        curMem.Title = myData.titleVal;
+                        curMem.FirstName = myData.firstNameVal;
+                        curMem.FamilyName = myData.familyNameVal;
+
+                        if (!string.IsNullOrEmpty(myData.birthDayVal))
+                        {
+                            string fullBirthday = myData.birthMonthVal + "/" + myData.birthDayVal + "/" + myData.birthYearVal;
+                            curMem.Birth = DateTime.Parse(fullBirthday);
+                        }
+                        
+                        curMem.AddressInTH = myData.addressVal;
+                        curMem.City = myData.cityVal;
+                        curMem.TelephoneNo = myData.telephoneVal;
+                        curMem.WhatsAppId = myData.whatsappVal;
+                        curMem.LineId = myData.lineVal;
+                        curMem.UpdatedBy = "Admin";
+                        curMem.UpdateDateTime = DateTime.Now;
+
+                        if (myData.statusVal.Equals("Active"))
+                        {
+                            curMem.ActiveStatus = "true";
+                        }
+                        else
+                        {
+                            curMem.ActiveStatus = "false";
+                        }
+
+                        string fullVipStart = myData.startMonthVal + "/" + myData.startDayVal + "/" + myData.startYearVal;
+                        string fullVipExpire = myData.expireMonthVal + "/" + myData.expireDayVal + "/" + myData.expireYearVal;
+
+                        //db.SaveChanges();
+                        MemberDetail curMemDetail = db.MemberDetails
+                                            .Where(b => b.MemberId == usedMemId)
+                                            .FirstOrDefault();
+                        //MemberDetail curMemDetail = getMemberDetail(Int32.Parse(myData.Id));
+                        curMemDetail.MemberGroupId = Int32.Parse(myData.vipTypeVal);
+                        curMemDetail.StartDate = DateTime.Parse(fullVipStart);
+                        curMemDetail.ExpireDate = DateTime.Parse(fullVipExpire);
+                        //curMemDetail.Status = "true";
+                        curMemDetail.UpdateDateTime = DateTime.Now;
+                        curMemDetail.UpdatedBy = "Admin";
+
+                        //db.MemberDetails.Add(newMemDetail);
+                        db.SaveChanges();
+
+                        return "Success";
+                    }
+                }
+                
+            }
+            
+        }
+        [HttpPost]
+        public string DeleteMember(string id)
+        {
+            
+            
+                if (string.IsNullOrEmpty(id))
+                {
+                    return "IdNull";
+                }
+                else
+                {
+                    int usedMemId = Int32.Parse(id);
+                    using (var db = new spasystemdbEntities())
+                    {
+                        MemberDetail curMemDetail = db.MemberDetails
+                                                .Where(b => b.MemberId == usedMemId)
+                                                .FirstOrDefault();
+
+                        db.MemberDetails.Remove(curMemDetail);
+                        db.SaveChanges();
+
+                        // Decrease the auto-increment seed
+                        //var tableName = db.Model.GetEntityTypes().First().Relational().TableName;
+                        //var command = $"DBCC CHECKIDENT ('Member', RESEED, {id - 1});";
+                        //db.Database.ExecuteSqlRaw(command);
+
+                    Member curMem = db.Members
+                                    .Where(b => b.Id == usedMemId)
+                                    .FirstOrDefault();
+
+                        db.Members.Remove(curMem);
+                        db.SaveChanges();
+
+                            return "Success";
+                    }
+                }
+
+            
+        }
+
+        [HttpPost]
+        public ActionResult UpdateMemberTable(string selectedOption)
+        {
+            //Console.WriteLine("print from c#"+selectedOption);
+            List<Member> listMem = new List<Member>();
+
+            if(selectedOption.Equals("1"))
+            {
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+            }
+            else if(selectedOption.Equals("2"))
+            {
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .Where(b => b.ActiveStatus == "true")
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+            }
+            else
+            {
+                using (var context = new spasystemdbEntities())
+                {
+
+                    listMem = context.Members
+                                    .Where(b => b.ActiveStatus == "false")
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+                }
+            }
+
+            List<MemberItem> listMemForView = new List<MemberItem>();
+
+            foreach (Member mem in listMem)
+            {
+                
+                string[] splitStart = getMemberDetail(mem.Id).StartDate.ToString().Split(' ');
+                string[] splitExpire = getMemberDetail(mem.Id).ExpireDate.ToString().Split(' ');
+
+                MemberItem memItem = new MemberItem() { Id = mem.Id.ToString(), MemberNo = mem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(mem.Id).MemberGroupId).ShowName, Title = mem.Title, FirstName = mem.FirstName, FamilyName = mem.FamilyName, AddressInTH = mem.AddressInTH, City = mem.City, TelephoneNo = mem.TelephoneNo, WhatsAppId = mem.WhatsAppId, LineId = mem.LineId, CreateDate = mem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0] };
+                if (mem.ActiveStatus.Equals("true"))
+                {
+                    memItem.Status = "Active";
+                }
+                else
+                {
+                    memItem.Status = "Inactive";
+                }
+
+                if(!string.IsNullOrEmpty(mem.Birth.ToString()))
+                {
+                    string[] splitBirth = mem.Birth.ToString().Split(' ');
+                    memItem.Birth = splitBirth[0];
+                }
+
+                listMemForView.Add(memItem);
+            };
+
+            HeaderValueVIP hv = new HeaderValueVIP()
+            {
+                MemberList = listMemForView
+            };
+
+
+            return View("Member",hv);
+        }
+        public ActionResult EditMemberDetail(string accountId, string cmd, string MemberId, string Mode)
+        {
+            //Check lout out button
+            //No log out button in this page
+            //if (cmd != null)
+            //{
+            //    foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+            //    {
+            //        System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+            //    }
+            //}
+
+            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+            //if (noms == null)
+            //{
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    if(Mode.Equals("Edit"))
+            //    {
+            //        Member myMem = getMember(Int32.Parse(MemberId));
+                    
+            //        string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+            //        string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+                    
+            //        string[] splitVipStartPart = splitStart[0].Split('/');
+            //        string[] splitVipExpirePart = splitExpire[0].Split('/');
+
+            //        List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //        MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(),VipStart = splitStart[0], VipExpire = splitExpire[0],VipStartDay=splitVipStartPart[1],VipStartMonth=splitVipStartPart[0],VipStartYear=splitVipStartPart[2],VipExpireDay=splitVipExpirePart[1],VipExpireMonth=splitVipExpirePart[0],VipExpireYear=splitVipExpirePart[2] };
+            //        if (myMem.ActiveStatus.Equals("true"))
+            //        {
+            //            memItem.Status = "Active";
+            //        }
+            //        else
+            //        {
+            //            memItem.Status = "Inactive";
+            //        }
+
+            //        if(!string.IsNullOrEmpty(myMem.Birth.ToString()))
+            //        {
+            //            string[] splitBirth = myMem.Birth.ToString().Split(' ');
+            //            string[] splitBirthPart = splitBirth[0].Split('/');
+            //            memItem.Birth = splitBirth[0];
+            //            memItem.BirthDay = splitBirthPart[1];
+            //            memItem.BirthMonth = splitBirthPart[0];
+            //            memItem.BirthYear = splitBirthPart[2];
+            //        }
+
+            //        memItem.MemberGroupForSelect = getAllMemberGroup();
+            //        memItem.MemberGroupId = getMemberDetail(myMem.Id).MemberGroupId.ToString();
+            //        memItem.PageMode = Mode;
+
+            //        listMemForView.Add(memItem);
+
+            //        HeaderValueVIP hv = new HeaderValueVIP()
+            //        {
+            //            MemberList = listMemForView
+            //        };
+
+
+            //        return View(hv);
+            //    }
+            //    else
+            //    {
+            //        List<MemberItem> listMemForView = new List<MemberItem>();
+
+            //        MemberItem memItem = new MemberItem();
+            //        memItem.MemberGroupForSelect = getAllMemberGroup();
+            //        memItem.PageMode = Mode;
+
+            //        listMemForView.Add(memItem);
+
+            //        HeaderValueVIP hv = new HeaderValueVIP()
+            //        {
+            //            MemberList = listMemForView
+            //        };
+
+
+            //        return View(hv);
+            //    }
+            //}
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                //Prepare content for View
+                if (Mode.Equals("Edit"))
+                {
+                    Member myMem = getMember(Int32.Parse(MemberId));
+
+                    string[] splitStart = getMemberDetail(myMem.Id).StartDate.ToString().Split(' ');
+                    string[] splitExpire = getMemberDetail(myMem.Id).ExpireDate.ToString().Split(' ');
+
+
+                    string[] splitVipStartPart = splitStart[0].Split('/');
+                    string[] splitVipExpirePart = splitExpire[0].Split('/');
+
+                    List<MemberItem> listMemForView = new List<MemberItem>();
+
+                    MemberItem memItem = new MemberItem() { Id = myMem.Id.ToString(), MemberNo = myMem.MemberNo, VipType = getMemberGroupDetail(getMemberDetail(myMem.Id).MemberGroupId).ShowName, Title = myMem.Title, FirstName = myMem.FirstName, FamilyName = myMem.FamilyName, AddressInTH = myMem.AddressInTH, City = myMem.City, TelephoneNo = myMem.TelephoneNo, WhatsAppId = myMem.WhatsAppId, LineId = myMem.LineId, CreateDate = myMem.CreateDateTime.ToString(), VipStart = splitStart[0], VipExpire = splitExpire[0], VipStartDay = splitVipStartPart[1], VipStartMonth = splitVipStartPart[0], VipStartYear = splitVipStartPart[2], VipExpireDay = splitVipExpirePart[1], VipExpireMonth = splitVipExpirePart[0], VipExpireYear = splitVipExpirePart[2] };
+                    if (myMem.ActiveStatus.Equals("true"))
+                    {
+                        memItem.Status = "Active";
+                    }
+                    else
+                    {
+                        memItem.Status = "Inactive";
+                    }
+
+                    if (!string.IsNullOrEmpty(myMem.Birth.ToString()))
+                    {
+                        string[] splitBirth = myMem.Birth.ToString().Split(' ');
+                        string[] splitBirthPart = splitBirth[0].Split('/');
+                        memItem.Birth = splitBirth[0];
+                        memItem.BirthDay = splitBirthPart[1];
+                        memItem.BirthMonth = splitBirthPart[0];
+                        memItem.BirthYear = splitBirthPart[2];
+                    }
+
+                    memItem.MemberGroupForSelect = getAllMemberGroup();
+                    memItem.MemberGroupId = getMemberDetail(myMem.Id).MemberGroupId.ToString();
+                    memItem.PageMode = Mode;
+
+                    listMemForView.Add(memItem);
+
+                    HeaderValueVIP hv = new HeaderValueVIP()
+                    {
+                        MemberList = listMemForView,
+                        strLoginName = userName
+                    };
+
+
+                    return View(hv);
+                }
+                else
+                {
+                    List<MemberItem> listMemForView = new List<MemberItem>();
+
+                    MemberItem memItem = new MemberItem();
+                    memItem.MemberGroupForSelect = getAllMemberGroup();
+                    memItem.PageMode = Mode;
+
+                    listMemForView.Add(memItem);
+
+                    HeaderValueVIP hv = new HeaderValueVIP()
+                    {
+                        MemberList = listMemForView,
+                        strLoginName = userName
+                    };
+
+
+                    return View(hv);
+                }
+
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        //public ActionResult AccountChosen(string accountId)
+        //{
+        //    // if credentials are correct.
+        //    return View();
+        //}
+        
+
         public User getUserAuthen(UserLogin ul)
         {
             User us = new User();
@@ -7963,6 +8995,53 @@ namespace WebApplication13.Controllers
 
 
             return discountWithCredit;
+        }
+
+        public string CheckUserIsEnable(string userName)
+        {
+            string userStatus = "";
+            User userDetail = new User();
+
+            using (var context = new spasystemdbEntities())
+            {
+                // Query for all blogs with names starting with B 
+                //var blogs = from b in context.Accounts
+                //            where b.Date.Equals(2016-12-22)
+                //            select b;
+
+                //ac.Add((Account)blogs);
+                // Query for the Blog named ADO.NET Blog
+
+                userDetail = context.Users
+                                .Where(b => b.Username == userName)
+                                .FirstOrDefault();
+
+                try
+                {
+                    if (userDetail.Status.Equals("true"))
+                    {
+                        if (userDetail.UrbanSystem.Equals("true"))
+                        {
+                            userStatus = "true";
+                        }
+                        else
+                        {
+                            userStatus = "false";
+                        }
+                    }
+                    else
+                    {
+                        userStatus = "false";
+                    }
+                }
+                catch(Exception io)
+                {
+                    userStatus = "false";
+                }
+                
+            }
+
+            return userStatus;
         }
 
         public void RemoveCookie()

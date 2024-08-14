@@ -122,6 +122,7 @@
     <EntitySet Name="MobileExportInvoices" EntityType="spasystemdbModel.MobileExportInvoice" />
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="MobileDropdowns" EntityType="spasystemdbModel.MobileDropdown" />
+    <EntitySet Name="OrderReceipts" EntityType="spasystemdbModel.OrderReceipt" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -466,6 +467,7 @@
     <Property Name="Longitude" Type="Double" />
     <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ReceiptId" Type="Int32" />
   </EntityType>
   <EntityType Name="MobileExportInvoice">
     <Key>
@@ -521,5 +523,18 @@
     <Property Name="GroupName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="OrderReceipt">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="ReceiptNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CancelStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>

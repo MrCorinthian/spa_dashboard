@@ -405,6 +405,41 @@ namespace WebApplication13.Controllers
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult UpdateOrderReceipt(string orderReceiptData)
+        {
+            string status = "false";
+            string error = "-";
+            try
+            {
+                RootSingleOrderReceipt rootObj = JsonConvert.DeserializeObject<RootSingleOrderReceipt>(orderReceiptData);
+                OrderReceipt getOrderReceipt = rootObj.OrderReceiptData;
+                int receiptId = getOrderReceipt.Id;
+                int accountId = getOrderReceipt.AccountId;
+                int branchId = getOrderReceipt.BranchId;
+
+                OrderReceipt orderReceiptUpdated = db.OrderReceipts.Where(a => a.Id == receiptId && a.BranchId == branchId && a.AccountId == accountId).FirstOrDefault();
+                orderReceiptUpdated.CancelStatus = getOrderReceipt.CancelStatus;
+                orderReceiptUpdated.UpdateDateTime = getOrderReceipt.UpdateDateTime;
+
+                db.SaveChanges();
+                status = "true";
+            }
+            catch (Exception ie)
+            {
+                status = "false";
+                error = ie.ToString();
+            }
+
+            var response = new
+            {
+                Status = status,
+                Error_Message = error
+            };
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
         public int getVersionNo(int branchId)
         {
             //List<OrderRecord> orderList = new List<OrderRecord>();

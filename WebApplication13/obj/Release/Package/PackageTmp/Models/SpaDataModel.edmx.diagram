@@ -40,7 +40,9 @@
         <EntityTypeShape EntityType="spasystemdbModel.MobileExportInvoice" Width="1.5" PointX="14.375" PointY="16" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileUser" Width="1.5" PointX="3" PointY="16" />
         <EntityTypeShape EntityType="spasystemdbModel.MobileDropdown" Width="1.5" PointX="16.25" PointY="16" />
-        <EntityTypeShape EntityType="spasystemdbModel.OrderReceipt" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.EmployeeType" Width="1.5" PointX="11.375" PointY="12.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.SellItemType" Width="1.5" PointX="13.375" PointY="0.75" />
+        <EntityTypeShape EntityType="spasystemdbModel.OrderReceipt" Width="1.5" PointX="13.375" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

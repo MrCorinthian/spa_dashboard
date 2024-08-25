@@ -73,6 +73,20 @@
     <Property Name="CancelStatus" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="OrderReceiptId" Type="int" />
+  </EntityType>
+  <EntityType Name="EmployeeType">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ShowName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Active" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
   </EntityType>
   <EntityType Name="MassagePlan">
     <Key>
@@ -107,6 +121,7 @@
     <Property Name="ChildColor" Type="varchar" MaxLength="15" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="SellItemTypeId" Type="int" />
   </EntityType>
   <EntityType Name="Member">
     <Key>
@@ -361,6 +376,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="CancelStatus" Type="varchar" MaxLength="10" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="EmployeeTypeId" Type="int" />
   </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
@@ -452,6 +468,19 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="Updated" Type="datetime2" Precision="7" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="SellItemType">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ShowName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Active" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="UpdateDateTime" Type="datetime" />
+  </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -507,6 +536,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <EntitySet Name="DiscountMaster" EntityType="Self.DiscountMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="DiscountMasterDetail" EntityType="Self.DiscountMasterDetail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="DiscountRecord" EntityType="Self.DiscountRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EmployeeType" EntityType="Self.EmployeeType" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MassagePlan" EntityType="Self.MassagePlan" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MassageSet" EntityType="Self.MassageSet" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MassageTopic" EntityType="Self.MassageTopic" Schema="dbo" store:Type="Tables" />
@@ -533,6 +563,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <EntitySet Name="OtherSaleRecord" EntityType="Self.OtherSaleRecord" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="PriviledgeType" EntityType="Self.PriviledgeType" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Receipt" EntityType="Self.Receipt" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SellItemType" EntityType="Self.SellItemType" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />

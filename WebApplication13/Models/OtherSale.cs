@@ -20,5 +20,6 @@ namespace WebApplication13.Models
         public string Status { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
+        public Nullable<int> CommissionPercent { get; set; }
     }
 }

@@ -499,6 +499,9 @@
     <Compile Include="Models\DiscountRecord.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmployeeType.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\FinalSaleForEachTopic.cs" />
     <Compile Include="Models\ForInsertMember.cs" />
     <Compile Include="Models\HeaderValue.cs" />
@@ -606,6 +609,9 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Receipt.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SellItemType.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpaDataModel.Context.cs">

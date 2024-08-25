@@ -62,6 +62,7 @@
     <Property Name="ChildColor" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="SellItemTypeId" Type="Int32" />
   </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
@@ -123,6 +124,8 @@
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="MobileDropdowns" EntityType="spasystemdbModel.MobileDropdown" />
     <EntitySet Name="OrderReceipts" EntityType="spasystemdbModel.OrderReceipt" />
+    <EntitySet Name="EmployeeTypes" EntityType="spasystemdbModel.EmployeeType" />
+    <EntitySet Name="SellItemTypes" EntityType="spasystemdbModel.SellItemType" />
   </EntityContainer>
   <EntityType Name="User">
     <Key>
@@ -236,6 +239,7 @@
     <Property Name="CancelStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="OrderReceiptId" Type="Int32" />
   </EntityType>
   <EntityType Name="OrderRecordWithDiscount">
     <Key>
@@ -534,6 +538,33 @@
     <Property Name="AccountId" Type="Int32" Nullable="false" />
     <Property Name="ReceiptNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="CancelStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="EmployeeTypeId" Type="Int32" />
+  </EntityType>
+  <EntityType Name="EmployeeType">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ShowName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="SellItemType">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ShowName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
   </EntityType>

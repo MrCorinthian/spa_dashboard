@@ -44,6 +44,7 @@
     <EntitySetMapping Name="MassageSets">
       <EntityTypeMapping TypeName="spasystemdbModel.MassageSet">
         <MappingFragment StoreEntitySet="MassageSet">
+          <ScalarProperty Name="Position" ColumnName="Position" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="MassageTopicId" ColumnName="MassageTopicId" />
           <ScalarProperty Name="MassagePlanId" ColumnName="MassagePlanId" />
@@ -57,6 +58,7 @@
     <EntitySetMapping Name="MassageTopics">
       <EntityTypeMapping TypeName="spasystemdbModel.MassageTopic">
         <MappingFragment StoreEntitySet="MassageTopic">
+          <ScalarProperty Name="SellItemTypeId" ColumnName="SellItemTypeId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="HeaderColor" ColumnName="HeaderColor" />
@@ -118,6 +120,7 @@
     <EntitySetMapping Name="OtherSales">
       <EntityTypeMapping TypeName="spasystemdbModel.OtherSale">
         <MappingFragment StoreEntitySet="OtherSale">
+          <ScalarProperty Name="CommissionPercent" ColumnName="CommissionPercent" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />
@@ -130,6 +133,8 @@
     <EntitySetMapping Name="OtherSaleRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.OtherSaleRecord">
         <MappingFragment StoreEntitySet="OtherSaleRecord">
+          <ScalarProperty Name="Commission" ColumnName="Commission" />
+          <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
           <ScalarProperty Name="IsCreditCard" ColumnName="IsCreditCard" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
@@ -187,6 +192,7 @@
     <EntitySetMapping Name="DiscountRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.DiscountRecord">
         <MappingFragment StoreEntitySet="DiscountRecord">
+          <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
@@ -503,6 +509,33 @@
           <ScalarProperty Name="Active" ColumnName="Active" />
           <ScalarProperty Name="Value" ColumnName="Value" />
           <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmployeeTypes">
+      <EntityTypeMapping TypeName="spasystemdbModel.EmployeeType">
+        <MappingFragment StoreEntitySet="EmployeeType">
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SellItemTypes">
+      <EntityTypeMapping TypeName="spasystemdbModel.SellItemType">
+        <MappingFragment StoreEntitySet="SellItemType">
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

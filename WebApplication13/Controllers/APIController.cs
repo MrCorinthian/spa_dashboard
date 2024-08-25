@@ -40,6 +40,8 @@ namespace WebApplication13.Controllers
                 PriviledgeType = db.PriviledgeTypes.ToList(),
                 MemberGroupPriviledge = db.MemberGroupPriviledges.ToList(),
                 MemberDetail = db.MemberDetails.ToList(),
+                SellItemType = getAllSellItemType(getBranchId),
+                //EmployeeType = getAllEmployeeType(getBranchId),
                 SystemConfig = getAllSetting(getBranchId),
                 Password = getBranchPasswordDetail(getBranchId).Value,
                 Password_Version = getBranchPasswordDetail(getBranchId).Version,
@@ -439,6 +441,75 @@ namespace WebApplication13.Controllers
 
             return Json(response, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult UpdateDiscountRecord(string discountRecordData)
+        {
+            string status = "false";
+            string error = "-";
+            try
+            {
+                RootSingleDiscountRecord rootObj = JsonConvert.DeserializeObject<RootSingleDiscountRecord>(discountRecordData);
+                DiscountRecord getDiscountRecord = rootObj.DiscountRecordData;
+                int discountId = getDiscountRecord.Id;
+                int accountId = getDiscountRecord.AccountId;
+                int branchId = getDiscountRecord.BranchId;
+
+                DiscountRecord discountRecordUpdated = db.DiscountRecords.Where(a => a.Id == discountId && a.BranchId == branchId && a.AccountId == accountId).FirstOrDefault();
+                discountRecordUpdated.CancelStatus = getDiscountRecord.CancelStatus;
+                discountRecordUpdated.UpdateDateTime = getDiscountRecord.UpdateDateTime;
+
+                db.SaveChanges();
+                status = "true";
+            }
+            catch (Exception ie)
+            {
+                status = "false";
+                error = ie.ToString();
+            }
+
+            var response = new
+            {
+                Status = status,
+                Error_Message = error
+            };
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateOtherSaleRecord(string otherSaleRecordData)
+        {
+            string status = "false";
+            string error = "-";
+            try
+            {
+                RootSingleOtherSaleRecord rootObj = JsonConvert.DeserializeObject<RootSingleOtherSaleRecord>(otherSaleRecordData);
+                OtherSaleRecord getOtherSaleRecord = rootObj.OtherSaleRecordData;
+                int otherSaleRecordId = getOtherSaleRecord.Id;
+                int accountId = getOtherSaleRecord.AccountId;
+                int branchId = getOtherSaleRecord.BranchId;
+
+                OtherSaleRecord otherSaleRecordUpdated = db.OtherSaleRecords.Where(a => a.Id == otherSaleRecordId && a.BranchId == branchId && a.AccountId == accountId).FirstOrDefault();
+                otherSaleRecordUpdated.CancelStatus = getOtherSaleRecord.CancelStatus;
+                otherSaleRecordUpdated.UpdateDateTime = getOtherSaleRecord.UpdateDateTime;
+
+                db.SaveChanges();
+                status = "true";
+            }
+            catch (Exception ie)
+            {
+                status = "false";
+                error = ie.ToString();
+            }
+
+            var response = new
+            {
+                Status = status,
+                Error_Message = error
+            };
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
 
         public int getVersionNo(int branchId)
         {
@@ -678,6 +749,34 @@ namespace WebApplication13.Controllers
 
             return latestReceipt;
 
+        }
+        public List<SellItemType> getAllSellItemType(int branchId)
+        {
+            List<SellItemType> listSellItemType;
+
+            using (var context = new spasystemdbEntities())
+            {
+
+                listSellItemType = context.SellItemTypes
+                                .Where(b => b.BranchId == branchId)
+                                .ToList();
+            }
+
+            return listSellItemType;
+        }
+        public List<EmployeeType> getAllEmployeeType(int branchId)
+        {
+            List<EmployeeType> listEmployeeType;
+
+            using (var context = new spasystemdbEntities())
+            {
+
+                listEmployeeType = context.EmployeeTypes
+                                .Where(b => b.BranchId == branchId)
+                                .ToList();
+            }
+
+            return listEmployeeType;
         }
 
         public class RootObject

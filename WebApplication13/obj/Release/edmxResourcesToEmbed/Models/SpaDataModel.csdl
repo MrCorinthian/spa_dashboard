@@ -51,6 +51,7 @@
     <Property Name="Commission" Type="Int16" Nullable="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="Position" Type="Int32" />
   </EntityType>
   <EntityType Name="MassageTopic">
     <Key>
@@ -62,6 +63,7 @@
     <Property Name="ChildColor" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="SellItemTypeId" Type="Int32" />
   </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
@@ -122,6 +124,8 @@
     <EntitySet Name="MobileExportInvoices" EntityType="spasystemdbModel.MobileExportInvoice" />
     <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
     <EntitySet Name="MobileDropdowns" EntityType="spasystemdbModel.MobileDropdown" />
+    <EntitySet Name="EmployeeTypes" EntityType="spasystemdbModel.EmployeeType" />
+    <EntitySet Name="SellItemTypes" EntityType="spasystemdbModel.SellItemType" />
     <EntitySet Name="OrderReceipts" EntityType="spasystemdbModel.OrderReceipt" />
   </EntityContainer>
   <EntityType Name="User">
@@ -159,6 +163,7 @@
     <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CommissionPercent" Type="Int32" />
   </EntityType>
   <EntityType Name="OtherSaleRecord">
     <Key>
@@ -177,6 +182,8 @@
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
     <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="OrderReceiptId" Type="Int32" />
+    <Property Name="Commission" Type="Int16" />
   </EntityType>
   <EntityType Name="SystemSetting">
     <Key>
@@ -236,6 +243,7 @@
     <Property Name="CancelStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
     <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
     <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="OrderReceiptId" Type="Int32" />
   </EntityType>
   <EntityType Name="OrderRecordWithDiscount">
     <Key>
@@ -523,6 +531,33 @@
     <Property Name="GroupName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="EmployeeType">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ShowName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="Image" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="SellItemType">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ShowName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Active" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
   </EntityType>
   <EntityType Name="OrderReceipt">
     <Key>

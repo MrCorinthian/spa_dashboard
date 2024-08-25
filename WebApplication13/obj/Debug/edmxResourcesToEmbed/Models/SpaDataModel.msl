@@ -57,6 +57,7 @@
     <EntitySetMapping Name="MassageTopics">
       <EntityTypeMapping TypeName="spasystemdbModel.MassageTopic">
         <MappingFragment StoreEntitySet="MassageTopic">
+          <ScalarProperty Name="SellItemTypeId" ColumnName="SellItemTypeId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="HeaderColor" ColumnName="HeaderColor" />
@@ -187,6 +188,7 @@
     <EntitySetMapping Name="DiscountRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.DiscountRecord">
         <MappingFragment StoreEntitySet="DiscountRecord">
+          <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
@@ -510,11 +512,38 @@
     <EntitySetMapping Name="OrderReceipts">
       <EntityTypeMapping TypeName="spasystemdbModel.OrderReceipt">
         <MappingFragment StoreEntitySet="OrderReceipt">
+          <ScalarProperty Name="EmployeeTypeId" ColumnName="EmployeeTypeId" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
           <ScalarProperty Name="ReceiptNo" ColumnName="ReceiptNo" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmployeeTypes">
+      <EntityTypeMapping TypeName="spasystemdbModel.EmployeeType">
+        <MappingFragment StoreEntitySet="EmployeeType">
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SellItemTypes">
+      <EntityTypeMapping TypeName="spasystemdbModel.SellItemType">
+        <MappingFragment StoreEntitySet="SellItemType">
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>

@@ -12,14 +12,14 @@ namespace WebApplication13.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MassageTopic
+    public partial class SellItemType
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string HeaderColor { get; set; }
-        public string ChildColor { get; set; }
+        public int BranchId { get; set; }
+        public string Type { get; set; }
+        public string ShowName { get; set; }
+        public string Active { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
-        public Nullable<int> SellItemTypeId { get; set; }
     }
 }

@@ -225,9 +225,9 @@ namespace WebApplication13.Controllers
             //}
         }
 
-        public ActionResult Urban(string accountId, string monthNo, string yearNo, string cmd)
+        public ActionResult Urban(string accountId, string monthNo, string yearNo, string cmd, int id)
         {
-            int branchIds = 4;
+            int branchIds = id;
 
             //Check if Log out button is clicked
             if (cmd != null)

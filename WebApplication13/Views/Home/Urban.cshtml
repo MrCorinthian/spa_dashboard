@@ -181,15 +181,9 @@
                         <li>
                             <a href="@Url.Action("Dashboard", "Home")" onclick="navigateToOtherPage();">@*<i class="fa fa-chevron-down fa-fw"></i>*@ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</a>
                         </li>
-                        @*<li>
-                                <a href="@Url.Action("Khaosan", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Khaosan Thai 1&2</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Urban", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 1</a>
-                            </li>
-                                            <li>
-                                                <a href="@Url.Action("UrbanTwo", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 2</a>
-                                            </li>*@
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { id = 4 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban</a>
+                        </li>
                         <li>
                             <a href="@Url.Action("UrbanThree", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 3</a>
                         </li>

@@ -33,6 +33,36 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <link href="../Content/progressring1.css" rel="stylesheet">
+
+    <script type="text/javascript">
+        function toggleOverlay() {
+            var overlay = document.getElementById("overlay");
+            overlay.style.display = "block";
+            overlay.style.pointerEvents = "none";
+        }
+    </script>
+    <script type="text/javascript">
+        function hideOverlay() {
+            var overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
+            overlay.style.pointerEvents = "auto";
+        }
+    </script>
+    <script type="text/javascript">
+        function navigateToOtherPage() {
+            document.getElementById("overlay").style.display = "block";
+        }
+    </script>
+
+    <script type="text/javascript">
+
+        function navigationSuccess() {
+            document.getElementById("overlay").style.display = "none";
+        }
+
+    </script>
+
     <script type="text/javascript">
         function ShowHideDiv(chkDaily) {
             var dvPassportD = document.getElementById("selectdatetime");
@@ -42,8 +72,7 @@
             var radioM = document.getElementById("chkMonthly");
             var radioY = document.getElementById("chkYearly");
 
-            if(chkDaily.checked)
-            {
+            if (chkDaily.checked) {
                 dvPassportD.style.display = "block";
                 dvPassportM.style.display = "none";
                 dvPassportY.style.display = "none";
@@ -51,13 +80,13 @@
                 radioM.checked = false;
                 radioY.checked = false;
             }
-            else{
+            else {
                 //dvPassportD.style.display = "block";
                 //dvPassportM.style.display = "none";
                 //dvPassportY.style.display = "none";
             }
-        //dvPassport.style.display = chkDaily.checked ? "block" : "none";
-    }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
     </script>
 
     <script type="text/javascript">
@@ -69,8 +98,7 @@
             var radioD = document.getElementById("chkDaily");
             var radioY = document.getElementById("chkYearly");
 
-            if(chkMonthly.checked)
-            {
+            if (chkMonthly.checked) {
                 dvPassportD.style.display = "none";
                 dvPassportM.style.display = "block";
                 dvPassportY.style.display = "none";
@@ -78,13 +106,13 @@
                 radioD.checked = false;
                 radioY.checked = false;
             }
-            else{
+            else {
                 //dvPassportD.style.display = "block";
                 //dvPassportM.style.display = "none";
                 //dvPassportY.style.display = "none";
             }
-        //dvPassport.style.display = chkDaily.checked ? "block" : "none";
-    }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
     </script>
 
     <script type="text/javascript">
@@ -96,8 +124,7 @@
             var radioD = document.getElementById("chkDaily");
             var radioM = document.getElementById("chkMonthly");
 
-            if(chkYearly.checked)
-            {
+            if (chkYearly.checked) {
                 dvPassportD.style.display = "none";
                 dvPassportM.style.display = "none";
                 dvPassportY.style.display = "block";
@@ -105,13 +132,13 @@
                 radioD.checked = false;
                 radioM.checked = false;
             }
-            else{
+            else {
                 //dvPassportD.style.display = "block";
                 //dvPassportM.style.display = "none";
                 //dvPassportY.style.display = "none";
             }
-        //dvPassport.style.display = chkDaily.checked ? "block" : "none";
-    }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
     </script>
 
 
@@ -119,6 +146,11 @@
 
 <body>
     <div id="wrapper">
+        <div id="overlay">
+            <div class="spinner">
+                <div class="ring"></div>
+            </div>
+        </div>
 
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -134,8 +166,10 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
+                &nbsp;&nbsp;
+                <b>@Html.DisplayFor(model => model.strLoginName)</b> &nbsp;&nbsp;
                 <li class="dropdown">
-                    <a href="@Url.Action("Urban", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
+                    <a href="@Url.Action("UrbanThree", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
                 </li>
                 <!-- /.dropdown -->
             </ul>
@@ -145,29 +179,47 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Dashboard</a>
+                            <a href="@Url.Action("Dashboard", "Home")" onclick="navigateToOtherPage();">@*<i class="fa fa-chevron-down fa-fw"></i>*@ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</a>
+                        </li>
+                        @*<li>
+                                <a href="@Url.Action("Khaosan", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Khaosan Thai 1&2</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Urban", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 1</a>
+                            </li>
+                                            <li>
+                                                <a href="@Url.Action("UrbanTwo", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 2</a>
+                                            </li>*@
+                        <li>
+                            <a href="@Url.Action("UrbanThree", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 3</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Khaosan", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Khaosan Thai 1&2</a>
+                            <a href="@Url.Action("UrbanFour", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 4</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Urban", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 1</a>
+                            <a href="@Url.Action("UrbanFive", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 5</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanTwo", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 2</a>
+                            <a href="@Url.Action("UrbanSix", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 6</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanThree", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 3</a>
+                            <a href="@Url.Action("UrbanSeven", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 7</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanFour", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 4</a>
+                            <a href="@Url.Action("UrbanEight", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 8</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanFive", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 5</a>
+                            <a href="@Url.Action("ThaiGardenOne", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Thai Garden 1</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanSix", "Home")"><i class="fa fa-chevron-down fa-fw"></i> Urban Thai 6</a>
+                            <a href="@Url.Action("ThaiBeautyOne", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Test branch</a>
                         </li>
+                        @*<li>
+                                <a href="@Url.Action("Member", "Home")" target="_blank"><i class="fa fa-user-plus fa-fw"></i> VIP member</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Mobile")" target="_blank"><i class="fa fa-user-plus fa-fw"></i> Commission Dashboard</a>
+                            </li>*@
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -180,7 +232,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Urban Thai 1</h1>
+                        <h1 class="page-header">Urban Thai 3</h1>
                         <h4>Average  :  @Html.DisplayFor(model => model.strAverage)</h4>
                         <br />
                         <div class="radiofilter">
@@ -203,11 +255,11 @@
                                 <label>@Html.RadioButton("yearlychb","yearly",false) Yearly Record</label>*@
                         </div>
                         <div class="select-datetime" id="selectdatetime" style="display:block">
-                            @using (Html.BeginForm("Urban", "Home", FormMethod.Get))
+                            @using (Html.BeginForm("UrbanThree", "Home", FormMethod.Get))
                             {
 
                                 <fieldset>
-                                    Transaction start Date/Time : @Html.DropDownList("accountId", Model.listAllAccounts) <input type="submit" value="Submit" />
+                                    Transaction start Date/Time : @Html.DropDownList("accountId", Model.listAllAccounts) <input type="submit" value="Submit" onclick="toggleOverlay()" />
                                 </fieldset>
 
                             }
@@ -231,22 +283,22 @@
                                 </script>*@
                         </div>
                         <div class="select-month" id="selectmonth" style="display:none">
-                            @using (Html.BeginForm("Urban", "Home", FormMethod.Get))
+                            @using (Html.BeginForm("UrbanThree", "Home", FormMethod.Get))
                             {
 
                                 <fieldset>
-                                    Month and Year : @Html.DropDownList("monthNo", Model.listAllMonths) @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" />
+                                    Month and Year : @Html.DropDownList("monthNo", Model.listAllMonths) @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" onclick="toggleOverlay()" />
                                 </fieldset>
 
                             }
 
                         </div>
                         <div class="select-year" id="selectyear" style="display:none">
-                            @using (Html.BeginForm("Urban", "Home", FormMethod.Get))
+                            @using (Html.BeginForm("UrbanThree", "Home", FormMethod.Get))
                             {
 
                                 <fieldset>
-                                    Year : @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" />
+                                    Year : @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" onclick="toggleOverlay()" />
                                 </fieldset>
 
                             }
@@ -257,12 +309,12 @@
                         </script>
                         <p></p>
                         <br />
-                        
+
                     </div>
-                    
+
                     <!-- /.col-lg-12 -->
                 </div>
-                
+
                 <!-- /.row -->
             </div>
             <div class="row">
@@ -284,25 +336,25 @@
                 </div>
 
                 <!-- Total Sale -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-pie-chart fa-4x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
-                                    <div>Total Sales</div>
+                @*<div class="col-lg-3 col-md-6">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-pie-chart fa-4x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                                        <div>Total Sales</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </div>*@
 
                 <!-- Total Staff -->
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
+                    <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -311,6 +363,23 @@
                                 <div class="col-xs-9 text-right">
                                     <div class="quitehuge">@Html.DisplayFor(model => model.strStaff)</div>
                                     <div>Total Staff</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total VIP -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-gift fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
+                                    <div>Total VIP</div>
                                 </div>
                             </div>
                         </div>
@@ -333,14 +402,80 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Total Oil Income -->
+                <!-- Cash -->
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
                                     <i class="fa fa-bitcoin fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCash)</div>
+                                    <div>Cash</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Credit -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-credit-card fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strCredit)</div>
+                                    <div>Credit</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voucher -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-newspaper-o fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strVoucher)</div>
+                                    <div>Voucher</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Sale -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-pie-chart fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                                    <div>Total Sales</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Total Oil Income -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-battery-full fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="quitehuge">@Html.DisplayFor(model => model.strOilIncome)</div>
@@ -402,23 +537,39 @@
                     </div>
                 </div>
 
+                <!-- Total VIP -->
+                @*<div class="col-lg-12 col-md-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-gift fa-4x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
+                                        <div>Total VIP</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
                 <!-- Other Sale -->
                 <!--
-    <div class="col-lg-12 col-md-6">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-dollar fa-4x"></i>
+                <div class="col-lg-12 col-md-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-dollar fa-4x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="quitehuge">@Html.DisplayFor(model => model.strOtherSale)</div>
+                                    <div>Other Sales</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="quitehuge">@Html.DisplayFor(model => model.strOtherSale)</div>
-                        <div>Other Sales</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>-->
+                </div>-->
             </div>
             <!-- /.container-fluid -->
             <div class="row">
@@ -438,10 +589,10 @@
                                 <div class="flot-chart-content" id="flot-pie-charts"></div>
                             </div>
                         </div>-->
-
+                        <!--
                         <div class="panel-body">
                             <div id="mydonut"></div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -450,9 +601,10 @@
                             <b>Best Seller No.2</b> - @Html.DisplayFor(model => model.strPieTopBName)
                         </div>
                         <!-- /.panel-heading -->
+                        <!--
                         <div class="panel-body">
                             <div id="mydonuts"></div>
-                        </div>
+                        </div>-->
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->

@@ -44,6 +44,7 @@
     <EntitySetMapping Name="MassageSets">
       <EntityTypeMapping TypeName="spasystemdbModel.MassageSet">
         <MappingFragment StoreEntitySet="MassageSet">
+          <ScalarProperty Name="Position" ColumnName="Position" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="MassageTopicId" ColumnName="MassageTopicId" />
           <ScalarProperty Name="MassagePlanId" ColumnName="MassagePlanId" />
@@ -119,6 +120,7 @@
     <EntitySetMapping Name="OtherSales">
       <EntityTypeMapping TypeName="spasystemdbModel.OtherSale">
         <MappingFragment StoreEntitySet="OtherSale">
+          <ScalarProperty Name="CommissionPercent" ColumnName="CommissionPercent" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />
@@ -131,6 +133,8 @@
     <EntitySetMapping Name="OtherSaleRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.OtherSaleRecord">
         <MappingFragment StoreEntitySet="OtherSaleRecord">
+          <ScalarProperty Name="Commission" ColumnName="Commission" />
+          <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
           <ScalarProperty Name="IsCreditCard" ColumnName="IsCreditCard" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
@@ -509,23 +513,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="OrderReceipts">
-      <EntityTypeMapping TypeName="spasystemdbModel.OrderReceipt">
-        <MappingFragment StoreEntitySet="OrderReceipt">
-          <ScalarProperty Name="EmployeeTypeId" ColumnName="EmployeeTypeId" />
-          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
-          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
-          <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
-          <ScalarProperty Name="ReceiptNo" ColumnName="ReceiptNo" />
-          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
-          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="EmployeeTypes">
       <EntityTypeMapping TypeName="spasystemdbModel.EmployeeType">
         <MappingFragment StoreEntitySet="EmployeeType">
+          <ScalarProperty Name="Image" ColumnName="Image" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="Active" ColumnName="Active" />
@@ -544,6 +535,19 @@
           <ScalarProperty Name="Active" ColumnName="Active" />
           <ScalarProperty Name="ShowName" ColumnName="ShowName" />
           <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OrderReceipts">
+      <EntityTypeMapping TypeName="spasystemdbModel.OrderReceipt">
+        <MappingFragment StoreEntitySet="OrderReceipt">
+          <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+          <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+          <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
+          <ScalarProperty Name="ReceiptNo" ColumnName="ReceiptNo" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>

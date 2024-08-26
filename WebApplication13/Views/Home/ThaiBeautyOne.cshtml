@@ -231,8 +231,20 @@
         <div id="page-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <h1 class="page-header">Thai Beauty 1</h1>
+                    </div>
+                    <div class="col-lg-6 text-right">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#tabA" data-toggle="tab">Tab A</a>
+                            </li>
+                            <li>
+                                <a href="#tabB" data-toggle="tab">Tab B</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
                         <h4>Average  :  @Html.DisplayFor(model => model.strAverage)</h4>
                         <br />
                         <div class="radiofilter">
@@ -250,9 +262,9 @@
                                 Yearly
                             </label>
                             @*
-                                <label>@Html.RadioButton("dailychb", "daily",false) Daily Record</label>
-                                <label>@Html.RadioButton("monthlychb","monthly",false) Monthly Record</label>
-                                <label>@Html.RadioButton("yearlychb","yearly",false) Yearly Record</label>*@
+                    <label>@Html.RadioButton("dailychb", "daily",false) Daily Record</label>
+                    <label>@Html.RadioButton("monthlychb","monthly",false) Monthly Record</label>
+                    <label>@Html.RadioButton("yearlychb","yearly",false) Yearly Record</label>*@
                         </div>
                         <div class="select-datetime" id="selectdatetime" style="display:block">
                             @using (Html.BeginForm("ThaiGardenOne", "Home", FormMethod.Get))
@@ -264,23 +276,23 @@
 
                             }
                             @*Transaction Start Date/Time : <input type="text" value="@Model.SellStartDate" disabled />
-                                <script>
-                                    var today = new Date();
-                                    var dd = today.getDate();
-                                    var mm = today.getMonth() + 1; //January is 0!
-                                    var yyyy = today.getFullYear();
+                    <script>
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1; //January is 0!
+                        var yyyy = today.getFullYear();
 
-                                    if (dd < 10) {
-                                        dd = '0' + dd
-                                    }
+                        if (dd < 10) {
+                            dd = '0' + dd
+                        }
 
-                                    if (mm < 10) {
-                                        mm = '0' + mm
-                                    }
+                        if (mm < 10) {
+                            mm = '0' + mm
+                        }
 
-                                    today = yyyy + '-' + mm + '-' + dd;
-                                    document.getElementById("demo").value = today;
-                                </script>*@
+                        today = yyyy + '-' + mm + '-' + dd;
+                        document.getElementById("demo").value = today;
+                    </script>*@
                         </div>
                         <div class="select-month" id="selectmonth" style="display:none">
                             @using (Html.BeginForm("ThaiGardenOne", "Home", FormMethod.Get))
@@ -314,10 +326,23 @@
 
                     <!-- /.col-lg-12 -->
                 </div>
-
+                
                 <!-- /.row -->
             </div>
             <div class="row">
+                <!-- Tab content -->
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="tabA">
+                        <h4>Content for Tab A</h4>
+                        <p>Here is the content for Tab A.</p>
+                        <!-- Insert your content for Tab A here -->
+                    </div>
+                    <div class="tab-pane fade" id="tabB">
+                        <h4>Content for Tab B</h4>
+                        <p>Here is the content for Tab B.</p>
+                        <!-- Insert your content for Tab B here -->
+                    </div>
+                </div>
                 <!-- Initial Money -->
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
@@ -337,20 +362,20 @@
 
                 <!-- Total Sale -->
                 @*<div class="col-lg-3 col-md-6">
-                        <div class="panel panel-green">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-pie-chart fa-4x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
-                                        <div>Total Sales</div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-pie-chart fa-4x"></i>
                         </div>
-                    </div>*@
+                        <div class="col-xs-9 text-right">
+                            <div class="quitehuge">@Html.DisplayFor(model => model.strSales)</div>
+                            <div>Total Sales</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
 
                 <!-- Total Staff -->
                 <div class="col-lg-3 col-md-6">
@@ -539,37 +564,37 @@
 
                 <!-- Total VIP -->
                 @*<div class="col-lg-12 col-md-6">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-gift fa-4x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
-                                        <div>Total VIP</div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-gift fa-4x"></i>
                         </div>
-                    </div>*@
-                <!-- Other Sale -->
-                <!--
-                <div class="col-lg-12 col-md-6">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-dollar fa-4x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="quitehuge">@Html.DisplayFor(model => model.strOtherSale)</div>
-                                    <div>Other Sales</div>
-                                </div>
-                            </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="quitehuge">@Html.DisplayFor(model => model.strVipCount)</div>
+                            <div>Total VIP</div>
                         </div>
                     </div>
-                </div>-->
+                </div>
+            </div>
+        </div>*@
+                <!-- Other Sale -->
+                <!--
+    <div class="col-lg-12 col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-dollar fa-4x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="quitehuge">@Html.DisplayFor(model => model.strOtherSale)</div>
+                        <div>Other Sales</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
             </div>
             <!-- /.container-fluid -->
             <div class="row">

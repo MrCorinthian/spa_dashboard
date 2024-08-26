@@ -83,8 +83,9 @@
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="BranchId" Type="int" Nullable="false" />
     <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="ShowName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ShowName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="Active" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Image" Type="varchar" MaxLength="50" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
   </EntityType>
@@ -110,6 +111,7 @@
     <Property Name="Commission" Type="smallint" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="Position" Type="int" />
   </EntityType>
   <EntityType Name="MassageTopic">
     <Key>
@@ -376,7 +378,6 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="CancelStatus" Type="varchar" MaxLength="10" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
-    <Property Name="EmployeeTypeId" Type="int" />
   </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
@@ -425,6 +426,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="CommissionPercent" Type="int" />
   </EntityType>
   <EntityType Name="OtherSaleRecord">
     <Key>
@@ -443,6 +445,8 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
     <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
+    <Property Name="OrderReceiptId" Type="int" />
+    <Property Name="Commission" Type="smallint" />
   </EntityType>
   <EntityType Name="PriviledgeType">
     <Key>

@@ -1485,163 +1485,36 @@ namespace WebApplication13.Controllers
                 //Prepare content for View
                 if (accountId != null)
                 {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+                    int accountIdInInteger = Int32.Parse(accountId);
+                    int sumDiscount = GetTotalDiscount(branchIds, accountIdInInteger);
 
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
+                    var salesData = GetSalesData(branchIds, accountId);
+                    var totals = CalculateTotals(branchIds, accountId, sumDiscount, salesData.Item1, salesData.Item9, salesData.Item6, salesData.Item3);
 
                     HeaderValue hv = new HeaderValue()
                     {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
+                        strSales = salesData.Item1,
+                        strPax = salesData.Item2,
+                        strStaff = salesData.Item5,
+                        strCommission = salesData.Item3,
+                        arrGraphVal = getOrderRecordForGraph(branchIds, accountIdInInteger),
+                        strPieTopAName = salesData.Item7,
+                        strPieTopBName = salesData.Item8,
                         finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
                         listAllAccounts = getAllAccountInSelectionList(branchIds),
                         listAllMonths = getAllMonthList(),
                         listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+                        strAverage = salesData.Item4,
+                        strOtherSale = salesData.Item6,
+                        strInitMoney = salesData.Item10,
+                        strOilIncome = salesData.Item9,
+                        strBalanceNet = String.Format("{0:n0}", totals.balanceNet),
+                        strVipCount = getTotalVipAmount(branchIds, accountIdInInteger).ToString(),
                         strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
+                        strVoucher = String.Format("{0:n0}", sumDiscount),
+                        strCash = String.Format("{0:n0}", totals.totalCash),
+                        strCredit = String.Format("{0:n0}", totals.totalCredit)
                     };
-
 
                     return View(hv);
                 }
@@ -1649,138 +1522,15 @@ namespace WebApplication13.Controllers
                 {
                     int selectedMonth = Int32.Parse(monthNo);
                     int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
 
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
+                    HeaderValue hv = GetMonthlySalesData(branchIds, selectedMonth, selectedYear, userName);
                     return View(hv);
                 }
                 else if (yearNo != null)
                 {
                     int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
 
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
+                    HeaderValue hv = GetYearlySalesData(branchIds, selectedYear, userName);
                     return View(hv);
                 }
                 else
@@ -5026,7 +4776,7 @@ namespace WebApplication13.Controllers
         }
         public ActionResult ThaiBeautyOne(string accountId, string monthNo, string yearNo, string cmd)
         {
-            int branchIds = 13;
+            int branchIds = 99;
 
             //Check if Log out button is clicked
             if (cmd != null)
@@ -6770,8 +6520,10 @@ namespace WebApplication13.Controllers
 
         public SelectList getAllAccountInSelectionList(int branchId)
         {
+
             
             var listAllAccounts = new List<Account>();
+            var listAllAccountsFD = new List<AccountFMD>();
             using (var context = new spasystemdbEntities())
             {
 
@@ -6781,7 +6533,16 @@ namespace WebApplication13.Controllers
                                 .ToList();
             }
 
-            SelectList getAllAccountToSelectItem = new SelectList(listAllAccounts,"Id","CreateDateTime");
+            foreach (var account in listAllAccounts)
+            {
+                AccountFMD accountFMD = new AccountFMD();
+                accountFMD.Id = account.Id;
+                accountFMD.CreateDateTime = (DateTime)account.CreateDateTime;
+                accountFMD.FormattedCreateDateTime = accountFMD.CreateDateTime.ToString("dd-MM-yyyy HH:mm:ss");
+                listAllAccountsFD.Add(accountFMD);
+            }
+
+            SelectList getAllAccountToSelectItem = new SelectList(listAllAccountsFD, "Id", "FormattedCreateDateTime");
 
             return getAllAccountToSelectItem;
         }
@@ -6851,242 +6612,291 @@ namespace WebApplication13.Controllers
             return getAllYears;
         }
 
+        //public JsonProp[] getOrderRecordForGraph(int branchId, int accountId)
+        //{
+        //    List<OrderRecord> listOrderRecord = new List<OrderRecord>();
+        //    JsonProp[] arrPrePareToJS = new JsonProp[24];
+        //    //var totalComs = new int();
+        //    //DateTime current = DateTime.Now;
+        //    //string curDateTime = current.ToString("yyyy-MM-dd");
+        //    //DateTime dtStart = DateTime.ParseExact(curDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+        //    //DateTime tomorrow = DateTime.Now.AddDays(1);
+        //    //string tmrDateTime = tomorrow.ToString("yyyy-MM-dd");
+        //    //DateTime dtEnd = DateTime.ParseExact(tmrDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+        //    using (var context = new spasystemdbEntities())
+        //    {
+        //        // Query for all blogs with names starting with B 
+        //        //var blogs = from b in context.Accounts
+        //        //            where b.Date.Equals(2016-12-22)
+        //        //            select b;
+
+        //        //ac.Add((Account)blogs);
+        //        // Query for the Blog named ADO.NET Blog
+        //        //.AddDays(36)
+
+
+        //        listOrderRecord = context.OrderRecords
+        //            .Where(r => r.BranchId == branchId && r.AccountId == accountId && r.CancelStatus == "false")
+        //            .ToList();
+
+        //        //totalComs = context.OrderRecords
+        //        //                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false")
+        //        //                .Select(b => (int)b.Commission)
+        //        //                .ToList().Sum();
+        //    }
+
+        //    int t07 = 0, t08 = 0, t09 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0, t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0, t00 = 0, t01 = 0, t02 = 0, t03 = 0, t04 = 0;
+        //    TimeSpan ts0630 = new TimeSpan(6, 30, 0);
+        //    TimeSpan ts0730 = new TimeSpan(7, 30, 0);
+        //    TimeSpan ts0830 = new TimeSpan(8, 30, 0);
+        //    TimeSpan ts0930 = new TimeSpan(9, 30, 0);
+        //    TimeSpan ts1030 = new TimeSpan(10, 30, 0);
+        //    TimeSpan ts1130 = new TimeSpan(11, 30, 0);
+        //    TimeSpan ts1230 = new TimeSpan(12, 30, 0);
+        //    TimeSpan ts1330 = new TimeSpan(13, 30, 0);
+        //    TimeSpan ts1430 = new TimeSpan(14, 30, 0);
+        //    TimeSpan ts1530 = new TimeSpan(15, 30, 0);
+        //    TimeSpan ts1630 = new TimeSpan(16, 30, 0);
+        //    TimeSpan ts1730 = new TimeSpan(17, 30, 0);
+        //    TimeSpan ts1830 = new TimeSpan(18, 30, 0);
+        //    TimeSpan ts1930 = new TimeSpan(19, 30, 0);
+        //    TimeSpan ts2030 = new TimeSpan(20, 30, 0);
+        //    TimeSpan ts2130 = new TimeSpan(21, 30, 0);
+        //    TimeSpan ts2230 = new TimeSpan(22, 30, 0);
+        //    TimeSpan ts2330 = new TimeSpan(23, 30, 0);
+        //    TimeSpan ts2359 = new TimeSpan(23, 59, 59);
+        //    TimeSpan ts0000 = new TimeSpan(0, 0, 1);
+        //    TimeSpan ts0030 = new TimeSpan(0, 30, 0);
+        //    TimeSpan ts0130 = new TimeSpan(1, 30, 0);
+        //    TimeSpan ts0230 = new TimeSpan(2, 30, 0);
+        //    TimeSpan ts0330 = new TimeSpan(3, 30, 0);
+        //    TimeSpan ts0430 = new TimeSpan(4, 30, 0);
+
+        //    int dataNum = listOrderRecord.Count();
+
+        //    foreach (OrderRecord or in listOrderRecord)
+        //    {
+        //        if ((or.Time > ts0630) && (or.Time < ts0730))
+        //        {
+        //            t07++;
+        //        }
+        //        else if ((or.Time > ts0730) && (or.Time < ts0830))
+        //        {
+        //            t08++;
+        //        }
+        //        else if ((or.Time > ts0830) && (or.Time < ts0930))
+        //        {
+        //            t09++;
+        //        }
+        //        else if ((or.Time > ts0930) && (or.Time < ts1030))
+        //        {
+        //            t10++;
+        //        }
+        //        else if ((or.Time > ts1030) && (or.Time < ts1130))
+        //        {
+        //            t11++;
+        //        }
+        //        else if ((or.Time > ts1130) && (or.Time < ts1230))
+        //        {
+        //            t12++;
+        //        }
+        //        else if ((or.Time > ts1230) && (or.Time < ts1330))
+        //        {
+        //            t13++;
+        //        }
+        //        else if ((or.Time > ts1330) && (or.Time < ts1430))
+        //        {
+        //            t14++;
+        //        }
+        //        else if ((or.Time > ts1430) && (or.Time < ts1530))
+        //        {
+        //            t15++;
+        //        }
+        //        else if ((or.Time > ts1530) && (or.Time < ts1630))
+        //        {
+        //            t16++;
+        //        }
+        //        else if ((or.Time > ts1630) && (or.Time < ts1730))
+        //        {
+        //            t17++;
+        //        }
+        //        else if ((or.Time > ts1730) && (or.Time < ts1830))
+        //        {
+        //            t18++;
+        //        }
+        //        else if ((or.Time > ts1830) && (or.Time < ts1930))
+        //        {
+        //            t19++;
+        //        }
+        //        else if ((or.Time > ts1930) && (or.Time < ts2030))
+        //        {
+        //            t20++;
+        //        }
+        //        else if ((or.Time > ts2030) && (or.Time < ts2130))
+        //        {
+        //            t21++;
+        //        }
+        //        else if ((or.Time > ts2130) && (or.Time < ts2230))
+        //        {
+        //            t22++;
+        //        }
+        //        else if ((or.Time > ts2230) && (or.Time < ts2330))
+        //        {
+        //            t23++;
+        //        }
+        //        else if ((or.Time > ts2330) && (or.Time < ts2359))
+        //        {
+        //            t00++;
+        //        }
+        //        else if ((or.Time > ts0000) && (or.Time < ts0030))
+        //        {
+        //            t00++;
+        //        }
+        //        else if ((or.Time > ts0030) && (or.Time < ts0130))
+        //        {
+        //            t01++;
+        //        }
+        //        else if ((or.Time > ts0130) && (or.Time < ts0230))
+        //        {
+        //            t02++;
+        //        }
+        //        else if ((or.Time > ts0230) && (or.Time < ts0330))
+        //        {
+        //            t03++;
+        //        }
+        //        else if ((or.Time > ts0330) && (or.Time < ts0430))
+        //        {
+        //            t04++;
+        //        }
+        //    }
+
+        //    if(listOrderRecord.Count()==0)
+        //    {
+        //        arrPrePareToJS[0] = new JsonProp() { x = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), y = t07 };
+        //        arrPrePareToJS[1] = new JsonProp() { x = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"), y = t08 };
+        //        arrPrePareToJS[2] = new JsonProp() { x = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss"), y = t09 };
+        //        arrPrePareToJS[3] = new JsonProp() { x = DateTime.Now.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"), y = t10 };
+        //        arrPrePareToJS[4] = new JsonProp() { x = DateTime.Now.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss"), y = t11 };
+        //        arrPrePareToJS[5] = new JsonProp() { x = DateTime.Now.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss"), y = t12 };
+        //        arrPrePareToJS[6] = new JsonProp() { x = DateTime.Now.AddHours(6).ToString("yyyy-MM-dd HH:mm:ss"), y = t13 };
+        //        arrPrePareToJS[7] = new JsonProp() { x = DateTime.Now.AddHours(7).ToString("yyyy-MM-dd HH:mm:ss"), y = t14 };
+        //        arrPrePareToJS[8] = new JsonProp() { x = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss"), y = t15 };
+        //        arrPrePareToJS[9] = new JsonProp() { x = DateTime.Now.AddHours(9).ToString("yyyy-MM-dd HH:mm:ss"), y = t16 };
+        //        arrPrePareToJS[10] = new JsonProp() { x = DateTime.Now.AddHours(10).ToString("yyyy-MM-dd HH:mm:ss"), y = t17 };
+        //        arrPrePareToJS[11] = new JsonProp() { x = DateTime.Now.AddHours(11).ToString("yyyy-MM-dd HH:mm:ss"), y = t18 };
+        //        arrPrePareToJS[12] = new JsonProp() { x = DateTime.Now.AddHours(12).ToString("yyyy-MM-dd HH:mm:ss"), y = t19 };
+        //        //arrPrePareToJS[17] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.ToString("yyyy-MM-dd HH:mm:ss"), y = t00 };
+        //        //arrPrePareToJS[18] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"), y = t01 };
+        //        //arrPrePareToJS[19] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss"), y = t02 };
+        //        //arrPrePareToJS[20] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"), y = t03 };
+        //        //arrPrePareToJS[21] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss"), y = t04 };
+        //        //arrPrePareToJS[22] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
+        //        //arrPrePareToJS[23] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(6).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
+        //    }
+        //    else
+        //    {
+        //        arrPrePareToJS[0] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(7).ToString("yyyy-MM-dd HH:mm:ss"), y = t07 };
+        //        arrPrePareToJS[1] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss"), y = t08 };
+        //        arrPrePareToJS[2] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(9).ToString("yyyy-MM-dd HH:mm:ss"), y = t09 };
+        //        arrPrePareToJS[3] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(10).ToString("yyyy-MM-dd HH:mm:ss"), y = t10 };
+        //        arrPrePareToJS[4] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(11).ToString("yyyy-MM-dd HH:mm:ss"), y = t11 };
+        //        arrPrePareToJS[5] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(12).ToString("yyyy-MM-dd HH:mm:ss"), y = t12 };
+        //        arrPrePareToJS[6] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(13).ToString("yyyy-MM-dd HH:mm:ss"), y = t13 };
+        //        arrPrePareToJS[7] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(14).ToString("yyyy-MM-dd HH:mm:ss"), y = t14 };
+        //        arrPrePareToJS[8] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(15).ToString("yyyy-MM-dd HH:mm:ss"), y = t15 };
+        //        arrPrePareToJS[9] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(16).ToString("yyyy-MM-dd HH:mm:ss"), y = t16 };
+        //        arrPrePareToJS[10] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(17).ToString("yyyy-MM-dd HH:mm:ss"), y = t17 };
+        //        arrPrePareToJS[11] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(18).ToString("yyyy-MM-dd HH:mm:ss"), y = t18 };
+        //        arrPrePareToJS[12] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(19).ToString("yyyy-MM-dd HH:mm:ss"), y = t19 };
+        //        arrPrePareToJS[13] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(20).ToString("yyyy-MM-dd HH:mm:ss"), y = t20 };
+        //        arrPrePareToJS[14] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(21).ToString("yyyy-MM-dd HH:mm:ss"), y = t21 };
+        //        arrPrePareToJS[15] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(22).ToString("yyyy-MM-dd HH:mm:ss"), y = t22 };
+        //        arrPrePareToJS[16] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(23).ToString("yyyy-MM-dd HH:mm:ss"), y = t23 };
+        //        arrPrePareToJS[17] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.ToString("yyyy-MM-dd HH:mm:ss"), y = t00 };
+        //        arrPrePareToJS[18] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"), y = t01 };
+        //        arrPrePareToJS[19] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss"), y = t02 };
+        //        arrPrePareToJS[20] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"), y = t03 };
+        //        arrPrePareToJS[21] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss"), y = t04 };
+        //        arrPrePareToJS[22] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
+        //        arrPrePareToJS[23] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(6).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
+        //        //arrPrePareToJS[0] = "{ x: " + listOrderRecord[0].Date.AddHours(7).ToString().Replace("/", "-") + ", y: " + t07 + " }";
+        //        //arrPrePareToJS[1] = "{ x: " + listOrderRecord[0].Date.AddHours(8).ToString().Replace("/", "-") + ", y: " + t08 + " }";
+        //        //arrPrePareToJS[2] = "{ x: " + listOrderRecord[0].Date.AddHours(9).ToString().Replace("/", "-") + ", y: " + t09 + " }";
+        //        //arrPrePareToJS[3] = "{ x: " + listOrderRecord[0].Date.AddHours(10).ToString().Replace("/", "-") + ", y: " + t10 + " }";
+        //        //arrPrePareToJS[4] = "{ x: " + listOrderRecord[0].Date.AddHours(11).ToString().Replace("/", "-") + ", y: " + t11 + " }";
+        //        //arrPrePareToJS[5] = "{ x: " + listOrderRecord[0].Date.AddHours(12).ToString().Replace("/", "-") + ", y: " + t12 + " }";
+        //        //arrPrePareToJS[6] = "{ x: " + listOrderRecord[0].Date.AddHours(13).ToString().Replace("/", "-") + ", y: " + t13 + " }";
+        //        //arrPrePareToJS[7] = "{ x: " + listOrderRecord[0].Date.AddHours(14).ToString().Replace("/", "-") + ", y: " + t14 + " }";
+        //        //arrPrePareToJS[8] = "{ x: " + listOrderRecord[0].Date.AddHours(15).ToString().Replace("/", "-") + ", y: " + t15 + " }";
+        //        //arrPrePareToJS[9] = "{ x: " + listOrderRecord[0].Date.AddHours(16).ToString().Replace("/", "-") + ", y: " + t16 + " }";
+        //        //arrPrePareToJS[10] = "{ x: " + listOrderRecord[0].Date.AddHours(17).ToString().Replace("/", "-") + ", y: " + t17 + " }";
+        //        //arrPrePareToJS[11] = "{ x: " + listOrderRecord[0].Date.AddHours(18).ToString().Replace("/", "-") + ", y: " + t18 + " }";
+        //        //arrPrePareToJS[12] = "{ x: " + listOrderRecord[0].Date.AddHours(19).ToString().Replace("/", "-") + ", y: " + t19 + " }";
+        //        //arrPrePareToJS[13] = "{ x: " + listOrderRecord[0].Date.AddHours(20).ToString().Replace("/", "-") + ", y: " + t20 + " }";
+        //        //arrPrePareToJS[14] = "{ x: " + listOrderRecord[0].Date.AddHours(21).ToString().Replace("/", "-") + ", y: " + t21 + " }";
+        //        //arrPrePareToJS[15] = "{ x: " + listOrderRecord[0].Date.AddHours(22).ToString().Replace("/", "-") + ", y: " + t22 + " }";
+        //        //arrPrePareToJS[16] = "{ x: " + listOrderRecord[0].Date.AddHours(23).ToString().Replace("/", "-") + ", y: " + t23 + " }";
+        //        //arrPrePareToJS[17] = "{ x: " + listOrderRecord[dataNum - 1].Date.ToString().Replace("/", "-") + ", y: " + t00 + " }";
+        //        //arrPrePareToJS[18] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(1).ToString().Replace("/", "-") + ", y: " + t01 + " }";
+        //        //arrPrePareToJS[19] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(2).ToString().Replace("/", "-") + ", y: " + t02 + " }";
+        //        //arrPrePareToJS[20] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(3).ToString().Replace("/", "-") + ", y: " + t03 + " }";
+        //        //arrPrePareToJS[21] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(4).ToString().Replace("/", "-") + ", y: " + t04 + " }";
+        //        //arrPrePareToJS[22] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(5).ToString().Replace("/", "-") + ", y: 0 }";
+        //        //arrPrePareToJS[23] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(6).ToString().Replace("/", "-") + ", y: 0 }";
+        //    }
+        //    return arrPrePareToJS;
+        //}
+
         public JsonProp[] getOrderRecordForGraph(int branchId, int accountId)
         {
-            List<OrderRecord> listOrderRecord = new List<OrderRecord>();
             JsonProp[] arrPrePareToJS = new JsonProp[24];
-            //var totalComs = new int();
-            //DateTime current = DateTime.Now;
-            //string curDateTime = current.ToString("yyyy-MM-dd");
-            //DateTime dtStart = DateTime.ParseExact(curDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            TimeSpan[] timeSlots = new TimeSpan[]
+            {
+        new TimeSpan(6, 30, 0), new TimeSpan(7, 30, 0), new TimeSpan(8, 30, 0), new TimeSpan(9, 30, 0),
+        new TimeSpan(10, 30, 0), new TimeSpan(11, 30, 0), new TimeSpan(12, 30, 0), new TimeSpan(13, 30, 0),
+        new TimeSpan(14, 30, 0), new TimeSpan(15, 30, 0), new TimeSpan(16, 30, 0), new TimeSpan(17, 30, 0),
+        new TimeSpan(18, 30, 0), new TimeSpan(19, 30, 0), new TimeSpan(20, 30, 0), new TimeSpan(21, 30, 0),
+        new TimeSpan(22, 30, 0), new TimeSpan(23, 30, 0), new TimeSpan(23, 59, 59), new TimeSpan(0, 0, 1),
+        new TimeSpan(0, 30, 0), new TimeSpan(1, 30, 0), new TimeSpan(2, 30, 0), new TimeSpan(3, 30, 0)
+            };
 
-            //DateTime tomorrow = DateTime.Now.AddDays(1);
-            //string tmrDateTime = tomorrow.ToString("yyyy-MM-dd");
-            //DateTime dtEnd = DateTime.ParseExact(tmrDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            int[] counts = new int[24];
 
             using (var context = new spasystemdbEntities())
             {
-                // Query for all blogs with names starting with B 
-                //var blogs = from b in context.Accounts
-                //            where b.Date.Equals(2016-12-22)
-                //            select b;
-
-                //ac.Add((Account)blogs);
-                // Query for the Blog named ADO.NET Blog
-                //.AddDays(36)
-
-
-                listOrderRecord = context.OrderRecords
+                var orders = context.OrderRecords
                     .Where(r => r.BranchId == branchId && r.AccountId == accountId && r.CancelStatus == "false")
+                    .Select(r => r.Time)
                     .ToList();
 
-                //totalComs = context.OrderRecords
-                //                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false")
-                //                .Select(b => (int)b.Commission)
-                //                .ToList().Sum();
+                foreach (var orderTime in orders)
+                {
+                    for (int i = 0; i < timeSlots.Length - 1; i++)
+                    {
+                        if (orderTime > timeSlots[i] && orderTime <= timeSlots[i + 1])
+                        {
+                            counts[i]++;
+                            break;
+                        }
+                    }
+                }
             }
 
-            int t07 = 0, t08 = 0, t09 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0, t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0, t00 = 0, t01 = 0, t02 = 0, t03 = 0, t04 = 0;
-            TimeSpan ts0630 = new TimeSpan(6, 30, 0);
-            TimeSpan ts0730 = new TimeSpan(7, 30, 0);
-            TimeSpan ts0830 = new TimeSpan(8, 30, 0);
-            TimeSpan ts0930 = new TimeSpan(9, 30, 0);
-            TimeSpan ts1030 = new TimeSpan(10, 30, 0);
-            TimeSpan ts1130 = new TimeSpan(11, 30, 0);
-            TimeSpan ts1230 = new TimeSpan(12, 30, 0);
-            TimeSpan ts1330 = new TimeSpan(13, 30, 0);
-            TimeSpan ts1430 = new TimeSpan(14, 30, 0);
-            TimeSpan ts1530 = new TimeSpan(15, 30, 0);
-            TimeSpan ts1630 = new TimeSpan(16, 30, 0);
-            TimeSpan ts1730 = new TimeSpan(17, 30, 0);
-            TimeSpan ts1830 = new TimeSpan(18, 30, 0);
-            TimeSpan ts1930 = new TimeSpan(19, 30, 0);
-            TimeSpan ts2030 = new TimeSpan(20, 30, 0);
-            TimeSpan ts2130 = new TimeSpan(21, 30, 0);
-            TimeSpan ts2230 = new TimeSpan(22, 30, 0);
-            TimeSpan ts2330 = new TimeSpan(23, 30, 0);
-            TimeSpan ts2359 = new TimeSpan(23, 59, 59);
-            TimeSpan ts0000 = new TimeSpan(0, 0, 1);
-            TimeSpan ts0030 = new TimeSpan(0, 30, 0);
-            TimeSpan ts0130 = new TimeSpan(1, 30, 0);
-            TimeSpan ts0230 = new TimeSpan(2, 30, 0);
-            TimeSpan ts0330 = new TimeSpan(3, 30, 0);
-            TimeSpan ts0430 = new TimeSpan(4, 30, 0);
-
-            int dataNum = listOrderRecord.Count();
-
-            foreach (OrderRecord or in listOrderRecord)
+            DateTime startDateTime = DateTime.Now.Date.AddHours(7); // Start time at 7:00 AM
+            for (int i = 0; i < 24; i++)
             {
-                if ((or.Time > ts0630) && (or.Time < ts0730))
+                arrPrePareToJS[i] = new JsonProp
                 {
-                    t07++;
-                }
-                else if ((or.Time > ts0730) && (or.Time < ts0830))
-                {
-                    t08++;
-                }
-                else if ((or.Time > ts0830) && (or.Time < ts0930))
-                {
-                    t09++;
-                }
-                else if ((or.Time > ts0930) && (or.Time < ts1030))
-                {
-                    t10++;
-                }
-                else if ((or.Time > ts1030) && (or.Time < ts1130))
-                {
-                    t11++;
-                }
-                else if ((or.Time > ts1130) && (or.Time < ts1230))
-                {
-                    t12++;
-                }
-                else if ((or.Time > ts1230) && (or.Time < ts1330))
-                {
-                    t13++;
-                }
-                else if ((or.Time > ts1330) && (or.Time < ts1430))
-                {
-                    t14++;
-                }
-                else if ((or.Time > ts1430) && (or.Time < ts1530))
-                {
-                    t15++;
-                }
-                else if ((or.Time > ts1530) && (or.Time < ts1630))
-                {
-                    t16++;
-                }
-                else if ((or.Time > ts1630) && (or.Time < ts1730))
-                {
-                    t17++;
-                }
-                else if ((or.Time > ts1730) && (or.Time < ts1830))
-                {
-                    t18++;
-                }
-                else if ((or.Time > ts1830) && (or.Time < ts1930))
-                {
-                    t19++;
-                }
-                else if ((or.Time > ts1930) && (or.Time < ts2030))
-                {
-                    t20++;
-                }
-                else if ((or.Time > ts2030) && (or.Time < ts2130))
-                {
-                    t21++;
-                }
-                else if ((or.Time > ts2130) && (or.Time < ts2230))
-                {
-                    t22++;
-                }
-                else if ((or.Time > ts2230) && (or.Time < ts2330))
-                {
-                    t23++;
-                }
-                else if ((or.Time > ts2330) && (or.Time < ts2359))
-                {
-                    t00++;
-                }
-                else if ((or.Time > ts0000) && (or.Time < ts0030))
-                {
-                    t00++;
-                }
-                else if ((or.Time > ts0030) && (or.Time < ts0130))
-                {
-                    t01++;
-                }
-                else if ((or.Time > ts0130) && (or.Time < ts0230))
-                {
-                    t02++;
-                }
-                else if ((or.Time > ts0230) && (or.Time < ts0330))
-                {
-                    t03++;
-                }
-                else if ((or.Time > ts0330) && (or.Time < ts0430))
-                {
-                    t04++;
-                }
+                    x = startDateTime.AddHours(i).ToString("yyyy-MM-dd HH:mm:ss"),
+                    y = counts[i]
+                };
             }
 
-            if(listOrderRecord.Count()==0)
-            {
-                arrPrePareToJS[0] = new JsonProp() { x = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), y = t07 };
-                arrPrePareToJS[1] = new JsonProp() { x = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"), y = t08 };
-                arrPrePareToJS[2] = new JsonProp() { x = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss"), y = t09 };
-                arrPrePareToJS[3] = new JsonProp() { x = DateTime.Now.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"), y = t10 };
-                arrPrePareToJS[4] = new JsonProp() { x = DateTime.Now.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss"), y = t11 };
-                arrPrePareToJS[5] = new JsonProp() { x = DateTime.Now.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss"), y = t12 };
-                arrPrePareToJS[6] = new JsonProp() { x = DateTime.Now.AddHours(6).ToString("yyyy-MM-dd HH:mm:ss"), y = t13 };
-                arrPrePareToJS[7] = new JsonProp() { x = DateTime.Now.AddHours(7).ToString("yyyy-MM-dd HH:mm:ss"), y = t14 };
-                arrPrePareToJS[8] = new JsonProp() { x = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss"), y = t15 };
-                arrPrePareToJS[9] = new JsonProp() { x = DateTime.Now.AddHours(9).ToString("yyyy-MM-dd HH:mm:ss"), y = t16 };
-                arrPrePareToJS[10] = new JsonProp() { x = DateTime.Now.AddHours(10).ToString("yyyy-MM-dd HH:mm:ss"), y = t17 };
-                arrPrePareToJS[11] = new JsonProp() { x = DateTime.Now.AddHours(11).ToString("yyyy-MM-dd HH:mm:ss"), y = t18 };
-                arrPrePareToJS[12] = new JsonProp() { x = DateTime.Now.AddHours(12).ToString("yyyy-MM-dd HH:mm:ss"), y = t19 };
-                //arrPrePareToJS[17] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.ToString("yyyy-MM-dd HH:mm:ss"), y = t00 };
-                //arrPrePareToJS[18] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"), y = t01 };
-                //arrPrePareToJS[19] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss"), y = t02 };
-                //arrPrePareToJS[20] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"), y = t03 };
-                //arrPrePareToJS[21] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss"), y = t04 };
-                //arrPrePareToJS[22] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
-                //arrPrePareToJS[23] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(6).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
-            }
-            else
-            {
-                arrPrePareToJS[0] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(7).ToString("yyyy-MM-dd HH:mm:ss"), y = t07 };
-                arrPrePareToJS[1] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss"), y = t08 };
-                arrPrePareToJS[2] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(9).ToString("yyyy-MM-dd HH:mm:ss"), y = t09 };
-                arrPrePareToJS[3] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(10).ToString("yyyy-MM-dd HH:mm:ss"), y = t10 };
-                arrPrePareToJS[4] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(11).ToString("yyyy-MM-dd HH:mm:ss"), y = t11 };
-                arrPrePareToJS[5] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(12).ToString("yyyy-MM-dd HH:mm:ss"), y = t12 };
-                arrPrePareToJS[6] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(13).ToString("yyyy-MM-dd HH:mm:ss"), y = t13 };
-                arrPrePareToJS[7] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(14).ToString("yyyy-MM-dd HH:mm:ss"), y = t14 };
-                arrPrePareToJS[8] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(15).ToString("yyyy-MM-dd HH:mm:ss"), y = t15 };
-                arrPrePareToJS[9] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(16).ToString("yyyy-MM-dd HH:mm:ss"), y = t16 };
-                arrPrePareToJS[10] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(17).ToString("yyyy-MM-dd HH:mm:ss"), y = t17 };
-                arrPrePareToJS[11] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(18).ToString("yyyy-MM-dd HH:mm:ss"), y = t18 };
-                arrPrePareToJS[12] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(19).ToString("yyyy-MM-dd HH:mm:ss"), y = t19 };
-                arrPrePareToJS[13] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(20).ToString("yyyy-MM-dd HH:mm:ss"), y = t20 };
-                arrPrePareToJS[14] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(21).ToString("yyyy-MM-dd HH:mm:ss"), y = t21 };
-                arrPrePareToJS[15] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(22).ToString("yyyy-MM-dd HH:mm:ss"), y = t22 };
-                arrPrePareToJS[16] = new JsonProp() { x = listOrderRecord[0].Date.AddHours(23).ToString("yyyy-MM-dd HH:mm:ss"), y = t23 };
-                arrPrePareToJS[17] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.ToString("yyyy-MM-dd HH:mm:ss"), y = t00 };
-                arrPrePareToJS[18] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"), y = t01 };
-                arrPrePareToJS[19] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss"), y = t02 };
-                arrPrePareToJS[20] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"), y = t03 };
-                arrPrePareToJS[21] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss"), y = t04 };
-                arrPrePareToJS[22] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
-                arrPrePareToJS[23] = new JsonProp() { x = listOrderRecord[dataNum - 1].Date.AddHours(6).ToString("yyyy-MM-dd HH:mm:ss"), y = 0 };
-                //arrPrePareToJS[0] = "{ x: " + listOrderRecord[0].Date.AddHours(7).ToString().Replace("/", "-") + ", y: " + t07 + " }";
-                //arrPrePareToJS[1] = "{ x: " + listOrderRecord[0].Date.AddHours(8).ToString().Replace("/", "-") + ", y: " + t08 + " }";
-                //arrPrePareToJS[2] = "{ x: " + listOrderRecord[0].Date.AddHours(9).ToString().Replace("/", "-") + ", y: " + t09 + " }";
-                //arrPrePareToJS[3] = "{ x: " + listOrderRecord[0].Date.AddHours(10).ToString().Replace("/", "-") + ", y: " + t10 + " }";
-                //arrPrePareToJS[4] = "{ x: " + listOrderRecord[0].Date.AddHours(11).ToString().Replace("/", "-") + ", y: " + t11 + " }";
-                //arrPrePareToJS[5] = "{ x: " + listOrderRecord[0].Date.AddHours(12).ToString().Replace("/", "-") + ", y: " + t12 + " }";
-                //arrPrePareToJS[6] = "{ x: " + listOrderRecord[0].Date.AddHours(13).ToString().Replace("/", "-") + ", y: " + t13 + " }";
-                //arrPrePareToJS[7] = "{ x: " + listOrderRecord[0].Date.AddHours(14).ToString().Replace("/", "-") + ", y: " + t14 + " }";
-                //arrPrePareToJS[8] = "{ x: " + listOrderRecord[0].Date.AddHours(15).ToString().Replace("/", "-") + ", y: " + t15 + " }";
-                //arrPrePareToJS[9] = "{ x: " + listOrderRecord[0].Date.AddHours(16).ToString().Replace("/", "-") + ", y: " + t16 + " }";
-                //arrPrePareToJS[10] = "{ x: " + listOrderRecord[0].Date.AddHours(17).ToString().Replace("/", "-") + ", y: " + t17 + " }";
-                //arrPrePareToJS[11] = "{ x: " + listOrderRecord[0].Date.AddHours(18).ToString().Replace("/", "-") + ", y: " + t18 + " }";
-                //arrPrePareToJS[12] = "{ x: " + listOrderRecord[0].Date.AddHours(19).ToString().Replace("/", "-") + ", y: " + t19 + " }";
-                //arrPrePareToJS[13] = "{ x: " + listOrderRecord[0].Date.AddHours(20).ToString().Replace("/", "-") + ", y: " + t20 + " }";
-                //arrPrePareToJS[14] = "{ x: " + listOrderRecord[0].Date.AddHours(21).ToString().Replace("/", "-") + ", y: " + t21 + " }";
-                //arrPrePareToJS[15] = "{ x: " + listOrderRecord[0].Date.AddHours(22).ToString().Replace("/", "-") + ", y: " + t22 + " }";
-                //arrPrePareToJS[16] = "{ x: " + listOrderRecord[0].Date.AddHours(23).ToString().Replace("/", "-") + ", y: " + t23 + " }";
-                //arrPrePareToJS[17] = "{ x: " + listOrderRecord[dataNum - 1].Date.ToString().Replace("/", "-") + ", y: " + t00 + " }";
-                //arrPrePareToJS[18] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(1).ToString().Replace("/", "-") + ", y: " + t01 + " }";
-                //arrPrePareToJS[19] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(2).ToString().Replace("/", "-") + ", y: " + t02 + " }";
-                //arrPrePareToJS[20] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(3).ToString().Replace("/", "-") + ", y: " + t03 + " }";
-                //arrPrePareToJS[21] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(4).ToString().Replace("/", "-") + ", y: " + t04 + " }";
-                //arrPrePareToJS[22] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(5).ToString().Replace("/", "-") + ", y: 0 }";
-                //arrPrePareToJS[23] = "{ x: " + listOrderRecord[dataNum - 1].Date.AddHours(6).ToString().Replace("/", "-") + ", y: 0 }";
-            }
             return arrPrePareToJS;
         }
+
 
         public IEnumerable<List<OrderRecord>> getBestSeller(int branchId, int accountId)
         {
@@ -9063,6 +8873,193 @@ namespace WebApplication13.Controllers
             }
         }
 
+        private (string, string, string, string, string, string, string, string, string, string) GetSalesData(int branchIds, string accountId)
+        {
+            string tSales = " ", tPaxes = " ", tComs = " ", tAverage = " ", tStaff = " ", tOtherS = " ", topAname = " ", topBname = " ", tOil = " ", tInitMoney = " ";
+
+            string sql = @"SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', 
+                          COUNT(dbo.OrderRecord.Id) AS 'Total Pax', 
+                          SUM(dbo.OrderRecord.Commission) AS 'Total Commission', 
+                          (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', 
+                          (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = @AccountId AND BranchId = @BranchId) AS 'Total Staff', 
+                          (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE BranchId = @BranchId AND AccountId = @AccountId AND CancelStatus = 'false') AS 'Total Other Sale', 
+                          (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord 
+                           LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id 
+                           WHERE BranchId = @BranchId AND AccountId = @AccountId AND CancelStatus = 'false' 
+                           GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', 
+                          (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord 
+                           LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id 
+                           WHERE BranchId = @BranchId AND AccountId = @AccountId AND CancelStatus = 'false' 
+                           GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', 
+                          (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = @AccountId AND BranchId = @BranchId) * 
+                          (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = @BranchId AND Name = 'OilPrice') AS 'Total Oil Income', 
+                          (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = @AccountId AND BranchId = @BranchId) AS 'Initial Money' 
+                   FROM dbo.OrderRecord WHERE BranchId = @BranchId AND AccountId = @AccountId AND CancelStatus = 'false';";
+
+            using (SqlConnection cnn = new SqlConnection(ConfigurationManager.AppSettings["cString"]))
+            {
+                SqlCommand command = new SqlCommand(sql, cnn);
+                command.Parameters.AddWithValue("@AccountId", accountId);
+                command.Parameters.AddWithValue("@BranchId", branchIds);
+
+                cnn.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                    tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                    tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                    tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                    tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                    tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                    topAname = dataReader.GetValue(6).ToString();
+                    topBname = dataReader.GetValue(7).ToString();
+                    tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                    tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                }
+                dataReader.Close();
+            }
+
+            return (tSales, tPaxes, tComs, tAverage, tStaff, tOtherS, topAname, topBname, tOil, tInitMoney);
+        }
+
+        private (int totalCash, int totalCredit, int balanceNet, string tSaleMinusDiscountInString) CalculateTotals(int branchIds, string accountId, int sumDiscount, string tSales, string tOil, string tOtherS, string tComs)
+        {
+            int convert_tSales = ParseCurrency(tSales);
+            int convert_tOil = ParseCurrency(tOil);
+            int convert_tOtherS = ParseCurrency(tOtherS);
+            int convert_tComs = ParseCurrency(tComs);
+
+            int tSaleMinusDiscount = convert_tSales - sumDiscount;
+            string tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount);
+
+            int totalCash = getCash(branchIds, Int32.Parse(accountId)) - getVoucherCash(branchIds, Int32.Parse(accountId));
+            int totalCredit = getCredit(branchIds, Int32.Parse(accountId)) - getVoucherCredit(branchIds, Int32.Parse(accountId));
+
+            int balanceNet = (convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs;
+
+            return (totalCash, totalCredit, balanceNet, tSaleMinusDiscountInString);
+        }
+
+        private int ParseCurrency(string value)
+        {
+            return string.IsNullOrEmpty(value) ? 0 : Int32.Parse(value.Replace(",", ""));
+        }
+
+        private HeaderValue GetMonthlySalesData(int branchIds, int selectedMonth, int selectedYear, string userName)
+        {
+            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+            List<Account> listAccountInMonth;
+
+            using (var context = new spasystemdbEntities())
+            {
+                listAccountInMonth = context.Accounts
+                                    .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+            }
+
+            int tSales = 0, tPaxNum = 0, tComs = 0, tStaff = 0, tOtherS = 0, tInitMoney = 0, tOil = 0;
+
+            foreach (var account in listAccountInMonth)
+            {
+                tSales += getTotalSaleInMonth(branchIds, account.Id);
+                tPaxNum += getPaxNum(branchIds, account.Id);
+                tComs += getTotalCommissionInMonth(branchIds, account.Id);
+                tStaff += (int)account.StaffAmount;
+                tOtherS += getTotalOtherSaleInMonth(branchIds, account.Id);
+                tInitMoney += (int)account.StartMoney;
+                tOil += tStaff * getOilPrice(branchIds);
+            }
+
+            int tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+            float tAvg = (float)Math.Round((float)tSales / tPaxNum, MidpointRounding.AwayFromZero);
+
+            return new HeaderValue()
+            {
+                strSales = String.Format("{0:n0}", tSales),
+                strPax = String.Format("{0:n0}", tPaxNum),
+                strStaff = String.Format("{0:n0}", tStaff),
+                strCommission = String.Format("{0:n0}", tComs),
+                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+                listAllAccounts = getAllAccountInSelectionList(branchIds),
+                listAllMonths = getAllMonthList(),
+                listAllYears = getAllYearList(),
+                strAverage = tAvg.ToString(),
+                strOtherSale = String.Format("{0:n0}", tOtherS),
+                strInitMoney = String.Format("{0:n0}", tInitMoney),
+                strOilIncome = String.Format("{0:n0}", tOil),
+                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                strLoginName = userName
+            };
+        }
+
+        private HeaderValue GetYearlySalesData(int branchIds, int selectedYear, string userName)
+        {
+            DateTime dts = new DateTime(selectedYear, 1, 1);
+            List<Account> listAccountInYear;
+
+            using (var context = new spasystemdbEntities())
+            {
+                listAccountInYear = context.Accounts
+                                    .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+                                    .OrderBy(b => b.Id)
+                                    .ToList();
+            }
+
+            int tSales = 0, tPaxNum = 0, tComs = 0, tStaff = 0, tOtherS = 0, tInitMoney = 0, tOil = 0;
+
+            foreach (var account in listAccountInYear)
+            {
+                tSales += getTotalSaleInYear(branchIds, account.Id);
+                tPaxNum += getPaxNum(branchIds, account.Id);
+                tComs += getTotalCommissionInYear(branchIds, account.Id);
+                tStaff += (int)account.StaffAmount;
+                tOtherS += getTotalOtherSaleInYear(branchIds, account.Id);
+                tInitMoney += (int)account.StartMoney;
+                tOil += tStaff * getOilPrice(branchIds);
+            }
+
+            int tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+            float tAvg = (float)Math.Round((float)tSales / tPaxNum, MidpointRounding.AwayFromZero);
+
+            return new HeaderValue()
+            {
+                strSales = String.Format("{0:n0}", tSales),
+                strPax = String.Format("{0:n0}", tPaxNum),
+                strStaff = String.Format("{0:n0}", tStaff),
+                strCommission = String.Format("{0:n0}", tComs),
+                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+                listAllAccounts = getAllAccountInSelectionList(branchIds),
+                listAllMonths = getAllMonthList(),
+                listAllYears = getAllYearList(),
+                strAverage = tAvg.ToString(),
+                strOtherSale = String.Format("{0:n0}", tOtherS),
+                strInitMoney = String.Format("{0:n0}", tInitMoney),
+                strOilIncome = String.Format("{0:n0}", tOil),
+                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+                strLoginName = userName
+            };
+        }
+
+        private int GetTotalDiscount(int branchId, int accountId)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                return context.DiscountRecords
+                    .Where(b => b.BranchId == branchId && b.AccountId == accountId)
+                    .ToList() // Convert to a list to perform further processing
+                    .Sum(b => int.TryParse(b.Value, out int discount) ? discount : 0);
+            }
+        }
+
+
     }
     public static class ExtensionHelpers
     {
@@ -9071,5 +9068,14 @@ namespace WebApplication13.Controllers
             return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "...";
         }
     }
+
+    public class AccountFMD
+    {
+        public int Id { get; set; }
+        public DateTime CreateDateTime { get; set; }
+        public string FormattedCreateDateTime { get; set; } // Add this property
+    }
+
+
 
 }

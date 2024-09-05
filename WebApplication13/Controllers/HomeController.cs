@@ -98,11 +98,6 @@ namespace WebApplication13.Controllers
             //Check if Log out button is clicked
             if (cmd != null)
             {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
 
                 //Remove cookie when log out
                 RemoveCookie();
@@ -181,62 +176,16 @@ namespace WebApplication13.Controllers
             }
 
 
-            //Check user authen with old logic by check from hosting memory cache
-            //var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            //if (noms == null)
-            //{
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    HeaderValue hv = new HeaderValue();
-
-            //    SqlCommand command;
-            //    SqlDataReader dataReader;
-            //    String sql = " ";
-            //    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sales', count(dbo.OrderRecord.Id) as 'Total Pax', (select sum(dbo.Account.StaffAmount) from dbo.Account where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','4','5','6','7','8','9','10','99')) as 'Total Staff', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average per Pax',COUNT(CASE WHEN dbo.OrderRecord.MemberId != '0' THEN dbo.OrderRecord.MemberId ELSE NULL END) as 'Total VIP' from dbo.OrderRecord left join dbo.Account on dbo.OrderRecord.AccountId = dbo.Account.Id and dbo.OrderRecord.BranchId = dbo.Account.BranchId where dbo.Account.Date = (select top 1 dbo.Account.Date from dbo.Account order by dbo.Account.Date desc) and dbo.Account.BranchId not in ('1','2','3','4','5','6','7','8','9','10','99')";
-
-            //    connetionString = ConfigurationManager.AppSettings["cString"];
-            //    cnn = new SqlConnection(connetionString);
-            //    cnn.Open();
-            //    command = new SqlCommand(sql, cnn);
-
-            //    dataReader = command.ExecuteReader();
-            //    while (dataReader.Read())
-            //    {
-            //        if (dataReader.GetValue(0).Equals(null) || dataReader.GetValue(0).Equals("null"))
-            //        {
-            //            hv = new HeaderValue() { strSales = "0", strPax = "0", strStaff = "0", strCommission = "0", strAverage = "0", strVipCount = "0" };
-            //        }
-            //        else
-            //        {
-            //            hv = new HeaderValue() { strSales = String.Format("{0:n0}", dataReader.GetValue(0)), strPax = String.Format("{0:n0}", dataReader.GetValue(1)), strStaff = String.Format("{0:n0}", dataReader.GetValue(2)), strCommission = String.Format("{0:n0}", dataReader.GetValue(3)), strAverage = String.Format("{0:n0}", dataReader.GetValue(4)), strVipCount = String.Format("{0:n0}", dataReader.GetValue(5)) };
-            //        }
-
-            //    }
-
-            //    dataReader.Close();
-            //    command.Dispose();
-            //    cnn.Close();
-
-            //    return View(hv);
-
-
-            //}
         }
 
-        public ActionResult Urban(string accountId, string monthNo, string yearNo, string cmd, int id)
+
+        public ActionResult Urban(string accountId, string monthNo, string yearNo, string cmd, int bid)
         {
-            int branchIds = id;
+            int branchIds = bid;
 
             //Check if Log out button is clicked
             if (cmd != null)
             {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
 
                 //Remove cookie when log out
                 RemoveCookie();
@@ -285,21 +234,12 @@ namespace WebApplication13.Controllers
                     string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
                     List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
 
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
                     // Updated 11 October 2022
                     using (var context = new spasystemdbEntities())
                     {
 
                         listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger && b.CancelStatus == "false")
                                         .OrderBy(b => b.Id)
                                         .ToList();
                     }
@@ -387,13 +327,14 @@ namespace WebApplication13.Controllers
 
                     }
 
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
                     string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+
+                    var result = GetTotalCashAndCredit(branchIds, accountIdInInteger);
+                    int totalCash = result.TotalCash;
+                    int totalCredit = result.TotalCredit;
                     String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
                     String strCredit = String.Format("{0:n0}", totalCredit);
+
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -423,7 +364,9 @@ namespace WebApplication13.Controllers
                         strLoginName = userName,
                         strVoucher = strDis,
                         strCash = strCash,
-                        strCredit = strCredit
+                        strCredit = strCredit,
+                        bid = bid,
+                        bName = getBranchName(bid)
                     };
 
 
@@ -434,46 +377,82 @@ namespace WebApplication13.Controllers
                     int selectedMonth = Int32.Parse(monthNo);
                     int selectedYear = Int32.Parse(yearNo);
                     DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+
                     List<Account> listAccountInMonth = new List<Account>();
+                    List<OrderRecord> orderRecords = new List<OrderRecord>();
+                    List<OtherSaleRecord> otherSaleRecords = new List<OtherSaleRecord>();
+                    SystemSetting oilPriceSetting;
+                    List<OrderRecord> orderRecordsVIP = new List<OrderRecord>();
+                    List<DiscountRecord> discountRecords = new List<DiscountRecord>();
 
                     using (var context = new spasystemdbEntities())
                     {
-
+                        // Get accounts for the specified month and year
                         listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
+                                                    .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+                                                    .ToList();
+
+                        // Get all relevant order records for these accounts
+                        var accountIds = listAccountInMonth.Select(a => a.Id).ToList();
+                        orderRecords = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.CancelStatus == "false")
+                                              .ToList();
+
+                        // Get all relevant other sale records for these accounts
+                        otherSaleRecords = context.OtherSaleRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.CancelStatus == "false")
+                                                  .ToList();
+
+                        // Get the oil price setting
+                        oilPriceSetting = context.SystemSettings
+                                                 .Where(ss => ss.BranchId == branchIds && ss.Name == "OilPrice")
+                                                 .FirstOrDefault();
+
+                        //Get vip count
+                        orderRecordsVIP = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.CancelStatus == "false" && or.MemberId != 0)
+                                              .ToList();
+
+                        // Get all voucher or cash card discount
+                        discountRecords = context.DiscountRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.CancelStatus == "false")
+                                                  .ToList();
                     }
 
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
+                    int oilPrice = Int32.Parse(oilPriceSetting?.Value ?? "0");
+                    int tSales = 0, tPaxNum = 0, tComs = 0, tStaff = 0, tOtherS = 0, tInitMoney = 0, tOil = 0, tBalanceNet = 0, tVipCpunt = 0, tDiscount = 0, tCash = 0, tCredit = 0;
 
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
+                    foreach (var account in listAccountInMonth)
                     {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                        var accountOrderRecords = orderRecords.Where(or => or.AccountId == account.Id).ToList();
+                        var accountOtherSales = otherSaleRecords.Where(osr => osr.AccountId == account.Id).ToList();
+                        var accountOrderRecordsVIP = orderRecordsVIP.Where(or => or.AccountId == account.Id).ToList();
+                        var accountDiscount = discountRecords.Where(or => or.AccountId == account.Id).ToList();
+
+                        tSales += accountOrderRecords.Sum(or => (int)or.Price);
+                        tPaxNum += accountOrderRecords.Count();
+                        tComs += accountOrderRecords.Sum(or => (int)or.Commission);
+                        tStaff += (int)account.StaffAmount;
+                        tOtherS += accountOtherSales.Sum(osr => (int)osr.Price);
+                        tInitMoney += (int)account.StartMoney;
+                        tVipCpunt += accountOrderRecordsVIP.Count();
+                        tDiscount += accountDiscount.Sum(osr => int.Parse(osr.Value));
+                        //tCash += getCash(branchIds, account.Id) - getVoucherCash(branchIds, account.Id);
+                        //tCredit += getCredit(branchIds, account.Id) - getVoucherCredit(branchIds, account.Id);
                     }
+
+                    tOil = tStaff * oilPrice;
 
                     tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
                     float tSalesInFloat = (float)tSales;
                     float tPaxNumInFloat = (float)tPaxNum;
                     float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
+
+                    var accountIds_ = listAccountInMonth.Select(a => a.Id).ToList();
+                    var summary = GetTotalCashAndCredit_multiAcc(branchIds, accountIds_);
+                    tCash = summary.TotalCash;
+                    tCredit = summary.TotalCredit;
+
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -484,8 +463,8 @@ namespace WebApplication13.Controllers
                         arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
                         strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
                         strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        //arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        //arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
                         finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
                         listAllAccounts = getAllAccountInSelectionList(branchIds),
                         listAllMonths = getAllMonthList(),
@@ -495,7 +474,13 @@ namespace WebApplication13.Controllers
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
                         strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVipCount = tVipCpunt.ToString(), //new
+                        strVoucher = String.Format("{0:n0}", tDiscount), //new
+                        strCash = String.Format("{0:n0}", tCash), //new
+                        strCredit = String.Format("{0:n0}", tCredit), //new
+                        bid = bid,
+                        bName = getBranchName(bid)
                     };
 
                     return View(hv);
@@ -504,43 +489,79 @@ namespace WebApplication13.Controllers
                 {
                     int selectedYear = Int32.Parse(yearNo);
                     DateTime dts = new DateTime(selectedYear, 1, 1);
+
                     List<Account> listAccountInYear = new List<Account>();
+                    List<OrderRecord> orderRecords = new List<OrderRecord>();
+                    List<OtherSaleRecord> otherSaleRecords = new List<OtherSaleRecord>();
+                    SystemSetting oilPriceSetting;
+                    List<OrderRecord> orderRecordsVIP = new List<OrderRecord>();
+                    List<DiscountRecord> discountRecords = new List<DiscountRecord>();
 
                     using (var context = new spasystemdbEntities())
                     {
-
+                        // Get accounts for the specified year
                         listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
+                                                   .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+                                                   .ToList();
+
+                        // Get all relevant order records for these accounts within the year
+                        var accountIds = listAccountInYear.Select(a => a.Id).ToList();
+                        orderRecords = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.Date.Year == selectedYear && or.CancelStatus == "false")
+                                              .ToList();
+
+                        // Get all relevant other sale records for these accounts within the year
+                        otherSaleRecords = context.OtherSaleRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.Date.Year == selectedYear && osr.CancelStatus == "false")
+                                                  .ToList();
+
+                        // Get the oil price setting
+                        oilPriceSetting = context.SystemSettings
+                                                 .Where(ss => ss.BranchId == branchIds && ss.Name == "OilPrice")
+                                                 .FirstOrDefault();
+
+                        //Get vip count
+                        orderRecordsVIP = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.CancelStatus == "false" && or.MemberId != 0)
+                                              .ToList();
+
+                        // Get all voucher or cash card discount
+                        discountRecords = context.DiscountRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.CancelStatus == "false")
+                                                  .ToList();
                     }
 
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
+                    int oilPrice = Int32.Parse(oilPriceSetting?.Value ?? "0");
+                    int tSales = 0, tPaxNum = 0, tComs = 0, tStaff = 0, tOtherS = 0, tInitMoney = 0, tOil = 0, tBalanceNet = 0, tVipCpunt = 0, tDiscount = 0, tCash = 0, tCredit = 0;
 
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
+                    foreach (var account in listAccountInYear)
                     {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                        var accountOrderRecords = orderRecords.Where(or => or.AccountId == account.Id).ToList();
+                        var accountOtherSales = otherSaleRecords.Where(osr => osr.AccountId == account.Id).ToList();
+                        var accountOrderRecordsVIP = orderRecordsVIP.Where(or => or.AccountId == account.Id).ToList();
+                        var accountDiscount = discountRecords.Where(or => or.AccountId == account.Id).ToList();
+
+                        tSales += accountOrderRecords.Sum(or => (int)or.Price);
+                        tPaxNum += accountOrderRecords.Count();
+                        tComs += accountOrderRecords.Sum(or => (int)or.Commission);
+                        tStaff += (int)account.StaffAmount;
+                        tOtherS += accountOtherSales.Sum(osr => (int)osr.Price);
+                        tInitMoney += (int)account.StartMoney;
+                        tVipCpunt += accountOrderRecordsVIP.Count();
+                        tDiscount += accountDiscount.Sum(osr => int.Parse(osr.Value));
                     }
 
+                    tOil = tStaff * oilPrice;
+
+                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
                     float tSalesInFloat = (float)tSales;
                     float tPaxNumInFloat = (float)tPaxNum;
                     float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+                    var accountIds_ = listAccountInYear.Select(a => a.Id).ToList();
+                    var summary = GetTotalCashAndCredit_multiAcc(branchIds, accountIds_);
+                    tCash = summary.TotalCash;
+                    tCredit = summary.TotalCredit;
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -551,8 +572,8 @@ namespace WebApplication13.Controllers
                         arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
                         strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
                         strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        //arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        //arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
                         finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
                         listAllAccounts = getAllAccountInSelectionList(branchIds),
                         listAllMonths = getAllMonthList(),
@@ -562,7 +583,13 @@ namespace WebApplication13.Controllers
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
                         strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVipCount = tVipCpunt.ToString(), //new
+                        strVoucher = String.Format("{0:n0}", tDiscount), //new
+                        strCash = String.Format("{0:n0}", tCash), //new
+                        strCredit = String.Format("{0:n0}", tCredit), //new
+                        bid = bid,
+                        bName = getBranchName(bid)
                     };
 
                     return View(hv);
@@ -583,23 +610,15 @@ namespace WebApplication13.Controllers
                     string tOil = " ";
                     int accountIdInInteger = ac.Id; // Updated 11 October 2022
                     int sumDiscount = 0; // Updated 11 October 2022
+
                     List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
 
                     // Updated 11 October 2022
                     using (var context = new spasystemdbEntities())
                     {
 
                         listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger && b.CancelStatus == "false")
                                         .OrderBy(b => b.Id)
                                         .ToList();
                     }
@@ -608,20 +627,13 @@ namespace WebApplication13.Controllers
                     {
                         sumDiscount += Int32.Parse(listDiscount[m].Value);
                     }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+                    /////////////////////////
 
                     SqlCommand command;
                     SqlDataReader dataReader;
                     String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + ac.Id + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + ac.Id + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + ac.Id + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + ac.Id + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + ac.Id + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + ac.Id + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + ac.Id + "' and dbo.OrderRecord.CancelStatus = 'false';";
 
                     connetionString = ConfigurationManager.AppSettings["cString"];
                     cnn = new SqlConnection(connetionString);
@@ -695,14 +707,21 @@ namespace WebApplication13.Controllers
                     }
 
                     string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+
+                    var result = GetTotalCashAndCredit(branchIds, accountIdInInteger);
+                    int totalCash = result.TotalCash;
+                    int totalCredit = result.TotalCredit;
                     String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
                     String strCredit = String.Format("{0:n0}", totalCredit);
+
 
                     HeaderValue hv = new HeaderValue()
                     {
                         strSales = tSales,
+                        ////////////
+                        //Waiting for confirm this has to be deduct discount 11 October 2022
+                        //strSales = tSaleMinusDiscountInString,
+                        ////////////
                         strPax = tPaxes,
                         strStaff = tStaff,
                         strCommission = tComs,
@@ -724,7 +743,9 @@ namespace WebApplication13.Controllers
                         strLoginName = userName,
                         strVoucher = strDis,
                         strCash = strCash,
-                        strCredit = strCredit
+                        strCredit = strCredit,
+                        bid = bid,
+                        bName = getBranchName(bid)
                     };
 
 
@@ -737,431 +758,4454 @@ namespace WebApplication13.Controllers
             }
         }
 
-        public ActionResult Khaosan(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 2;
+        //public ActionResult Khaosan(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 2;
 
+        //    if (cmd != null)
+        //    {
+        //        foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        {
+        //            System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        }
+        //    }
+
+        //    var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+        //    if (noms == null)
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //}
+
+        //public ActionResult UrbanTwo(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 3;
+
+        //    if (cmd != null)
+        //    {
+        //        foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        {
+        //            System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        }
+        //    }
+
+        //    var noms = System.Runtime.Caching.MemoryCache.Default["names"];
+        //    if (noms == null)
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet)
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+
+        //}
+
+        //public ActionResult UrbanThree(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 4;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+
+        //public ActionResult UrbanFour(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 5;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+        //public ActionResult UrbanFive(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 6;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+        //public ActionResult UrbanSix(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 7;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+        //public ActionResult UrbanSeven(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 8;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+        //public ActionResult UrbanEight(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 10;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+        //public ActionResult ThaiGardenOne(string accountId, string monthNo, string yearNo, string cmd)
+        //{
+        //    int branchIds = 12;
+
+        //    //Check if Log out button is clicked
+        //    if (cmd != null)
+        //    {
+        //        //Old logic for Log out by clear all host memory cache
+        //        //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
+        //        //{
+        //        //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
+        //        //}
+
+        //        //Remove cookie when log out
+        //        RemoveCookie();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    //Check user token
+        //    // Retrieve the cookie from the request
+        //    HttpCookie cookie = Request.Cookies["TokenCookie"];
+        //    HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+        //    string tokenValue = null;
+        //    string userName = null;
+
+        //    //Check user token from cookie
+        //    if (cookie != null)
+        //    {
+        //        tokenValue = cookie.Value;
+
+        //        //Check user name from cookie
+        //        if (cookie_user != null)
+        //        {
+        //            userName = cookie_user.Value;
+        //        }
+        //        else
+        //        {
+        //            userName = "Annonymous";
+        //        }
+
+        //        //Prepare content for View
+        //        if (accountId != null)
+        //        {
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            int tSaleMinusDiscount = 0; // Updated 11 October 2022
+        //            string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+        //            /////////////////////////
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
+        //            tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                ////////////
+        //                //Waiting for confirm this has to be deduct discount 11 October 2022
+        //                //strSales = tSaleMinusDiscountInString,
+        //                ////////////
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //        else if (monthNo != null)
+        //        {
+        //            int selectedMonth = Int32.Parse(monthNo);
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+        //            List<Account> listAccountInMonth = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInMonth = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInMonth.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
+        //                tSales += getTotalSaleInMonth(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInMonth(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //System.Diagnostics.Debug.WriteLine("f");
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
+        //                strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
+        //                arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else if (yearNo != null)
+        //        {
+        //            int selectedYear = Int32.Parse(yearNo);
+        //            DateTime dts = new DateTime(selectedYear, 1, 1);
+        //            List<Account> listAccountInYear = new List<Account>();
+
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listAccountInYear = context.Accounts
+        //                                .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            Account ac = new Account();
+        //            int tSales = 0;
+        //            int tPaxNum = 0;
+        //            int tComs = 0;
+        //            int tStaff = 0;
+        //            int tOtherS = 0;
+        //            int tInitMoney = 0;
+        //            int tOil = 0;
+        //            int tBalanceNet = 0;
+
+        //            for (int p = 0; p < listAccountInYear.Count(); p++)
+        //            {
+        //                ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
+        //                tSales += getTotalSaleInYear(branchIds, ac.Id);
+        //                tPaxNum += getPaxNum(branchIds, ac.Id);
+        //                tComs += getTotalCommissionInYear(branchIds, ac.Id);
+        //                tStaff += (int)ac.StaffAmount;
+        //                tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
+        //                tInitMoney += (int)ac.StartMoney;
+        //                tOil += tStaff * getOilPrice(branchIds);
+        //                tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+        //            }
+
+        //            float tSalesInFloat = (float)tSales;
+        //            float tPaxNumInFloat = (float)tPaxNum;
+        //            float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = String.Format("{0:n0}", tSales),
+        //                strPax = String.Format("{0:n0}", tPaxNum),
+        //                strStaff = String.Format("{0:n0}", tStaff),
+        //                strCommission = String.Format("{0:n0}", tComs),
+        //                arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
+        //                strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
+        //                arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+        //                finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAvg.ToString(),
+        //                strOtherSale = String.Format("{0:n0}", tOtherS),
+        //                strInitMoney = String.Format("{0:n0}", tInitMoney),
+        //                strOilIncome = String.Format("{0:n0}", tOil),
+        //                strBalanceNet = String.Format("{0:n0}", tBalanceNet),
+        //                strLoginName = userName
+        //            };
+
+        //            return View(hv);
+        //        }
+        //        else
+        //        {
+
+        //            Account ac = getAccountValue(branchIds);
+        //            string tSales = " ";
+        //            string tPaxes = " ";
+        //            string tAverage = " ";
+        //            string tStaff = " ";
+        //            string topAname = " ";
+        //            string topBname = " ";
+        //            string tComs = " ";
+        //            string tOtherS = " ";
+        //            string tInitMoney = " ";
+        //            string tOil = " ";
+        //            int accountIdInInteger = ac.Id; // Updated 11 October 2022
+        //            int sumDiscount = 0; // Updated 11 October 2022
+        //            List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            // Updated 11 October 2022
+        //            using (var context = new spasystemdbEntities())
+        //            {
+
+        //                listDiscount = context.DiscountRecords
+        //                                .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
+        //                                .OrderBy(b => b.Id)
+        //                                .ToList();
+        //            }
+
+        //            for (int m = 0; m < listDiscount.Count(); m++)
+        //            {
+        //                sumDiscount += Int32.Parse(listDiscount[m].Value);
+        //            }
+
+        //            //int tPaxNum = getPaxNum(branchIds, ac.Id);
+        //            //string tComs = getTotalCommission(branchIds, ac.Id);
+        //            //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
+        //            //float tSalesInFloat = (float)tSalesInInteger;
+        //            //float tPaxNumInFloat = (float)tPaxNum;
+        //            //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+        //            //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+
+        //            SqlCommand command;
+        //            SqlDataReader dataReader;
+        //            String sql = " ";
+        //            sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
+        //            //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
+
+        //            connetionString = ConfigurationManager.AppSettings["cString"];
+        //            cnn = new SqlConnection(connetionString);
+        //            cnn.Open();
+        //            command = new SqlCommand(sql, cnn);
+
+        //            dataReader = command.ExecuteReader();
+        //            while (dataReader.Read())
+        //            {
+        //                tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+        //                tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+        //                tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+        //                tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+        //                tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+        //                tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+        //                topAname = dataReader.GetValue(6).ToString();
+        //                topBname = dataReader.GetValue(7).ToString();
+        //                tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+        //                tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+        //            }
+
+        //            dataReader.Close();
+        //            command.Dispose();
+        //            cnn.Close();
+
+        //            int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+        //            string tSales_trim = tSales.Replace(",", "");
+        //            string tOil_trim = tOil.Replace(",", "");
+        //            string tOtherS_trim = tOtherS.Replace(",", "");
+        //            string tComs_trim = tComs.Replace(",", "");
+
+        //            if (string.IsNullOrEmpty(tSales_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tSales = Int32.Parse(tSales_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tOtherS_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOtherS = Int32.Parse(tOtherS_trim);
+
+        //            }
+
+
+        //            if (string.IsNullOrEmpty(tOil_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tOil = Int32.Parse(tOil_trim);
+
+        //            }
+
+        //            if (string.IsNullOrEmpty(tComs_trim))
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                convert_tComs = Int32.Parse(tComs_trim);
+
+        //            }
+
+        //            string strDis = String.Format("{0:n0}", sumDiscount);
+        //            int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
+        //            String strCash = String.Format("{0:n0}", totalCash);
+        //            int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
+        //            String strCredit = String.Format("{0:n0}", totalCredit);
+
+        //            HeaderValue hv = new HeaderValue()
+        //            {
+        //                strSales = tSales,
+        //                strPax = tPaxes,
+        //                strStaff = tStaff,
+        //                strCommission = tComs,
+        //                arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
+        //                strPieTopAName = topAname,
+        //                strPieTopBName = topBname,
+        //                //arrPieTopAVal = getTopAForAday(branchIds),
+        //                //arrPieTopBVal = getTopBForAday(branchIds),
+        //                finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
+        //                listAllAccounts = getAllAccountInSelectionList(branchIds),
+        //                listAllMonths = getAllMonthList(),
+        //                listAllYears = getAllYearList(),
+        //                strAverage = tAverage,
+        //                strOtherSale = String.Format("{0:n0}", convert_tOtherS),
+        //                strInitMoney = tInitMoney,
+        //                strOilIncome = tOil,
+        //                strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
+        //                strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
+        //                strLoginName = userName,
+        //                strVoucher = strDis,
+        //                strCash = strCash,
+        //                strCredit = strCredit
+        //            };
+
+
+        //            return View(hv);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //}
+
+        public ActionResult UrbanBeauty(string accountId, string monthNo, string yearNo, string cmd, int bid, string tab)
+        {
+            int branchIds = bid;
+            int sellItemTypeId = 1;
+            if (string.IsNullOrEmpty(tab))
+            {
+                sellItemTypeId = 1;
+            }
+            else if(tab.Equals("A"))
+            {
+                sellItemTypeId = 1;
+            }
+            else if (tab.Equals("B"))
+            {
+                sellItemTypeId = 2;
+            }
+
+
+            //Check if Log out button is clicked
             if (cmd != null)
             {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
 
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
+                //Remove cookie when log out
+                RemoveCookie();
                 return RedirectToAction("Index");
             }
-            else
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
             {
-                if (accountId != null)
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
                 {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
-                    };
-
-                    return View(hv);
+                    userName = cookie_user.Value;
                 }
                 else
                 {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
-                    };
-
-
-                    return View(hv);
+                    userName = "Annonymous";
                 }
-            }
-        }
 
-        public ActionResult UrbanTwo(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 3;
-
-            if (cmd != null)
-            {
-                foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                {
-                    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                }
-            }
-
-            var noms = System.Runtime.Caching.MemoryCache.Default["names"];
-            if (noms == null)
-            {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                if (accountId != null)
+                //Prepare content for View
+                if (!string.IsNullOrEmpty(accountId))
                 {
                     string tSales = " ";
                     string tPaxes = " ";
@@ -1174,629 +5218,415 @@ namespace WebApplication13.Controllers
                     string tInitMoney = " ";
                     string tOil = " ";
 
+                    string tSales_B = " ";
+                    string tPaxes_B = " ";
+                    string tAverage_B = " ";
+                    string tStaff_B = " ";
+                    string topAname_B = " ";
+                    string topBname_B = " ";
+                    string tComs_B = " ";
+                    string tOtherS_B = " ";
+                    string tInitMoney_B = " ";
+                    string tOil_B = " ";
 
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
+
+                    int sumDiscount = 0; // Updated 11 October 2022
+                    int sumDiscount_B = 0;
+
+                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+                    List<DiscountRecord> listDiscount_B = new List<DiscountRecord>(); // Updated 11 October 2022
+
+                    // Updated 11 October 2022
+                    //using (var context = new spasystemdbEntities())
+                    //{
+
+                    //    listDiscount = context.DiscountRecords
+                    //                    .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger && b.CancelStatus == "false")
+                    //                    .OrderBy(b => b.Id)
+                    //                    .ToList();
+                    //}
+
+                    //for (int m = 0; m < listDiscount.Count(); m++)
+                    //{
+                    //    sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    //}
+
+
+
+                    /////////////////////////
+
 
                     SqlCommand command;
                     SqlDataReader dataReader;
                     String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
 
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
+                    if (sellItemTypeId == 1)
                     {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
+                        //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', SUM(dbo.OrderRecord.Commission) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
 
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
+                        connetionString = ConfigurationManager.AppSettings["cString"];
+                        cnn = new SqlConnection(connetionString);
+                        cnn.Open();
+                        command = new SqlCommand(sql, cnn);
 
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
+                        dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
+                        {
+                            tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                            tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                            tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                            tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                            tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                            tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                            topAname = dataReader.GetValue(6).ToString();
+                            topBname = dataReader.GetValue(7).ToString();
+                            tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                            tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                        }
 
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
+                        dataReader.Close();
+                        command.Dispose();
+                        cnn.Close();
 
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
+                        int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+                        string tSales_trim = tSales.Replace(",", "");
+                        string tOil_trim = tOil.Replace(",", "");
+                        string tOtherS_trim = tOtherS.Replace(",", "");
+                        string tComs_trim = tComs.Replace(",", "");
 
-                    }
+                        if (string.IsNullOrEmpty(tSales_trim))
+                        {
 
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
+                        }
+                        else
+                        {
+                            convert_tSales = Int32.Parse(tSales_trim);
 
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
+                        }
 
-                    }
+                        if (string.IsNullOrEmpty(tOtherS_trim))
+                        {
 
+                        }
+                        else
+                        {
+                            convert_tOtherS = Int32.Parse(tOtherS_trim);
 
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
-                    };
+                        }
 
 
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
+                        if (string.IsNullOrEmpty(tOil_trim))
+                        {
 
-                    using (var context = new spasystemdbEntities())
-                    {
+                        }
+                        else
+                        {
+                            convert_tOil = Int32.Parse(tOil_trim);
 
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
+                        }
 
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
+                        if (string.IsNullOrEmpty(tComs_trim))
+                        {
 
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
+                        }
+                        else
+                        {
+                            convert_tComs = Int32.Parse(tComs_trim);
 
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
+                        }
 
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
-                    };
+                        sumDiscount = getSumDiscount_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        string strDis = String.Format("{0:n0}", sumDiscount);
 
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
+                        var result = GetTotalCashAndCredit_multiAcc_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        int totalCash = result.TotalCash;
+                        int totalCredit = result.TotalCredit;
+                        String strCash = String.Format("{0:n0}", totalCash);
+                        String strCredit = String.Format("{0:n0}", totalCredit);
 
-                    using (var context = new spasystemdbEntities())
-                    {
+                        HeaderWithBeauty hv = new HeaderWithBeauty()
+                        {
+                            strSales = tSales,
+                            ////////////
+                            //Waiting for confirm this has to be deduct discount 11 October 2022
+                            //strSales = tSaleMinusDiscountInString,
+                            ////////////
+                            strPax = tPaxes,
+                            strStaff = tStaff,
+                            strCommission = tComs,
+                            arrGraphVal = getOrderRecordForGraph_B(branchIds, Int32.Parse(accountId), sellItemTypeId),
+                            strPieTopAName = topAname,
+                            strPieTopBName = topBname,
+                            //arrPieTopAVal = getTopAForAday(branchIds),
+                            //arrPieTopBVal = getTopBForAday(branchIds),
+                            finalSaleForEach = getFinalSaleForEach_B(branchIds, accountId, sellItemTypeId),
+                            listAllAccounts = getAllAccountInSelectionList(branchIds),
+                            listAllMonths = getAllMonthList(),
+                            listAllYears = getAllYearList(),
+                            strAverage = tAverage,
+                            strOtherSale = String.Format("{0:n0}", 0),
+                            strInitMoney = tInitMoney,
+                            strOilIncome = tOil,
+                            strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil) - convert_tComs)),
+                            strVipCount = getTotalVipAmount_B(branchIds, Int32.Parse(accountId), sellItemTypeId).ToString(),
+                            strLoginName = userName,
+                            strVoucher = strDis,
+                            strCash = strCash,
+                            strCredit = strCredit,
+                            bid = bid,
+                            bName = getBranchName(bid),
+                            accountId = accountId
+                        };
 
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet)
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
+                        //return View(hv);
+                        if (Request.IsAjaxRequest())
+                        {
+                            // Return partial view for AJAX requests
+                            return PartialView("_UrbanBeautyPartial", hv);
+                        }
+                        else
+                        {
+                            // Return full view for normal requests
+                            return View("UrbanBeauty", hv);
+                        }
                     }
                     else
                     {
-                        convert_tSales = Int32.Parse(tSales_trim);
+                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', (SUM(dbo.OrderRecord.Commission) + (SELECT SUM(dbo.OtherSaleRecord.Commission) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false')) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
+
+                        connetionString = ConfigurationManager.AppSettings["cString"];
+                        cnn = new SqlConnection(connetionString);
+                        cnn.Open();
+                        command = new SqlCommand(sql, cnn);
+
+                        dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
+                        {
+                            tSales_B = String.Format("{0:n0}", dataReader.GetValue(0));
+                            tPaxes_B = String.Format("{0:n0}", dataReader.GetValue(1));
+                            tComs_B = String.Format("{0:n0}", dataReader.GetValue(2));
+                            tAverage_B = String.Format("{0:n0}", dataReader.GetValue(3));
+                            tStaff_B = String.Format("{0:n0}", dataReader.GetValue(4));
+                            tOtherS_B = String.Format("{0:n0}", dataReader.GetValue(5));
+                            topAname_B = dataReader.GetValue(6).ToString();
+                            topBname_B = dataReader.GetValue(7).ToString();
+                            tOil_B = String.Format("{0:n0}", dataReader.GetValue(8));
+                            tInitMoney_B = String.Format("{0:n0}", dataReader.GetValue(9));
+                        }
+
+                        dataReader.Close();
+                        command.Dispose();
+                        cnn.Close();
+
+                        int convert_tSales_B = 0, convert_tOil_B = 0, convert_tOtherS_B = 0, convert_tComs_B = 0;
+                        string tSales_trim_B = tSales_B.Replace(",", "");
+                        string tOil_trim_B = tOil_B.Replace(",", "");
+                        string tOtherS_trim_B = tOtherS_B.Replace(",", "");
+                        string tComs_trim_B = tComs_B.Replace(",", "");
+
+                        if (string.IsNullOrEmpty(tSales_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tSales_B = Int32.Parse(tSales_trim_B);
+
+                        }
+
+                        if (string.IsNullOrEmpty(tOtherS_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tOtherS_B = Int32.Parse(tOtherS_trim_B);
+
+                        }
+
+
+                        if (string.IsNullOrEmpty(tOil_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tOil_B = Int32.Parse(tOil_trim_B);
+
+                        }
+
+                        if (string.IsNullOrEmpty(tComs_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tComs_B = Int32.Parse(tComs_trim_B);
+
+                        }
+
+                        sumDiscount_B = getSumDiscount_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        string strDis_B = String.Format("{0:n0}", sumDiscount_B);
+
+                        var result_B = GetTotalCashAndCredit_multiAcc_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        int totalCash_B = result_B.TotalCash;
+                        int totalCredit_B = result_B.TotalCredit;
+                        String strCash_B = String.Format("{0:n0}", totalCash_B);
+                        String strCredit_B = String.Format("{0:n0}", totalCredit_B);
+
+                        //HeaderWithBeauty hv = new HeaderWithBeauty();
+                        //hv.strSales_B = tSales_B;
+                        //hv.strPax_B = tPaxes_B;
+                        //hv.strStaff_B = "0";
+                        //hv.strCommission_B = tComs_B;
+                        //hv.arrGraphVal_B = getOrderRecordForGraph_B(branchIds, Int32.Parse(accountId), sellItemTypeId);
+                        //hv.strPieTopAName_B = topAname_B;
+                        //hv.strPieTopBName_B = topBname_B;
+                        //hv.finalSaleForEach_B = getFinalSaleForEach_B(branchIds, accountId, sellItemTypeId);
+                        //hv.strAverage_B = tAverage_B;
+                        //hv.strOtherSale_B = String.Format("{0:n0}", convert_tOtherS_B);
+                        //hv.strOilIncome_B = "0";
+                        //hv.strBalanceNet_B = String.Format("{0:n0}", ((convert_tSales_B + convert_tOtherS_B) - convert_tComs_B));
+                        //hv.strVipCount_B = getTotalVipAmount_B(branchIds, Int32.Parse(accountId), sellItemTypeId).ToString();
+                        //hv.strVoucher_B = strDis_B;
+                        //hv.strCash_B = strCash_B;
+                        //hv.strCredit_B = strCredit_B;
+
+
+                        HeaderWithBeauty hv = new HeaderWithBeauty()
+                        {
+                            strSales = tSales_B,
+                            ////////////
+                            //Waiting for confirm this has to be deduct discount 11 October 2022
+                            //strSales = tSaleMinusDiscountInString,
+                            ////////////
+                            strPax = tPaxes_B,
+                            strStaff = "0",
+                            strCommission = tComs_B,
+                            arrGraphVal = getOrderRecordForGraph_B(branchIds, Int32.Parse(accountId), sellItemTypeId),
+                            strPieTopAName = topAname_B,
+                            strPieTopBName = topBname_B,
+                            //arrPieTopAVal = getTopAForAday(branchIds),
+                            //arrPieTopBVal = getTopBForAday(branchIds),
+                            finalSaleForEach = getFinalSaleForEach_B(branchIds, accountId, sellItemTypeId),
+                            listAllAccounts = getAllAccountInSelectionList(branchIds),
+                            listAllMonths = getAllMonthList(),
+                            listAllYears = getAllYearList(),
+                            strAverage = tAverage_B,
+                            strOtherSale = String.Format("{0:n0}", convert_tOtherS_B),
+                            strInitMoney = tInitMoney_B,
+                            strOilIncome = "0",
+                            strBalanceNet = String.Format("{0:n0}", ((convert_tSales_B + convert_tOtherS_B) - convert_tComs_B)),
+                            strVipCount = getTotalVipAmount_B(branchIds, Int32.Parse(accountId), sellItemTypeId).ToString(),
+                            strLoginName = userName,
+                            strVoucher = strDis_B,
+                            strCash = strCash_B,
+                            strCredit = strCredit_B,
+                            bid = bid,
+                            bName = getBranchName(bid),
+                            accountId = accountId
+                        };
+
+                        //return View(hv);
+                        if (Request.IsAjaxRequest())
+                        {
+                            // Return partial view for AJAX requests
+                            return PartialView("_UrbanBeautyPartial", hv);
+                        }
+                        else
+                        {
+                            // Return full view for normal requests
+                            return View("UrbanBeauty", hv);
+                        }
 
                     }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
+                    
 
                     
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-   
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs))
-                    };
-
-
-                    return View(hv);
-                }
-            }
-
-        }
-
-        public ActionResult UrbanThree(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 4;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
                 }
                 else if (monthNo != null)
                 {
                     int selectedMonth = Int32.Parse(monthNo);
                     int selectedYear = Int32.Parse(yearNo);
                     DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
+
                     List<Account> listAccountInMonth = new List<Account>();
+                    List<OrderRecord> orderRecords = new List<OrderRecord>();
+                    List<OtherSaleRecord> otherSaleRecords = new List<OtherSaleRecord>();
+                    SystemSetting oilPriceSetting;
+                    List<OrderRecord> orderRecordsVIP = new List<OrderRecord>();
+                    List<DiscountRecord> discountRecords = new List<DiscountRecord>();
 
                     using (var context = new spasystemdbEntities())
                     {
-
+                        // Get accounts for the specified month and year
                         listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
+                                                    .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
+                                                    .ToList();
+
+                        // Get all relevant order records for these accounts
+                        var accountIds = listAccountInMonth.Select(a => a.Id).ToList();
+                        orderRecords = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.CancelStatus == "false")
+                                              .ToList();
+
+                        // Get all relevant other sale records for these accounts
+                        otherSaleRecords = context.OtherSaleRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.CancelStatus == "false")
+                                                  .ToList();
+
+                        // Get the oil price setting
+                        oilPriceSetting = context.SystemSettings
+                                                 .Where(ss => ss.BranchId == branchIds && ss.Name == "OilPrice")
+                                                 .FirstOrDefault();
+
+                        //Get vip count
+                        orderRecordsVIP = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.CancelStatus == "false" && or.MemberId != 0)
+                                              .ToList();
+
+                        // Get all voucher or cash card discount
+                        discountRecords = context.DiscountRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.CancelStatus == "false")
+                                                  .ToList();
                     }
 
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
+                    int oilPrice = Int32.Parse(oilPriceSetting?.Value ?? "0");
+                    int tSales = 0, tPaxNum = 0, tComs = 0, tStaff = 0, tOtherS = 0, tInitMoney = 0, tOil = 0, tBalanceNet = 0, tVipCpunt = 0, tDiscount = 0, tCash = 0, tCredit = 0;
 
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
+                    foreach (var account in listAccountInMonth)
                     {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                        var accountOrderRecords = orderRecords.Where(or => or.AccountId == account.Id).ToList();
+                        var accountOtherSales = otherSaleRecords.Where(osr => osr.AccountId == account.Id).ToList();
+                        var accountOrderRecordsVIP = orderRecordsVIP.Where(or => or.AccountId == account.Id).ToList();
+                        var accountDiscount = discountRecords.Where(or => or.AccountId == account.Id).ToList();
+
+                        tSales += accountOrderRecords.Sum(or => (int)or.Price);
+                        tPaxNum += accountOrderRecords.Count();
+                        tComs += accountOrderRecords.Sum(or => (int)or.Commission);
+                        tStaff += (int)account.StaffAmount;
+                        tOtherS += accountOtherSales.Sum(osr => (int)osr.Price);
+                        tInitMoney += (int)account.StartMoney;
+                        tVipCpunt += accountOrderRecordsVIP.Count();
+                        tDiscount += accountDiscount.Sum(osr => int.Parse(osr.Value));
+                        //tCash += getCash(branchIds, account.Id) - getVoucherCash(branchIds, account.Id);
+                        //tCredit += getCredit(branchIds, account.Id) - getVoucherCredit(branchIds, account.Id);
                     }
+
+                    tOil = tStaff * oilPrice;
 
                     tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
                     float tSalesInFloat = (float)tSales;
                     float tPaxNumInFloat = (float)tPaxNum;
                     float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
+
+                    var accountIds_ = listAccountInMonth.Select(a => a.Id).ToList();
+                    var summary = GetTotalCashAndCredit_multiAcc(branchIds, accountIds_);
+                    tCash = summary.TotalCash;
+                    tCredit = summary.TotalCredit;
+
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -1807,8 +5637,8 @@ namespace WebApplication13.Controllers
                         arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
                         strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
                         strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        //arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
+                        //arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
                         finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
                         listAllAccounts = getAllAccountInSelectionList(branchIds),
                         listAllMonths = getAllMonthList(),
@@ -1818,7 +5648,13 @@ namespace WebApplication13.Controllers
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
                         strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVipCount = tVipCpunt.ToString(), //new
+                        strVoucher = String.Format("{0:n0}", tDiscount), //new
+                        strCash = String.Format("{0:n0}", tCash), //new
+                        strCredit = String.Format("{0:n0}", tCredit), //new
+                        bid = bid,
+                        bName = getBranchName(bid)
                     };
 
                     return View(hv);
@@ -1827,556 +5663,79 @@ namespace WebApplication13.Controllers
                 {
                     int selectedYear = Int32.Parse(yearNo);
                     DateTime dts = new DateTime(selectedYear, 1, 1);
+
                     List<Account> listAccountInYear = new List<Account>();
+                    List<OrderRecord> orderRecords = new List<OrderRecord>();
+                    List<OtherSaleRecord> otherSaleRecords = new List<OtherSaleRecord>();
+                    SystemSetting oilPriceSetting;
+                    List<OrderRecord> orderRecordsVIP = new List<OrderRecord>();
+                    List<DiscountRecord> discountRecords = new List<DiscountRecord>();
 
                     using (var context = new spasystemdbEntities())
                     {
-
+                        // Get accounts for the specified year
                         listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
+                                                   .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
+                                                   .ToList();
+
+                        // Get all relevant order records for these accounts within the year
+                        var accountIds = listAccountInYear.Select(a => a.Id).ToList();
+                        orderRecords = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.Date.Year == selectedYear && or.CancelStatus == "false")
+                                              .ToList();
+
+                        // Get all relevant other sale records for these accounts within the year
+                        otherSaleRecords = context.OtherSaleRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.Date.Year == selectedYear && osr.CancelStatus == "false")
+                                                  .ToList();
+
+                        // Get the oil price setting
+                        oilPriceSetting = context.SystemSettings
+                                                 .Where(ss => ss.BranchId == branchIds && ss.Name == "OilPrice")
+                                                 .FirstOrDefault();
+
+                        //Get vip count
+                        orderRecordsVIP = context.OrderRecords
+                                              .Where(or => accountIds.Contains(or.AccountId) && or.BranchId == branchIds && or.CancelStatus == "false" && or.MemberId != 0)
+                                              .ToList();
+
+                        // Get all voucher or cash card discount
+                        discountRecords = context.DiscountRecords
+                                                  .Where(osr => accountIds.Contains(osr.AccountId) && osr.BranchId == branchIds && osr.CancelStatus == "false")
+                                                  .ToList();
                     }
 
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
+                    int oilPrice = Int32.Parse(oilPriceSetting?.Value ?? "0");
+                    int tSales = 0, tPaxNum = 0, tComs = 0, tStaff = 0, tOtherS = 0, tInitMoney = 0, tOil = 0, tBalanceNet = 0, tVipCpunt = 0, tDiscount = 0, tCash = 0, tCredit = 0;
 
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
+                    foreach (var account in listAccountInYear)
                     {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
+                        var accountOrderRecords = orderRecords.Where(or => or.AccountId == account.Id).ToList();
+                        var accountOtherSales = otherSaleRecords.Where(osr => osr.AccountId == account.Id).ToList();
+                        var accountOrderRecordsVIP = orderRecordsVIP.Where(or => or.AccountId == account.Id).ToList();
+                        var accountDiscount = discountRecords.Where(or => or.AccountId == account.Id).ToList();
+
+                        tSales += accountOrderRecords.Sum(or => (int)or.Price);
+                        tPaxNum += accountOrderRecords.Count();
+                        tComs += accountOrderRecords.Sum(or => (int)or.Commission);
+                        tStaff += (int)account.StaffAmount;
+                        tOtherS += accountOtherSales.Sum(osr => (int)osr.Price);
+                        tInitMoney += (int)account.StartMoney;
+                        tVipCpunt += accountOrderRecordsVIP.Count();
+                        tDiscount += accountDiscount.Sum(osr => int.Parse(osr.Value));
                     }
 
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        
-        public ActionResult UrbanFour(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 5;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
+                    tOil = tStaff * oilPrice;
 
                     tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
                     float tSalesInFloat = (float)tSales;
                     float tPaxNumInFloat = (float)tPaxNum;
                     float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
 
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
+                    var accountIds_ = listAccountInYear.Select(a => a.Id).ToList();
+                    var summary = GetTotalCashAndCredit_multiAcc(branchIds, accountIds_);
+                    tCash = summary.TotalCash;
+                    tCredit = summary.TotalCredit;
 
                     HeaderValue hv = new HeaderValue()
                     {
@@ -2387,8 +5746,8 @@ namespace WebApplication13.Controllers
                         arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
                         strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
                         strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        //arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
+                        //arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
                         finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
                         listAllAccounts = getAllAccountInSelectionList(branchIds),
                         listAllMonths = getAllMonthList(),
@@ -2398,7 +5757,13 @@ namespace WebApplication13.Controllers
                         strInitMoney = String.Format("{0:n0}", tInitMoney),
                         strOilIncome = String.Format("{0:n0}", tOil),
                         strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
+                        strLoginName = userName,
+                        strVipCount = tVipCpunt.ToString(), //new
+                        strVoucher = String.Format("{0:n0}", tDiscount), //new
+                        strCash = String.Format("{0:n0}", tCash), //new
+                        strCredit = String.Format("{0:n0}", tCredit), //new
+                        bid = bid,
+                        bName = getBranchName(bid)
                     };
 
                     return View(hv);
@@ -2407,6 +5772,7 @@ namespace WebApplication13.Controllers
                 {
 
                     Account ac = getAccountValue(branchIds);
+
                     string tSales = " ";
                     string tPaxes = " ";
                     string tAverage = " ";
@@ -2417,3225 +5783,331 @@ namespace WebApplication13.Controllers
                     string tOtherS = " ";
                     string tInitMoney = " ";
                     string tOil = " ";
+
+                    string tSales_B = " ";
+                    string tPaxes_B = " ";
+                    string tAverage_B = " ";
+                    string tStaff_B = " ";
+                    string topAname_B = " ";
+                    string topBname_B = " ";
+                    string tComs_B = " ";
+                    string tOtherS_B = " ";
+                    string tInitMoney_B = " ";
+                    string tOil_B = " ";
+
                     int accountIdInInteger = ac.Id; // Updated 11 October 2022
+
                     int sumDiscount = 0; // Updated 11 October 2022
+                    int sumDiscount_B = 0;
+
                     List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
+                    List<DiscountRecord> listDiscount_B = new List<DiscountRecord>(); // Updated 11 October 2022
 
                     // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
+                    //using (var context = new spasystemdbEntities())
+                    //{
 
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
+                    //    listDiscount = context.DiscountRecords
+                    //                    .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger && b.CancelStatus == "false")
+                    //                    .OrderBy(b => b.Id)
+                    //                    .ToList();
+                    //}
 
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
+                    //for (int m = 0; m < listDiscount.Count(); m++)
+                    //{
+                    //    sumDiscount += Int32.Parse(listDiscount[m].Value);
+                    //}
 
 
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
 
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult UrbanFive(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 6;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
                     /////////////////////////
 
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
 
                     SqlCommand command;
                     SqlDataReader dataReader;
                     String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
 
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
+                    if (sellItemTypeId == 1)
                     {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
+                        //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
+                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', SUM(dbo.OrderRecord.Commission) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
 
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
+                        connetionString = ConfigurationManager.AppSettings["cString"];
+                        cnn = new SqlConnection(connetionString);
+                        cnn.Open();
+                        command = new SqlCommand(sql, cnn);
 
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
+                        dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
+                        {
+                            tSales = String.Format("{0:n0}", dataReader.GetValue(0));
+                            tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
+                            tComs = String.Format("{0:n0}", dataReader.GetValue(2));
+                            tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
+                            tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
+                            tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
+                            topAname = dataReader.GetValue(6).ToString();
+                            topBname = dataReader.GetValue(7).ToString();
+                            tOil = String.Format("{0:n0}", dataReader.GetValue(8));
+                            tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
+                        }
 
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
+                        dataReader.Close();
+                        command.Dispose();
+                        cnn.Close();
 
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
+                        int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
+                        string tSales_trim = tSales.Replace(",", "");
+                        string tOil_trim = tOil.Replace(",", "");
+                        string tOtherS_trim = tOtherS.Replace(",", "");
+                        string tComs_trim = tComs.Replace(",", "");
 
-                    }
+                        if (string.IsNullOrEmpty(tSales_trim))
+                        {
 
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
+                        }
+                        else
+                        {
+                            convert_tSales = Int32.Parse(tSales_trim);
 
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
+                        }
 
-                    }
+                        if (string.IsNullOrEmpty(tOtherS_trim))
+                        {
 
+                        }
+                        else
+                        {
+                            convert_tOtherS = Int32.Parse(tOtherS_trim);
 
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
+                        }
 
 
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
+                        if (string.IsNullOrEmpty(tOil_trim))
+                        {
 
-        public ActionResult UrbanSix(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 7;
+                        }
+                        else
+                        {
+                            convert_tOil = Int32.Parse(tOil_trim);
 
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
+                        }
 
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
+                        if (string.IsNullOrEmpty(tComs_trim))
+                        {
 
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+                        }
+                        else
+                        {
+                            convert_tComs = Int32.Parse(tComs_trim);
 
-            string tokenValue = null;
-            string userName = null;
+                        }
 
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
+                        sumDiscount = getSumDiscount_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        string strDis = String.Format("{0:n0}", sumDiscount);
 
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
+                        var result = GetTotalCashAndCredit_multiAcc_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        int totalCash = result.TotalCash;
+                        int totalCredit = result.TotalCredit;
+                        String strCash = String.Format("{0:n0}", totalCash);
+                        String strCredit = String.Format("{0:n0}", totalCredit);
 
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
+                        HeaderWithBeauty hv = new HeaderWithBeauty()
+                        {
+                            strSales = tSales,
+                            ////////////
+                            //Waiting for confirm this has to be deduct discount 11 October 2022
+                            //strSales = tSaleMinusDiscountInString,
+                            ////////////
+                            strPax = tPaxes,
+                            strStaff = tStaff,
+                            strCommission = tComs,
+                            arrGraphVal = getOrderRecordForGraph_B(branchIds, accountIdInInteger, sellItemTypeId),
+                            strPieTopAName = topAname,
+                            strPieTopBName = topBname,
+                            //arrPieTopAVal = getTopAForAday(branchIds),
+                            //arrPieTopBVal = getTopBForAday(branchIds),
+                            finalSaleForEach = getFinalSaleForEach_B(branchIds, accountIdInInteger.ToString(), sellItemTypeId),
+                            listAllAccounts = getAllAccountInSelectionList(branchIds),
+                            listAllMonths = getAllMonthList(),
+                            listAllYears = getAllYearList(),
+                            strAverage = tAverage,
+                            strOtherSale = String.Format("{0:n0}", 0),
+                            strInitMoney = tInitMoney,
+                            strOilIncome = tOil,
+                            strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil) - convert_tComs)),
+                            strVipCount = getTotalVipAmount_B(branchIds, accountIdInInteger, sellItemTypeId).ToString(),
+                            strLoginName = userName,
+                            strVoucher = strDis,
+                            strCash = strCash,
+                            strCredit = strCredit,
+                            bid = bid,
+                            bName = getBranchName(bid),
+                            accountId = accountId
+                        };
 
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
+                        //return View(hv);
+                        if (Request.IsAjaxRequest())
+                        {
+                            // Return partial view for AJAX requests
+                            return PartialView("_UrbanBeautyPartial", hv);
+                        }
+                        else
+                        {
+                            // Return full view for normal requests
+                            return View("UrbanBeauty", hv);
+                        }
                     }
                     else
                     {
-                        convert_tSales = Int32.Parse(tSales_trim);
+                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', (SUM(dbo.OrderRecord.Commission) + (SELECT SUM(dbo.OtherSaleRecord.Commission) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false')) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
+
+                        connetionString = ConfigurationManager.AppSettings["cString"];
+                        cnn = new SqlConnection(connetionString);
+                        cnn.Open();
+                        command = new SqlCommand(sql, cnn);
+
+                        dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
+                        {
+                            tSales_B = String.Format("{0:n0}", dataReader.GetValue(0));
+                            tPaxes_B = String.Format("{0:n0}", dataReader.GetValue(1));
+                            tComs_B = String.Format("{0:n0}", dataReader.GetValue(2));
+                            tAverage_B = String.Format("{0:n0}", dataReader.GetValue(3));
+                            tStaff_B = String.Format("{0:n0}", dataReader.GetValue(4));
+                            tOtherS_B = String.Format("{0:n0}", dataReader.GetValue(5));
+                            topAname_B = dataReader.GetValue(6).ToString();
+                            topBname_B = dataReader.GetValue(7).ToString();
+                            tOil_B = String.Format("{0:n0}", dataReader.GetValue(8));
+                            tInitMoney_B = String.Format("{0:n0}", dataReader.GetValue(9));
+                        }
+
+                        dataReader.Close();
+                        command.Dispose();
+                        cnn.Close();
+
+                        int convert_tSales_B = 0, convert_tOil_B = 0, convert_tOtherS_B = 0, convert_tComs_B = 0;
+                        string tSales_trim_B = tSales_B.Replace(",", "");
+                        string tOil_trim_B = tOil_B.Replace(",", "");
+                        string tOtherS_trim_B = tOtherS_B.Replace(",", "");
+                        string tComs_trim_B = tComs_B.Replace(",", "");
+
+                        if (string.IsNullOrEmpty(tSales_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tSales_B = Int32.Parse(tSales_trim_B);
+
+                        }
+
+                        if (string.IsNullOrEmpty(tOtherS_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tOtherS_B = Int32.Parse(tOtherS_trim_B);
+
+                        }
+
+
+                        if (string.IsNullOrEmpty(tOil_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tOil_B = Int32.Parse(tOil_trim_B);
+
+                        }
+
+                        if (string.IsNullOrEmpty(tComs_trim_B))
+                        {
+
+                        }
+                        else
+                        {
+                            convert_tComs_B = Int32.Parse(tComs_trim_B);
+
+                        }
+
+                        sumDiscount_B = getSumDiscount_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        string strDis_B = String.Format("{0:n0}", sumDiscount_B);
+
+                        var result_B = GetTotalCashAndCredit_multiAcc_B(branchIds, accountIdInInteger, sellItemTypeId);
+                        int totalCash_B = result_B.TotalCash;
+                        int totalCredit_B = result_B.TotalCredit;
+                        String strCash_B = String.Format("{0:n0}", totalCash_B);
+                        String strCredit_B = String.Format("{0:n0}", totalCredit_B);
+
+                        //HeaderWithBeauty hv = new HeaderWithBeauty();
+                        //hv.strSales_B = tSales_B;
+                        //hv.strPax_B = tPaxes_B;
+                        //hv.strStaff_B = "0";
+                        //hv.strCommission_B = tComs_B;
+                        //hv.arrGraphVal_B = getOrderRecordForGraph_B(branchIds, Int32.Parse(accountId), sellItemTypeId);
+                        //hv.strPieTopAName_B = topAname_B;
+                        //hv.strPieTopBName_B = topBname_B;
+                        //hv.finalSaleForEach_B = getFinalSaleForEach_B(branchIds, accountId, sellItemTypeId);
+                        //hv.strAverage_B = tAverage_B;
+                        //hv.strOtherSale_B = String.Format("{0:n0}", convert_tOtherS_B);
+                        //hv.strOilIncome_B = "0";
+                        //hv.strBalanceNet_B = String.Format("{0:n0}", ((convert_tSales_B + convert_tOtherS_B) - convert_tComs_B));
+                        //hv.strVipCount_B = getTotalVipAmount_B(branchIds, Int32.Parse(accountId), sellItemTypeId).ToString();
+                        //hv.strVoucher_B = strDis_B;
+                        //hv.strCash_B = strCash_B;
+                        //hv.strCredit_B = strCredit_B;
+
+
+                        HeaderWithBeauty hv = new HeaderWithBeauty()
+                        {
+                            strSales = tSales_B,
+                            ////////////
+                            //Waiting for confirm this has to be deduct discount 11 October 2022
+                            //strSales = tSaleMinusDiscountInString,
+                            ////////////
+                            strPax = tPaxes_B,
+                            strStaff = "0",
+                            strCommission = tComs_B,
+                            arrGraphVal = getOrderRecordForGraph_B(branchIds, accountIdInInteger, sellItemTypeId),
+                            strPieTopAName = topAname_B,
+                            strPieTopBName = topBname_B,
+                            //arrPieTopAVal = getTopAForAday(branchIds),
+                            //arrPieTopBVal = getTopBForAday(branchIds),
+                            finalSaleForEach = getFinalSaleForEach_B(branchIds, accountIdInInteger.ToString(), sellItemTypeId),
+                            listAllAccounts = getAllAccountInSelectionList(branchIds),
+                            listAllMonths = getAllMonthList(),
+                            listAllYears = getAllYearList(),
+                            strAverage = tAverage_B,
+                            strOtherSale = String.Format("{0:n0}", convert_tOtherS_B),
+                            strInitMoney = tInitMoney_B,
+                            strOilIncome = "0",
+                            strBalanceNet = String.Format("{0:n0}", ((convert_tSales_B + convert_tOtherS_B) - convert_tComs_B)),
+                            strVipCount = getTotalVipAmount_B(branchIds, accountIdInInteger, sellItemTypeId).ToString(),
+                            strLoginName = userName,
+                            strVoucher = strDis_B,
+                            strCash = strCash_B,
+                            strCredit = strCredit_B,
+                            bid = bid,
+                            bName = getBranchName(bid),
+                            accountId = accountId
+                        };
+
+                        //return View(hv);
+                        if (Request.IsAjaxRequest())
+                        {
+                            // Return partial view for AJAX requests
+                            return PartialView("_UrbanBeautyPartial", hv);
+                        }
+                        else
+                        {
+                            // Return full view for normal requests
+                            return View("UrbanBeauty", hv);
+                        }
 
                     }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult UrbanSeven(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 8;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult UrbanEight(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 10;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult ThaiGardenOne(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 12;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-        public ActionResult ThaiBeautyOne(string accountId, string monthNo, string yearNo, string cmd)
-        {
-            int branchIds = 99;
-
-            //Check if Log out button is clicked
-            if (cmd != null)
-            {
-                //Old logic for Log out by clear all host memory cache
-                //foreach (var element in System.Runtime.Caching.MemoryCache.Default)
-                //{
-                //    System.Runtime.Caching.MemoryCache.Default.Remove(element.Key);
-                //}
-
-                //Remove cookie when log out
-                RemoveCookie();
-                return RedirectToAction("Index");
-            }
-
-            //Check user token
-            // Retrieve the cookie from the request
-            HttpCookie cookie = Request.Cookies["TokenCookie"];
-            HttpCookie cookie_user = Request.Cookies["UserCookie"];
-
-            string tokenValue = null;
-            string userName = null;
-
-            //Check user token from cookie
-            if (cookie != null)
-            {
-                tokenValue = cookie.Value;
-
-                //Check user name from cookie
-                if (cookie_user != null)
-                {
-                    userName = cookie_user.Value;
-                }
-                else
-                {
-                    userName = "Annonymous";
-                }
-
-                //Prepare content for View
-                if (accountId != null)
-                {
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = Int32.Parse(accountId); // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    int tSaleMinusDiscount = 0; // Updated 11 October 2022
-                    string tSaleMinusDiscountInString = " "; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-                    /////////////////////////
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '"+accountId+"' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '"+accountId+"' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '"+accountId+"' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '"+accountId+"' and dbo.OrderRecord.CancelStatus = 'false';";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    tSaleMinusDiscount = convert_tSales - sumDiscount; // Updated 11 October 2022
-                    tSaleMinusDiscountInString = String.Format("{0:n0}", tSaleMinusDiscount); // Updated 11 October 2022
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        ////////////
-                        //Waiting for confirm this has to be deduct discount 11 October 2022
-                        //strSales = tSaleMinusDiscountInString,
-                        ////////////
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, Int32.Parse(accountId)),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, accountId),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, Int32.Parse(accountId)).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
-                }
-                else if (monthNo != null)
-                {
-                    int selectedMonth = Int32.Parse(monthNo);
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, selectedMonth, 1);
-                    List<Account> listAccountInMonth = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInMonth = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Month == dts.Month && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInMonth.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInMonth[p].Id);
-                        tSales += getTotalSaleInMonth(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInMonth(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInMonth(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        //tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    tBalanceNet = ((tSales + tOil + tOtherS) - tComs);
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //System.Diagnostics.Debug.WriteLine("f");
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInMonth(branchIds, listAccountInMonth),
-                        strPieTopAName = getTopATopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInMonth(branchIds, listAccountInMonth)),
-                        arrPieTopAVal = getTopA(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInMonth(branchIds, listAccountInMonth), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInMonth(branchIds, listAccountInMonth, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else if (yearNo != null)
-                {
-                    int selectedYear = Int32.Parse(yearNo);
-                    DateTime dts = new DateTime(selectedYear, 1, 1);
-                    List<Account> listAccountInYear = new List<Account>();
-
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listAccountInYear = context.Accounts
-                                        .Where(b => b.BranchId == branchIds && b.Date.Year == dts.Year)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    Account ac = new Account();
-                    int tSales = 0;
-                    int tPaxNum = 0;
-                    int tComs = 0;
-                    int tStaff = 0;
-                    int tOtherS = 0;
-                    int tInitMoney = 0;
-                    int tOil = 0;
-                    int tBalanceNet = 0;
-
-                    for (int p = 0; p < listAccountInYear.Count(); p++)
-                    {
-                        ac = getAccountValueFromAccountId(branchIds, listAccountInYear[p].Id);
-                        tSales += getTotalSaleInYear(branchIds, ac.Id);
-                        tPaxNum += getPaxNum(branchIds, ac.Id);
-                        tComs += getTotalCommissionInYear(branchIds, ac.Id);
-                        tStaff += (int)ac.StaffAmount;
-                        tOtherS += getTotalOtherSaleInYear(branchIds, ac.Id);
-                        tInitMoney += (int)ac.StartMoney;
-                        tOil += tStaff * getOilPrice(branchIds);
-                        tBalanceNet += ((tSales + tOil + tOtherS) - tComs);
-                    }
-
-                    float tSalesInFloat = (float)tSales;
-                    float tPaxNumInFloat = (float)tPaxNum;
-                    float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = String.Format("{0:n0}", tSales),
-                        strPax = String.Format("{0:n0}", tPaxNum),
-                        strStaff = String.Format("{0:n0}", tStaff),
-                        strCommission = String.Format("{0:n0}", tComs),
-                        arrGraphVal = getOrderRecordForGraphInYear(branchIds, listAccountInYear),
-                        strPieTopAName = getTopATopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        strPieTopBName = getTopBTopicName(getBestSellerInYear(branchIds, listAccountInYear)),
-                        arrPieTopAVal = getTopA(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        arrPieTopBVal = getTopB(getBestSellerInYear(branchIds, listAccountInYear), branchIds),
-                        finalSaleForEach = getFinalSaleForEachInYear(branchIds, listAccountInYear, getMassageSetId(branchIds)),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAvg.ToString(),
-                        strOtherSale = String.Format("{0:n0}", tOtherS),
-                        strInitMoney = String.Format("{0:n0}", tInitMoney),
-                        strOilIncome = String.Format("{0:n0}", tOil),
-                        strBalanceNet = String.Format("{0:n0}", tBalanceNet),
-                        strLoginName = userName
-                    };
-
-                    return View(hv);
-                }
-                else
-                {
-
-                    Account ac = getAccountValue(branchIds);
-                    string tSales = " ";
-                    string tPaxes = " ";
-                    string tAverage = " ";
-                    string tStaff = " ";
-                    string topAname = " ";
-                    string topBname = " ";
-                    string tComs = " ";
-                    string tOtherS = " ";
-                    string tInitMoney = " ";
-                    string tOil = " ";
-                    int accountIdInInteger = ac.Id; // Updated 11 October 2022
-                    int sumDiscount = 0; // Updated 11 October 2022
-                    List<DiscountRecord> listDiscount = new List<DiscountRecord>(); // Updated 11 October 2022
-
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    // Updated 11 October 2022
-                    using (var context = new spasystemdbEntities())
-                    {
-
-                        listDiscount = context.DiscountRecords
-                                        .Where(b => b.BranchId == branchIds && b.AccountId == accountIdInInteger)
-                                        .OrderBy(b => b.Id)
-                                        .ToList();
-                    }
-
-                    for (int m = 0; m < listDiscount.Count(); m++)
-                    {
-                        sumDiscount += Int32.Parse(listDiscount[m].Value);
-                    }
-
-                    //int tPaxNum = getPaxNum(branchIds, ac.Id);
-                    //string tComs = getTotalCommission(branchIds, ac.Id);
-                    //int tSalesInInteger = getTotalSaleInInteger(branchIds, ac.Id);
-                    //float tSalesInFloat = (float)tSalesInInteger;
-                    //float tPaxNumInFloat = (float)tPaxNum;
-                    //float tAvg = (float)Math.Round(tSalesInFloat / tPaxNumInFloat, MidpointRounding.AwayFromZero);
-                    //string tOtherS = getTotalOtherSale(branchIds, ac.Id);
-
-                    SqlCommand command;
-                    SqlDataReader dataReader;
-                    String sql = " ";
-                    sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name as 'Top A' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name as 'Top B' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchIds + "' order by AccountID desc) and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B' , (select top 1 dbo.Account.StaffAmount from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select top 1 dbo.Account.StartMoney from dbo.Account where BranchId = '" + branchIds + "' order by dbo.Account.Id desc) as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = (select top 1 dbo.Account.Id from dbo.Account where dbo.Account.BranchId = '" + branchIds + "' order by dbo.Account.Id desc) and dbo.OrderRecord.CancelStatus = 'false';";
-                    //sql = "select sum(dbo.OrderRecord.Price) as 'Total Sale', count(dbo.OrderRecord.Id) as 'Total Pax', sum(dbo.OrderRecord.Commission) as 'Total Commission', (sum(dbo.OrderRecord.Price) / count(dbo.OrderRecord.Id)) as 'Average', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Total Staff', (select sum(dbo.OtherSaleRecord.Price) from dbo.OtherSaleRecord where dbo.OtherSaleRecord.BranchId = '" + branchIds + "' and dbo.OtherSaleRecord.AccountId = '" + accountId + "' and dbo.OtherSaleRecord.CancelStatus = 'false') as 'Total Other Sale', (select top 1 dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc) as 'Top A', (select dbo.MassageTopic.Name from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '" + branchIds + "' and AccountId = '" + accountId + "' and CancelStatus = 'false' group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) as 'Top B', (select dbo.Account.StaffAmount from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') * (select dbo.SystemSetting.Value from dbo.SystemSetting where BranchId = '" + branchIds + "' and Name = 'OilPrice') as 'Total Oil Income',(select dbo.Account.StartMoney from dbo.Account where Id = '" + accountId + "' and BranchId = '" + branchIds + "') as 'Initial Money' from dbo.OrderRecord where dbo.OrderRecord.BranchId = '" + branchIds + "' and dbo.OrderRecord.AccountId = '" + accountId + "' and dbo.OrderRecord.CancelStatus = 'false';";
-
-                    connetionString = ConfigurationManager.AppSettings["cString"];
-                    cnn = new SqlConnection(connetionString);
-                    cnn.Open();
-                    command = new SqlCommand(sql, cnn);
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        tSales = String.Format("{0:n0}", dataReader.GetValue(0));
-                        tPaxes = String.Format("{0:n0}", dataReader.GetValue(1));
-                        tComs = String.Format("{0:n0}", dataReader.GetValue(2));
-                        tAverage = String.Format("{0:n0}", dataReader.GetValue(3));
-                        tStaff = String.Format("{0:n0}", dataReader.GetValue(4));
-                        tOtherS = String.Format("{0:n0}", dataReader.GetValue(5));
-                        topAname = dataReader.GetValue(6).ToString();
-                        topBname = dataReader.GetValue(7).ToString();
-                        tOil = String.Format("{0:n0}", dataReader.GetValue(8));
-                        tInitMoney = String.Format("{0:n0}", dataReader.GetValue(9));
-                    }
-
-                    dataReader.Close();
-                    command.Dispose();
-                    cnn.Close();
-
-                    int convert_tSales = 0, convert_tOil = 0, convert_tOtherS = 0, convert_tComs = 0;
-                    string tSales_trim = tSales.Replace(",", "");
-                    string tOil_trim = tOil.Replace(",", "");
-                    string tOtherS_trim = tOtherS.Replace(",", "");
-                    string tComs_trim = tComs.Replace(",", "");
-
-                    if (string.IsNullOrEmpty(tSales_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tSales = Int32.Parse(tSales_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tOtherS_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOtherS = Int32.Parse(tOtherS_trim);
-
-                    }
-
-
-                    if (string.IsNullOrEmpty(tOil_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tOil = Int32.Parse(tOil_trim);
-
-                    }
-
-                    if (string.IsNullOrEmpty(tComs_trim))
-                    {
-
-                    }
-                    else
-                    {
-                        convert_tComs = Int32.Parse(tComs_trim);
-
-                    }
-
-                    string strDis = String.Format("{0:n0}", sumDiscount);
-                    int totalCash = getCash(branchIds, accountIdInInteger) - getVoucherCash(branchIds, accountIdInInteger);
-                    String strCash = String.Format("{0:n0}", totalCash);
-                    int totalCredit = getCredit(branchIds, accountIdInInteger) - getVoucherCredit(branchIds, accountIdInInteger);
-                    String strCredit = String.Format("{0:n0}", totalCredit);
-
-                    HeaderValue hv = new HeaderValue()
-                    {
-                        strSales = tSales,
-                        strPax = tPaxes,
-                        strStaff = tStaff,
-                        strCommission = tComs,
-                        arrGraphVal = getOrderRecordForGraph(branchIds, ac.Id),
-                        strPieTopAName = topAname,
-                        strPieTopBName = topBname,
-                        //arrPieTopAVal = getTopAForAday(branchIds),
-                        //arrPieTopBVal = getTopBForAday(branchIds),
-                        finalSaleForEach = getFinalSaleForEach(branchIds, ac.Id.ToString()),
-                        listAllAccounts = getAllAccountInSelectionList(branchIds),
-                        listAllMonths = getAllMonthList(),
-                        listAllYears = getAllYearList(),
-                        strAverage = tAverage,
-                        strOtherSale = String.Format("{0:n0}", convert_tOtherS),
-                        strInitMoney = tInitMoney,
-                        strOilIncome = tOil,
-                        strBalanceNet = String.Format("{0:n0}", ((convert_tSales + convert_tOil + convert_tOtherS) - convert_tComs)),
-                        strVipCount = getTotalVipAmount(branchIds, ac.Id).ToString(),
-                        strLoginName = userName,
-                        strVoucher = strDis,
-                        strCash = strCash,
-                        strCredit = strCredit
-                    };
-
-
-                    return View(hv);
                 }
             }
             else
@@ -6821,24 +7293,10 @@ namespace WebApplication13.Controllers
         public Account getAccountValueFromAccountId(int branchId,int accountId)
         {
             Account ac = new Account();
-            //DateTime current = DateTime.Now;
-            //string curDateTime = current.ToString("yyyy-MM-dd");
-            //DateTime dtStart = DateTime.ParseExact(curDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
-            //DateTime tomorrow = DateTime.Now.AddDays(1);
-            //string tmrDateTime = tomorrow.ToString("yyyy-MM-dd");
-            //DateTime dtEnd = DateTime.ParseExact(tmrDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
             using (var context = new spasystemdbEntities())
             {
-                // Query for all blogs with names starting with B 
-                //var blogs = from b in context.Accounts
-                //            where b.Date.Equals(2016-12-22)
-                //            select b;
-
-                //ac.Add((Account)blogs);
-                // Query for the Blog named ADO.NET Blog
-
                 ac = context.Accounts
                                 .Where(b => b.Id == accountId && b.BranchId == branchId)
                                 .FirstOrDefault();
@@ -6849,23 +7307,10 @@ namespace WebApplication13.Controllers
         public Account getAccountValue(int branchId)
         {
             Account ac = new Account();
-            //DateTime current = DateTime.Now;
-            //string curDateTime = current.ToString("yyyy-MM-dd");
-            //DateTime dtStart = DateTime.ParseExact(curDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
-            //DateTime tomorrow = DateTime.Now.AddDays(1);
-            //string tmrDateTime = tomorrow.ToString("yyyy-MM-dd");
-            //DateTime dtEnd = DateTime.ParseExact(tmrDateTime + " 05:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
             using (var context = new spasystemdbEntities())
             {
-                // Query for all blogs with names starting with B 
-                //var blogs = from b in context.Accounts
-                //            where b.Date.Equals(2016-12-22)
-                //            select b;
-
-                //ac.Add((Account)blogs);
-                // Query for the Blog named ADO.NET Blog
 
                 ac = context.Accounts
                                 .Where(b => b.BranchId == branchId)
@@ -6878,97 +7323,70 @@ namespace WebApplication13.Controllers
 
         public SelectList getAllAccountInSelectionList(int branchId)
         {
-
-            
-            var listAllAccounts = new List<Account>();
-            var listAllAccountsFD = new List<AccountFMD>();
             using (var context = new spasystemdbEntities())
             {
+                // Fetch the accounts from the database
+                var listAllAccountsFD = context.Accounts
+                                               .Where(b => b.BranchId == branchId)
+                                               .OrderByDescending(b => b.CreateDateTime)
+                                               .ToList() // Bring the data into memory
+                                               .Select(account => new AccountFMD
+                                               {
+                                                   Id = account.Id,
+                                                   CreateDateTime = (DateTime)account.CreateDateTime,
+                                                   FormattedCreateDateTime = account.CreateDateTime.Value.ToString("dd-MM-yyyy HH:mm:ss")
+                                               })
+                                               .ToList();
 
-                listAllAccounts = context.Accounts
-                                .Where(b => b.BranchId == branchId)
-                                .OrderByDescending(b => b.CreateDateTime)
-                                .ToList();
+                return new SelectList(listAllAccountsFD, "Id", "FormattedCreateDateTime");
             }
-
-            foreach (var account in listAllAccounts)
-            {
-                AccountFMD accountFMD = new AccountFMD();
-                accountFMD.Id = account.Id;
-                accountFMD.CreateDateTime = (DateTime)account.CreateDateTime;
-                accountFMD.FormattedCreateDateTime = accountFMD.CreateDateTime.ToString("dd-MM-yyyy HH:mm:ss");
-                listAllAccountsFD.Add(accountFMD);
-            }
-
-            SelectList getAllAccountToSelectItem = new SelectList(listAllAccountsFD, "Id", "FormattedCreateDateTime");
-
-            return getAllAccountToSelectItem;
         }
+
 
         public SelectList getAllMonthList()
         {
-
             var listAllMonths = new List<SelectListItem>();
-            SelectListItem jan = new SelectListItem() { Text = "January", Value = "01" };
-            SelectListItem feb = new SelectListItem() { Text = "February", Value = "02" };
-            SelectListItem mar = new SelectListItem() { Text = "March", Value = "03" };
-            SelectListItem apr = new SelectListItem() { Text = "April", Value = "04" };
-            SelectListItem may = new SelectListItem() { Text = "May", Value = "05" };
-            SelectListItem jun = new SelectListItem() { Text = "June", Value = "06" };
-            SelectListItem jul = new SelectListItem() { Text = "July", Value = "07" };
-            SelectListItem aug = new SelectListItem() { Text = "August", Value = "08" };
-            SelectListItem sep = new SelectListItem() { Text = "September", Value = "09" };
-            SelectListItem oct = new SelectListItem() { Text = "October", Value = "10" };
-            SelectListItem nov = new SelectListItem() { Text = "November", Value = "11" };
-            SelectListItem dec = new SelectListItem() { Text = "December", Value = "12" };
-            listAllMonths.Add(jan);
-            listAllMonths.Add(feb);
-            listAllMonths.Add(mar);
-            listAllMonths.Add(apr);
-            listAllMonths.Add(may);
-            listAllMonths.Add(jun);
-            listAllMonths.Add(jul);
-            listAllMonths.Add(aug);
-            listAllMonths.Add(sep);
-            listAllMonths.Add(oct);
-            listAllMonths.Add(nov);
-            listAllMonths.Add(dec);
+            var months = new[]
+            {
+                new { Text = "January", Value = "01" },
+                new { Text = "February", Value = "02" },
+                new { Text = "March", Value = "03" },
+                new { Text = "April", Value = "04" },
+                new { Text = "May", Value = "05" },
+                new { Text = "June", Value = "06" },
+                new { Text = "July", Value = "07" },
+                new { Text = "August", Value = "08" },
+                new { Text = "September", Value = "09" },
+                new { Text = "October", Value = "10" },
+                new { Text = "November", Value = "11" },
+                new { Text = "December", Value = "12" }
+            };
 
+            foreach (var month in months)
+            {
+                listAllMonths.Add(new SelectListItem { Text = month.Text, Value = month.Value });
+            }
 
-            SelectList getAllMonths = new SelectList(listAllMonths, "Value", "Text");
+            int currentMonth = DateTime.Now.Month;
+            string currentMonthValue = currentMonth.ToString("D2");
 
-            return getAllMonths;
+            return new SelectList(listAllMonths, "Value", "Text", currentMonthValue);
         }
+
 
         public SelectList getAllYearList()
         {
-
             var listAllYears = new List<SelectListItem>();
-            SelectListItem year2016 = new SelectListItem() { Text = "2016", Value = "2016" };
-            SelectListItem year2017 = new SelectListItem() { Text = "2017", Value = "2017" };
-            SelectListItem year2018 = new SelectListItem() { Text = "2018", Value = "2018" };
-            SelectListItem year2019 = new SelectListItem() { Text = "2019", Value = "2019" };
-            SelectListItem year2020 = new SelectListItem() { Text = "2020", Value = "2020" };
-            SelectListItem year2021 = new SelectListItem() { Text = "2021", Value = "2021" };
-            SelectListItem year2022 = new SelectListItem() { Text = "2022", Value = "2022" };
-            SelectListItem year2023 = new SelectListItem() { Text = "2023", Value = "2023" };
-            SelectListItem year2024 = new SelectListItem() { Text = "2024", Value = "2024" };
-            
-            listAllYears.Add(year2016);
-            listAllYears.Add(year2017);
-            listAllYears.Add(year2018);
-            listAllYears.Add(year2019);
-            listAllYears.Add(year2020);
-            listAllYears.Add(year2021);
-            listAllYears.Add(year2022);
-            listAllYears.Add(year2023);
-            listAllYears.Add(year2024);
+            int currentYear = DateTime.Now.Year;
 
+            for (int year = currentYear - 3; year <= currentYear + 3; year++)
+            {
+                listAllYears.Add(new SelectListItem() { Text = year.ToString(), Value = year.ToString() });
+            }
 
-            SelectList getAllYears = new SelectList(listAllYears, "Value", "Text");
-
-            return getAllYears;
+            return new SelectList(listAllYears, "Value", "Text", currentYear.ToString());
         }
+
 
         //public JsonProp[] getOrderRecordForGraph(int branchId, int accountId)
         //{
@@ -7255,6 +7673,64 @@ namespace WebApplication13.Controllers
             return arrPrePareToJS;
         }
 
+        public JsonProp[] getOrderRecordForGraph_B(int branchId, int accountId, int sellItemTypeId)
+        {
+            JsonProp[] arrPrePareToJS = new JsonProp[24];
+            TimeSpan[] timeSlots = new TimeSpan[]
+            {
+        new TimeSpan(6, 30, 0), new TimeSpan(7, 30, 0), new TimeSpan(8, 30, 0), new TimeSpan(9, 30, 0),
+        new TimeSpan(10, 30, 0), new TimeSpan(11, 30, 0), new TimeSpan(12, 30, 0), new TimeSpan(13, 30, 0),
+        new TimeSpan(14, 30, 0), new TimeSpan(15, 30, 0), new TimeSpan(16, 30, 0), new TimeSpan(17, 30, 0),
+        new TimeSpan(18, 30, 0), new TimeSpan(19, 30, 0), new TimeSpan(20, 30, 0), new TimeSpan(21, 30, 0),
+        new TimeSpan(22, 30, 0), new TimeSpan(23, 30, 0), new TimeSpan(23, 59, 59), new TimeSpan(0, 0, 1),
+        new TimeSpan(0, 30, 0), new TimeSpan(1, 30, 0), new TimeSpan(2, 30, 0), new TimeSpan(3, 30, 0)
+            };
+
+            int[] counts = new int[24];
+
+            using (var context = new spasystemdbEntities())
+            {
+                List<int> orderReceipts = context.OrderReceipts
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.SellItemTypeId == sellItemTypeId)
+                                .Select(b => b.Id)
+                                .ToList();
+
+                var orderResults = (from or in context.OrderRecords
+                                    where or.BranchId == branchId
+                                          && orderReceipts.Contains((int)or.OrderReceiptId)
+                                          && or.CancelStatus == "false"
+                                    select or.Time).ToList();
+
+                //var orders = context.OrderRecords
+                //    .Where(r => r.BranchId == branchId && r.AccountId == accountId && r.CancelStatus == "false")
+                //    .Select(r => r.Time)
+                //    .ToList();
+
+                foreach (var orderTime in orderResults)
+                {
+                    for (int i = 0; i < timeSlots.Length - 1; i++)
+                    {
+                        if (orderTime > timeSlots[i] && orderTime <= timeSlots[i + 1])
+                        {
+                            counts[i]++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            DateTime startDateTime = DateTime.Now.Date.AddHours(7); // Start time at 7:00 AM
+            for (int i = 0; i < 24; i++)
+            {
+                arrPrePareToJS[i] = new JsonProp
+                {
+                    x = startDateTime.AddHours(i).ToString("yyyy-MM-dd HH:mm:ss"),
+                    y = counts[i]
+                };
+            }
+
+            return arrPrePareToJS;
+        }
 
         public IEnumerable<List<OrderRecord>> getBestSeller(int branchId, int accountId)
         {
@@ -7953,35 +8429,59 @@ namespace WebApplication13.Controllers
 
         }
 
-        //public List<FinalSaleForEachTopic> getFinalSaleForEachTest(int branchId)
-        //{
-        //    //List<int> listMassageTopic;
-        //    List<FinalSaleForEachTopic> listOfFinalSale = new List<FinalSaleForEachTopic>();
+        public List<FinalSaleForEachTopic> getFinalSaleForEach_B(int branchId, string accountId, int sellItemTypeId)
+        {
+            List<FinalSaleForEachTopic> listOfFinalSale = new List<FinalSaleForEachTopic>();
 
-        //    SqlCommand command;
-        //    SqlDataReader dataReader;
-        //    String sql, Output = " ";
-        //    sql = "select dbo.MassageTopic.Name, count(dbo.OrderRecord.MassageTopicId) as 'Total Pax', sum(Price) as 'Total Sale' from dbo.OrderRecord left join dbo.MassageTopic on dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id where BranchId = '"+branchId+"' and AccountId in (select top 1 Id as AccountID from dbo.Account where BranchId = '" + branchId + "' order by AccountID desc) group by dbo.MassageTopic.Name order by count(dbo.OrderRecord.MassageTopicId) desc;";
+            SqlCommand command;
+            SqlDataReader dataReader;
+            String sql = " ";
+            int useAccount = int.Parse(accountId);
 
-        //    connetionString = ConfigurationManager.AppSettings["cString"];
-        //    cnn = new SqlConnection(connetionString);
-        //    cnn.Open();
-        //    command = new SqlCommand(sql, cnn);
 
-        //    dataReader = command.ExecuteReader();
-        //    while (dataReader.Read())
-        //    {
-        //        Output = Output + dataReader.GetValue(0) + "-" + dataReader.GetValue(1) + "-" + dataReader.GetValue(2) + "</br>";
-        //        listOfFinalSale.Add(new FinalSaleForEachTopic { MassageTopicName = dataReader.GetValue(0).ToString(), TotalPax = String.Format("{0:n0}", dataReader.GetValue(1)), TotalSale = String.Format("{0:n}", dataReader.GetValue(2)) });
-        //    }
+            using (var dbContext = new spasystemdbEntities())
+            {
+                List<int> orderReceipts = dbContext.OrderReceipts
+                            .Where(b => b.BranchId == branchId && b.AccountId == useAccount && b.CancelStatus == "false" && b.SellItemTypeId == sellItemTypeId)
+                            .Select(b => b.Id)
+                            .ToList();
 
-        //    dataReader.Close();
-        //    command.Dispose();
-        //    cnn.Close();
+                // Fetch all relevant OrderRecords
+                listOfFinalSale = (from or in dbContext.OrderRecords
+                                   join topic in dbContext.MassageTopics on or.MassageTopicId equals topic.Id
+                                   where or.BranchId == branchId
+                                         && orderReceipts.Contains((int)or.OrderReceiptId)
+                                         && or.CancelStatus == "false"
+                                   group or by topic.Name into grouped
+                                   select new FinalSaleForEachTopic
+                                   {
+                                       MassageTopicName = grouped.Key,
+                                       TotalPax = grouped.Count().ToString(),
+                                       TotalSale = grouped.Sum(o => o.Price).ToString()
+                                   }).OrderByDescending(g => g.TotalPax).ToList();
 
-        //    return listOfFinalSale;
 
-        //}
+            }
+
+
+            //connetionString = ConfigurationManager.AppSettings["cString"];
+            //cnn = new SqlConnection(connetionString);
+            //cnn.Open();
+            //command = new SqlCommand(sql, cnn);
+
+            //dataReader = command.ExecuteReader();
+            //while (dataReader.Read())
+            //{
+            //    listOfFinalSale.Add(new FinalSaleForEachTopic { MassageTopicName = dataReader.GetValue(0).ToString(), TotalPax = String.Format("{0:n0}", dataReader.GetValue(1)), TotalSale = String.Format("{0:n}", dataReader.GetValue(2)) });
+            //}
+
+            //dataReader.Close();
+            //command.Dispose();
+            //cnn.Close();
+
+            return listOfFinalSale;
+
+        }
 
         public string BoolToWord(string boolWord)
         {
@@ -9014,13 +9514,7 @@ namespace WebApplication13.Controllers
 
             using (var context = new spasystemdbEntities())
             {
-                // Query for all blogs with names starting with B 
-                //var blogs = from b in context.Accounts
-                //            where b.Date.Equals(2016-12-22)
-                //            select b;
 
-                //ac.Add((Account)blogs);
-                // Query for the Blog named ADO.NET Blog
 
                 totalVip = context.OrderRecords
                                 .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.MemberId != 0)
@@ -9030,140 +9524,272 @@ namespace WebApplication13.Controllers
             return totalVip;
         }
 
+        public int getTotalVipAmount_B(int branchId, int accountId, int sellItemTypeId)
+        {
+            int totalVip = 0;
+
+            using (var context = new spasystemdbEntities())
+            {
+                List<int> orderReceipts = context.OrderReceipts
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.SellItemTypeId == sellItemTypeId)
+                                .Select(b => b.Id)
+                                .ToList();
+
+                // Fetch all relevant OrderRecords
+                totalVip = (from or in context.OrderRecords
+                                    where or.BranchId == branchId
+                                          && orderReceipts.Contains((int)or.OrderReceiptId)
+                                          && or.CancelStatus == "false"
+                                          && or.MemberId != 0
+                                    select or.Id).ToList().Count();
+
+                //totalVip = context.OrderRecords
+                //                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.MemberId != 0)
+                //                .ToList().Count();
+            }
+
+            return totalVip;
+        }
+
         public int getCash(int branchId, int accountId)
         {
-            int totalCash = 0;
-            List<OrderRecord> orderCash;
-
             using (var context = new spasystemdbEntities())
             {
-                // Query for all blogs with names starting with B 
-                //var blogs = from b in context.Accounts
-                //            where b.Date.Equals(2016-12-22)
-                //            select b;
+                // Perform the sum directly in the database query
+                int totalCash = context.OrderRecords
+                                        .Where(b => b.BranchId == branchId
+                                                    && b.AccountId == accountId
+                                                    && b.CancelStatus == "false"
+                                                    && b.IsCreditCard == "false")
+                                        .Sum(b => (int?)b.Price) ?? 0; // Use nullable int to handle potential null values
 
-                //ac.Add((Account)blogs);
-                // Query for the Blog named ADO.NET Blog
-
-                orderCash = context.OrderRecords
-                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "false")
-                                .ToList();
+                return totalCash;
             }
-
-            foreach (OrderRecord orc in orderCash)
-            {
-                totalCash += orc.Price;
-            }
-
-            return totalCash;
         }
+
         public int getCredit(int branchId, int accountId)
         {
-            int totalCredit = 0;
-            List<OrderRecord> orderCredit;
-
             using (var context = new spasystemdbEntities())
             {
-                // Query for all blogs with names starting with B 
-                //var blogs = from b in context.Accounts
-                //            where b.Date.Equals(2016-12-22)
-                //            select b;
+                // Perform the sum directly in the database query
+                int totalCredit = context.OrderRecords
+                                          .Where(b => b.BranchId == branchId
+                                                      && b.AccountId == accountId
+                                                      && b.CancelStatus == "false"
+                                                      && b.IsCreditCard == "true")
+                                          .Sum(b => (int?)b.Price) ?? 0; // Use nullable int to handle potential null values
 
-                //ac.Add((Account)blogs);
-                // Query for the Blog named ADO.NET Blog
-
-                orderCredit = context.OrderRecords
-                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "true")
-                                .ToList();
+                return totalCredit;
             }
-
-            foreach (OrderRecord ord in orderCredit)
-            {
-                totalCredit += ord.Price;
-            }
-
-            return totalCredit;
         }
+
 
         public int getVoucherCash(int branchId, int accountId)
         {
-            //int totalVoucher = 0;
-
-            int discountWithCash = 0;
-            List<DiscountRecord> discountRecC;
-
-            //int discountWithCredit = 0;
-            //List<DiscountRecord> discountRecCr;
-
             using (var context = new spasystemdbEntities())
             {
+                // Fetch the relevant DiscountRecords from the database
+                var discountValues = context.DiscountRecords
+                                            .Where(b => b.BranchId == branchId
+                                                        && b.AccountId == accountId
+                                                        && b.CancelStatus == "false"
+                                                        && b.IsCreditCard == "false")
+                                            .Select(b => b.Value)
+                                            .ToList();
 
-                discountRecC = context.DiscountRecords
-                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "false")
-                                .ToList();
+                // Sum the parsed integer values in memory
+                int discountWithCash = discountValues
+                                       .Where(value => !string.IsNullOrEmpty(value))
+                                       .Sum(value => Int32.Parse(value));
+
+                return discountWithCash;
             }
-
-            foreach (DiscountRecord dr in discountRecC)
-            {
-                discountWithCash += Int32.Parse(dr.Value);
-            }
-
-            //using (var context = new spasystemdbEntities())
-            //{
-
-            //    discountRecCr = context.DiscountRecords
-            //                    .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "true")
-            //                    .ToList();
-            //}
-
-            //foreach (DiscountRecord drc in discountRecCr)
-            //{
-            //    discountWithCredit += Int32.Parse(drc.Value);
-            //}
-
-
-            return discountWithCash;
         }
+
+
 
         public int getVoucherCredit(int branchId, int accountId)
         {
-            //int totalVoucher = 0;
-
-            //int discountWithCash = 0;
-            //List<DiscountRecord> discountRecC;
-
-            int discountWithCredit = 0;
-            List<DiscountRecord> discountRecCr;
-
-            //using (var context = new spasystemdbEntities())
-            //{
-
-            //    discountRecC = context.DiscountRecords
-            //                    .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "false")
-            //                    .ToList();
-            //}
-
-            //foreach (DiscountRecord dr in discountRecC)
-            //{
-            //    discountWithCash += Int32.Parse(dr.Value);
-            //}
-
             using (var context = new spasystemdbEntities())
             {
+                // Fetch the relevant DiscountRecords from the database
+                var discountValues = context.DiscountRecords
+                                            .Where(b => b.BranchId == branchId
+                                                        && b.AccountId == accountId
+                                                        && b.CancelStatus == "false"
+                                                        && b.IsCreditCard == "true")
+                                            .Select(b => b.Value)
+                                            .ToList();
 
-                discountRecCr = context.DiscountRecords
-                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.IsCreditCard == "true")
-                                .ToList();
+                // Sum the parsed integer values in memory
+                int discountWithCredit = discountValues
+                                         .Where(value => !string.IsNullOrEmpty(value))
+                                         .Sum(value => Int32.Parse(value));
+
+                return discountWithCredit;
             }
-
-            foreach (DiscountRecord drc in discountRecCr)
-            {
-                discountWithCredit += Int32.Parse(drc.Value);
-            }
-
-
-            return discountWithCredit;
         }
+
+        public class CashCreditResult
+        {
+            public int TotalCash { get; set; }
+            public int TotalCredit { get; set; }
+        }
+
+        public CashCreditResult GetTotalCashAndCredit(int branchId, int accountId)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                var data = (from or in context.OrderRecords
+                            where or.BranchId == branchId && or.AccountId == accountId && or.CancelStatus == "false"
+                            select new
+                            {
+                                Price = (int?)or.Price,
+                                or.IsCreditCard
+                            })
+                            .ToList();
+
+                var discountData = (from dr in context.DiscountRecords
+                                    where dr.BranchId == branchId && dr.AccountId == accountId && dr.CancelStatus == "false"
+                                    select new
+                                    {
+                                        dr.Value,
+                                        dr.IsCreditCard
+                                    })
+                                    .ToList();
+
+                int totalCash = data.Where(or => or.IsCreditCard == "false").Sum(or => or.Price ?? 0)
+                               - discountData.Where(dr => dr.IsCreditCard == "false").Sum(dr => Int32.Parse(dr.Value));
+
+                int totalCredit = data.Where(or => or.IsCreditCard == "true").Sum(or => or.Price ?? 0)
+                                 - discountData.Where(dr => dr.IsCreditCard == "true").Sum(dr => Int32.Parse(dr.Value));
+
+                return new CashCreditResult
+                {
+                    TotalCash = totalCash,
+                    TotalCredit = totalCredit
+                };
+            }
+        }
+
+        public class CashCreditSummary
+        {
+            public int TotalCash { get; set; }
+            public int TotalCredit { get; set; }
+        }
+
+
+        public CashCreditSummary GetTotalCashAndCredit_multiAcc(int branchId, List<int> accountIds)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                // Fetch all relevant OrderRecords
+                var orderResults = (from or in context.OrderRecords
+                                    where or.BranchId == branchId
+                                          && accountIds.Contains(or.AccountId)
+                                          && or.CancelStatus == "false"
+                                    group or by or.IsCreditCard into grouped
+                                    select new
+                                    {
+                                        IsCreditCard = grouped.Key,
+                                        TotalPrice = grouped.Sum(or => (int?)or.Price) ?? 0
+                                    }).ToList();
+
+                // Fetch all relevant DiscountRecords
+                var discountData = (from dr in context.DiscountRecords
+                                    where dr.BranchId == branchId
+                                          && accountIds.Contains(dr.AccountId)
+                                          && dr.CancelStatus == "false"
+                                    select new
+                                    {
+                                        dr.Value,
+                                        dr.IsCreditCard
+                                    }).ToList();
+
+                // Sum the parsed integer values in memory
+                int totalCashDiscount = discountData
+                    .Where(dr => dr.IsCreditCard == "false" && !string.IsNullOrEmpty(dr.Value))
+                    .Sum(dr => Int32.Parse(dr.Value));
+
+                int totalCreditDiscount = discountData
+                    .Where(dr => dr.IsCreditCard == "true" && !string.IsNullOrEmpty(dr.Value))
+                    .Sum(dr => Int32.Parse(dr.Value));
+
+                // Sum the values for cash and credit
+                int totalCash = orderResults
+                    .Where(or => or.IsCreditCard == "false")
+                    .Sum(or => or.TotalPrice) - totalCashDiscount;
+
+                int totalCredit = orderResults
+                    .Where(or => or.IsCreditCard == "true")
+                    .Sum(or => or.TotalPrice) - totalCreditDiscount;
+
+                return new CashCreditSummary
+                {
+                    TotalCash = totalCash,
+                    TotalCredit = totalCredit
+                };
+            }
+        }
+
+        public CashCreditSummary GetTotalCashAndCredit_multiAcc_B(int branchId, int accountId, int sellItemTypeId)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                List<int> orderReceipts = context.OrderReceipts
+                                .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.SellItemTypeId == sellItemTypeId)
+                                .Select(b => b.Id)
+                                .ToList();
+
+                // Fetch all relevant OrderRecords
+                var orderResults = (from or in context.OrderRecords
+                                    where or.BranchId == branchId
+                                          && orderReceipts.Contains((int)or.OrderReceiptId)
+                                          && or.CancelStatus == "false"
+                                    group or by or.IsCreditCard into grouped
+                                    select new
+                                    {
+                                        IsCreditCard = grouped.Key,
+                                        TotalPrice = grouped.Sum(or => (int?)or.Price) ?? 0
+                                    }).ToList();
+
+                // Fetch all relevant DiscountRecords
+                var discountData = (from dr in context.DiscountRecords
+                                    where dr.BranchId == branchId
+                                          && orderReceipts.Contains((int)dr.OrderReceiptId)
+                                          && dr.CancelStatus == "false"
+                                    select new
+                                    {
+                                        dr.Value,
+                                        dr.IsCreditCard
+                                    }).ToList();
+
+                // Sum the parsed integer values in memory
+                int totalCashDiscount = discountData
+                    .Where(dr => dr.IsCreditCard == "false" && !string.IsNullOrEmpty(dr.Value))
+                    .Sum(dr => Int32.Parse(dr.Value));
+
+                int totalCreditDiscount = discountData
+                    .Where(dr => dr.IsCreditCard == "true" && !string.IsNullOrEmpty(dr.Value))
+                    .Sum(dr => Int32.Parse(dr.Value));
+
+                // Sum the values for cash and credit
+                int totalCash = orderResults
+                    .Where(or => or.IsCreditCard == "false")
+                    .Sum(or => or.TotalPrice) - totalCashDiscount;
+
+                int totalCredit = orderResults
+                    .Where(or => or.IsCreditCard == "true")
+                    .Sum(or => or.TotalPrice) - totalCreditDiscount;
+
+                return new CashCreditSummary
+                {
+                    TotalCash = totalCash,
+                    TotalCredit = totalCredit
+                };
+            }
+        }
+
 
         public string CheckUserIsEnable(string userName)
         {
@@ -9230,6 +9856,76 @@ namespace WebApplication13.Controllers
                 Response.Cookies.Add(_cookie_user);
             }
         }
+
+        public string getBranchName(int branchId)
+        {
+            string bName;
+
+            using (var context = new spasystemdbEntities())
+            {
+                // Query for all blogs with names starting with B 
+                //var blogs = from b in context.Accounts
+                //            where b.Date.Equals(2016-12-22)
+                //            select b;
+
+                //ac.Add((Account)blogs);
+                // Query for the Blog named ADO.NET Blog
+
+                bName = context.Branches
+                                .Where(b => b.Id == branchId)
+                                .Select(s => s.Name)
+                                .FirstOrDefault();
+            }
+
+            return bName;
+        }
+
+        //public int getSumDiscount_B(int branchId, int accountId, int sellItemTypeId)
+        //{
+        //    int sumDiscount = 0;
+        //    using (var context = new spasystemdbEntities())
+        //    {
+        //        List<int> orderReceipts = context.OrderReceipts
+        //                        .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.SellItemTypeId == sellItemTypeId)
+        //                        .Select(b => b.Id)
+        //                        .ToList();
+
+        //        sumDiscount = (from dr in context.DiscountRecords
+        //                            where dr.BranchId == branchId
+        //                                  && orderReceipts.Contains((int)dr.OrderReceiptId)
+        //                                  && dr.CancelStatus == "false"
+        //                            select dr.Value).Sum();
+        //    }
+
+        //    return sumDiscount;
+        //}
+
+        public int getSumDiscount_B(int branchId, int accountId, int sellItemTypeId)
+        {
+            int sumDiscount = 0;
+
+            using (var context = new spasystemdbEntities())
+            {
+                List<int> orderReceipts = context.OrderReceipts
+                                    .Where(b => b.BranchId == branchId && b.AccountId == accountId && b.CancelStatus == "false" && b.SellItemTypeId == sellItemTypeId)
+                                    .Select(b => b.Id)
+                                    .ToList();
+
+                sumDiscount = context.DiscountRecords
+                                     .Where(dr => dr.BranchId == branchId
+                                                  && orderReceipts.Contains((int)dr.OrderReceiptId)
+                                                  && dr.CancelStatus == "false")
+                                     .AsEnumerable() // Execute the query in memory
+                                     .Sum(dr =>
+                                     {
+                                         int parsedValue;
+                                         return int.TryParse(dr.Value, out parsedValue) ? parsedValue : 0;
+                                     });
+            }
+
+            return sumDiscount;
+        }
+
 
 
     }

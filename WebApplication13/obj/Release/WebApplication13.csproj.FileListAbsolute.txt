@@ -175,4 +175,3 @@ C:\Users\iHC\Source\Repos\spa_dashboard\WebApplication13\obj\Release\WebApplicat
 C:\Users\iHC\Source\Repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.CopyComplete
 C:\Users\iHC\Source\Repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.dll
 C:\Users\iHC\Source\Repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.pdb
-C:\Users\iHC\source\repos\spa_dashboard\WebApplication13\obj\Release\WebApplication13.csproj.AssemblyReference.cache

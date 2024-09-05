@@ -71,6 +71,7 @@
     <EntitySetMapping Name="OrderRecords">
       <EntityTypeMapping TypeName="spasystemdbModel.OrderRecord">
         <MappingFragment StoreEntitySet="OrderRecord">
+          <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
           <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
           <ScalarProperty Name="MemberDiscountAmount" ColumnName="MemberDiscountAmount" />
           <ScalarProperty Name="MemberId" ColumnName="MemberId" />
@@ -543,6 +544,7 @@
     <EntitySetMapping Name="OrderReceipts">
       <EntityTypeMapping TypeName="spasystemdbModel.OrderReceipt">
         <MappingFragment StoreEntitySet="OrderReceipt">
+          <ScalarProperty Name="SellItemTypeId" ColumnName="SellItemTypeId" />
           <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
           <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
           <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />

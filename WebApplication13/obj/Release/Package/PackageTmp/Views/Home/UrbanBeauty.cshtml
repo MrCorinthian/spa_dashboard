@@ -1,0 +1,413 @@
+﻿@model WebApplication13.Models.HeaderWithBeauty
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Spa System Admin Panel</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="../vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="../Content/progressring1.css" rel="stylesheet">
+
+    <script type="text/javascript">
+        function toggleOverlay() {
+            var overlay = document.getElementById("overlay");
+            overlay.style.display = "block";
+            overlay.style.pointerEvents = "none";
+        }
+    </script>
+    <script type="text/javascript">
+        function hideOverlay() {
+            var overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
+            overlay.style.pointerEvents = "auto";
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function navigateToOtherPage() {
+            document.getElementById("overlay").style.display = "block";
+        }
+    </script>
+
+    <script type="text/javascript">
+
+        function navigationSuccess() {
+            document.getElementById("overlay").style.display = "none";
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function ShowHideDiv(chkDaily) {
+            var dvPassportD = document.getElementById("selectdatetime");
+            var dvPassportM = document.getElementById("selectmonth");
+            var dvPassportY = document.getElementById("selectyear");
+
+            var radioM = document.getElementById("chkMonthly");
+            var radioY = document.getElementById("chkYearly");
+
+            if (chkDaily.checked) {
+                dvPassportD.style.display = "block";
+                dvPassportM.style.display = "none";
+                dvPassportY.style.display = "none";
+
+                radioM.checked = false;
+                radioY.checked = false;
+            }
+            else {
+                //dvPassportD.style.display = "block";
+                //dvPassportM.style.display = "none";
+                //dvPassportY.style.display = "none";
+            }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
+    </script>
+
+    <script type="text/javascript">
+        function ShowHideDiv2(chkMonthly) {
+            var dvPassportD = document.getElementById("selectdatetime");
+            var dvPassportM = document.getElementById("selectmonth");
+            var dvPassportY = document.getElementById("selectyear");
+
+            var radioD = document.getElementById("chkDaily");
+            var radioY = document.getElementById("chkYearly");
+
+            if (chkMonthly.checked) {
+                dvPassportD.style.display = "none";
+                dvPassportM.style.display = "block";
+                dvPassportY.style.display = "none";
+
+                radioD.checked = false;
+                radioY.checked = false;
+            }
+            else {
+                //dvPassportD.style.display = "block";
+                //dvPassportM.style.display = "none";
+                //dvPassportY.style.display = "none";
+            }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
+    </script>
+
+    <script type="text/javascript">
+        function ShowHideDiv3(chkYearly) {
+            var dvPassportD = document.getElementById("selectdatetime");
+            var dvPassportM = document.getElementById("selectmonth");
+            var dvPassportY = document.getElementById("selectyear");
+
+            var radioD = document.getElementById("chkDaily");
+            var radioM = document.getElementById("chkMonthly");
+
+            if (chkYearly.checked) {
+                dvPassportD.style.display = "none";
+                dvPassportM.style.display = "none";
+                dvPassportY.style.display = "block";
+
+                radioD.checked = false;
+                radioM.checked = false;
+            }
+            else {
+                //dvPassportD.style.display = "block";
+                //dvPassportM.style.display = "none";
+                //dvPassportY.style.display = "none";
+            }
+            //dvPassport.style.display = chkDaily.checked ? "block" : "none";
+        }
+    </script>
+
+    <script type="text/javascript">
+    function loadData(tab) {
+    // Show the loading overlay
+    toggleOverlay();
+
+    $.ajax({
+        url: '@Url.Action("UrbanBeauty", "Home")', // Replace with your action
+        type: 'GET',
+        data: { tab: tab, bid: 99, accountId: '@Model.accountId' }, // Send the tab identifier
+        success: function (data) {
+            // Hide the loading overlay
+            hideOverlay();
+
+            // Update the content dynamically
+            $('#dynamic-content').html(data);
+        },
+        error: function (xhr, status, error) {
+            // Hide the loading overlay in case of error
+            hideOverlay();
+            alert('Failed to retrieve data: ' + error);
+        }
+    });
+}
+
+    </script>
+
+    <script type="text/javascript">
+        function switchActiveButton(button) {
+            // Switch the active button
+            document.getElementById("btn-massage").classList.remove("active-btn");
+            document.getElementById("btn-beauty").classList.remove("active-btn");
+            button.classList.add("active-btn");
+
+            // Show the loading overlay when switching buttons
+            toggleOverlay();
+        }
+
+
+    </script>
+
+
+    <style>
+        /* Your flat button styles */
+        .flat-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border-radius: 5px;
+        }
+
+        .primary-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+            .primary-btn:hover {
+                background-color: #2980b9;
+                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            }
+
+        .secondary-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+            .secondary-btn:hover {
+                background-color: #7f8c8d;
+                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            }
+
+        .flat-btn:active {
+            background-color: #2c3e50;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2) inset;
+        }
+
+        /* Media query for responsive design */
+        @@media (max-width: 768px) {
+            .flat-btn {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+
+        /* Active button style */
+        .active-btn {
+            background-color: #3498db !important;
+            color: white;
+        }
+
+        /* Non-active (grey) button */
+        .flat-btn:not(.active-btn) {
+            background-color: #95a5a6;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="overlay">
+            <div class="spinner">
+                <div class="ring"></div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Spa System Admin Panel</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                &nbsp;&nbsp;
+                <b>@Html.DisplayFor(model => model.strLoginName)</b> &nbsp;&nbsp;
+                <li class="dropdown">
+                    <a href="@Url.Action("UrbanBeauty", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="@Url.Action("Dashboard", "Home")" onclick="navigateToOtherPage();">@*<i class="fa fa-chevron-down fa-fw"></i>*@ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 4 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 3</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 5 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 4</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 6 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 5</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 7 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 6</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 8 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 7</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 10 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 8</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 12 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Thai Garden 1</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("UrbanBeauty", "Home", new { bid = 99 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Testing Branch</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">@Html.DisplayFor(model => model.bName)</h1>
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+                @*<div class="row">
+                <div class="col-lg-3">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tabA" data-toggle="tab" onclick="loadTabData('A')">Massage</a>
+                        </li>
+                        <li>
+                            <a href="#tabB" data-toggle="tab" onclick="loadTabData('B')">Beauty</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>*@
+
+                <div class="row">
+                    <div class="col-lg-3">
+                        <button class="flat-btn primary-btn active-btn" id="btn-massage" onclick="switchActiveButton(this); loadData('A')">Massage</button>
+                        <button class="flat-btn secondary-btn" id="btn-beauty" onclick="switchActiveButton(this); loadData('B')">Beauty</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Placeholder to load the content dynamically -->
+            <div class="row">
+                <div id="dynamic-content" class="col-lg-12">
+                    <!-- Include the partial view when it's not an AJAX request -->
+                    @Html.Partial("_UrbanBeautyPartial", Model)
+                </div>
+            </div>
+
+            <!-- start toggle content between Massage and Beauty here -->
+            
+            <!-- /.container-fluid -->
+        </div>
+
+    <!-- /#page-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../vendor/raphael/raphael.min.js"></script>
+    <script src="../vendor/morrisjs/morris.min.js"></script>
+    <script src="../data/morris-data.js"></script>
+    <script src="../js/maingraphcalculate.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="../vendor/datatables-responsive/dataTables.responsive.js"></script>
+
+    <!-- Flot Charts JavaScript -->
+    <script src="../vendor/flot/excanvas.min.js"></script>
+    <script src="../vendor/flot/jquery.flot.js"></script>
+    <script src="../vendor/flot/jquery.flot.pie.js"></script>
+    <script src="../vendor/flot/jquery.flot.resize.js"></script>
+    <script src="../vendor/flot/jquery.flot.time.js"></script>
+    <script src="../vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
+
+    <script type="text/javascript">
+        var yourJavaScriptArray = @Html.Raw(Json.Encode(Model.arrGraphVal));
+        var graph = Morris.Area({
+            element: 'mygraph',
+            data: yourJavaScriptArray,
+            xkey: 'x',
+            ykeys: ['y'],
+            labels: ['Sale'],
+            hideHover: true
+        });
+    </script>
+
+
+
+    </body>
+
+</html>

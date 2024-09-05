@@ -378,6 +378,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="CancelStatus" Type="varchar" MaxLength="10" />
     <Property Name="CreateDateTime" Type="datetime" />
     <Property Name="UpdateDateTime" Type="datetime" />
+    <Property Name="SellItemTypeId" Type="int" />
   </EntityType>
   <EntityType Name="OrderRecord">
     <Key>
@@ -401,6 +402,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
     <Property Name="MemberId" Type="int" />
     <Property Name="MemberDiscountAmount" Type="smallint" />
     <Property Name="ReceiptId" Type="int" />
+    <Property Name="OrderReceiptId" Type="int" />
   </EntityType>
   <EntityType Name="OrderRecordWithDiscount">
     <Key>

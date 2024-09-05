@@ -508,6 +508,7 @@
     <Compile Include="Models\HeaderValueVIP.cs" />
     <Compile Include="Models\HeaderValueVIPGroup.cs" />
     <Compile Include="Models\HeaderValueVIPPriv.cs" />
+    <Compile Include="Models\HeaderWithBeauty.cs" />
     <Compile Include="Models\JsonProp.cs" />
     <Compile Include="Models\JsonPropForTopAB.cs" />
     <Compile Include="Models\JsonPropForTopABflot.cs" />
@@ -682,6 +683,8 @@
     <Content Include="Views\Privacy\Index.cshtml" />
     <Content Include="Views\Home\ThaiGardenOne.cshtml" />
     <Content Include="Views\Home\ThaiBeautyOne.cshtml" />
+    <Content Include="Views\Home\UrbanBeauty.cshtml" />
+    <Content Include="Views\Home\_UrbanBeautyPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -169,7 +169,7 @@
                 &nbsp;&nbsp;
                 <b>@Html.DisplayFor(model => model.strLoginName)</b> &nbsp;&nbsp;
                 <li class="dropdown">
-                    <a href="@Url.Action("UrbanThree", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
+                    <a href="@Url.Action("Urban", "Home",new { cmd = "logout" })"><i class="fa fa-power-off fa-2x"></i></a>
                 </li>
                 <!-- /.dropdown -->
             </ul>
@@ -182,38 +182,29 @@
                             <a href="@Url.Action("Dashboard", "Home")" onclick="navigateToOtherPage();">@*<i class="fa fa-chevron-down fa-fw"></i>*@ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Urban", "Home", new { id = 4 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 4 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 3</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanThree", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 3</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 5 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 4</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanFour", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 4</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 6 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 5</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanFive", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 5</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 7 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 6</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanSix", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 6</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 8 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 7</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanSeven", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 7</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 10 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 8</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("UrbanEight", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Urban Thai 8</a>
+                            <a href="@Url.Action("Urban", "Home", new { bid = 12 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Thai Garden 1</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("ThaiGardenOne", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Thai Garden 1</a>
+                            <a href="@Url.Action("UrbanBeauty", "Home", new { bid = 99 })" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Testing Branch</a>
                         </li>
-                        <li>
-                            <a href="@Url.Action("ThaiBeautyOne", "Home")" onclick="navigateToOtherPage();"><i class="fa fa-desktop fa-fw"></i> Test branch</a>
-                        </li>
-                        @*<li>
-                                <a href="@Url.Action("Member", "Home")" target="_blank"><i class="fa fa-user-plus fa-fw"></i> VIP member</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "Mobile")" target="_blank"><i class="fa fa-user-plus fa-fw"></i> Commission Dashboard</a>
-                            </li>*@
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -226,7 +217,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Urban Thai 3</h1>
+                        <h1 class="page-header">@Html.DisplayFor(model => model.bName)</h1>
                         <h4>Average  :  @Html.DisplayFor(model => model.strAverage)</h4>
                         <br />
                         <div class="radiofilter">
@@ -249,12 +240,13 @@
                                 <label>@Html.RadioButton("yearlychb","yearly",false) Yearly Record</label>*@
                         </div>
                         <div class="select-datetime" id="selectdatetime" style="display:block">
-                            @using (Html.BeginForm("UrbanThree", "Home", FormMethod.Get))
+                            @using (Html.BeginForm("Urban", "Home", FormMethod.Get))
                             {
 
-                                <fieldset>
-                                    Transaction start Date/Time : @Html.DropDownList("accountId", Model.listAllAccounts) <input type="submit" value="Submit" onclick="toggleOverlay()" />
-                                </fieldset>
+                            <fieldset>
+                                <input type="hidden" name="bid" value=@Model.bid />
+                                Transaction start Date/Time : @Html.DropDownList("accountId", Model.listAllAccounts) <input type="submit" value="Submit" onclick="toggleOverlay()" />
+                            </fieldset>
 
                             }
                             @*Transaction Start Date/Time : <input type="text" value="@Model.SellStartDate" disabled />
@@ -277,23 +269,25 @@
                                 </script>*@
                         </div>
                         <div class="select-month" id="selectmonth" style="display:none">
-                            @using (Html.BeginForm("UrbanThree", "Home", FormMethod.Get))
+                            @using (Html.BeginForm("Urban", "Home", FormMethod.Get))
                             {
 
-                                <fieldset>
-                                    Month and Year : @Html.DropDownList("monthNo", Model.listAllMonths) @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" onclick="toggleOverlay()" />
-                                </fieldset>
+                            <fieldset>
+                                <input type="hidden" name="bid" value=@Model.bid />
+                                Month and Year : @Html.DropDownList("monthNo", Model.listAllMonths) @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" onclick="toggleOverlay()" />
+                            </fieldset>
 
                             }
 
                         </div>
                         <div class="select-year" id="selectyear" style="display:none">
-                            @using (Html.BeginForm("UrbanThree", "Home", FormMethod.Get))
+                            @using (Html.BeginForm("Urban", "Home", FormMethod.Get))
                             {
 
-                                <fieldset>
-                                    Year : @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" onclick="toggleOverlay()" />
-                                </fieldset>
+                            <fieldset>
+                                <input type="hidden" name="bid" value=@Model.bid />
+                                Year : @Html.DropDownList("yearNo", Model.listAllYears) <input type="submit" value="Submit" onclick="toggleOverlay()" />
+                            </fieldset>
 
                             }
 

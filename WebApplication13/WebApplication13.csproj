@@ -504,6 +504,7 @@
     </Compile>
     <Compile Include="Models\FinalSaleForEachTopic.cs" />
     <Compile Include="Models\ForInsertMember.cs" />
+    <Compile Include="Models\HeaderForMaster.cs" />
     <Compile Include="Models\HeaderValue.cs" />
     <Compile Include="Models\HeaderValueVIP.cs" />
     <Compile Include="Models\HeaderValueVIPGroup.cs" />
@@ -666,7 +667,7 @@
     <Content Include="Views\Accounts\Details.cshtml" />
     <Content Include="Views\Accounts\Edit.cshtml" />
     <Content Include="Views\Accounts\Index.cshtml" />
-    <Content Include="Views\Home\Khaosan.cshtml" />
+    <Content Include="Views\Home\_CreateMassageTopicPartial.cshtml" />
     <Content Include="Views\Home\UrbanThree.cshtml" />
     <Content Include="Views\Home\UrbanFour.cshtml" />
     <Content Include="Views\Home\UrbanFive.cshtml" />
@@ -685,6 +686,8 @@
     <Content Include="Views\Home\ThaiBeautyOne.cshtml" />
     <Content Include="Views\Home\UrbanBeauty.cshtml" />
     <Content Include="Views\Home\_UrbanBeautyPartial.cshtml" />
+    <Content Include="Views\Home\ManageMassageTopic.cshtml" />
+    <Content Include="Views\Home\_MassageTopicListPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

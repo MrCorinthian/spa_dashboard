@@ -5394,7 +5394,7 @@ namespace WebApplication13.Controllers
                     }
                     else
                     {
-                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', (SUM(dbo.OrderRecord.Commission) + (SELECT SUM(dbo.OtherSaleRecord.Commission) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false')) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
+                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', (SUM(dbo.OrderRecord.Commission) + COALESCE((SELECT SUM(dbo.OtherSaleRecord.Commission) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false'), 0)) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountId + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountId + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountId + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
 
                         connetionString = ConfigurationManager.AppSettings["cString"];
                         cnn = new SqlConnection(connetionString);
@@ -5960,7 +5960,7 @@ namespace WebApplication13.Controllers
                     }
                     else
                     {
-                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', (SUM(dbo.OrderRecord.Commission) + (SELECT SUM(dbo.OtherSaleRecord.Commission) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false')) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
+                        sql = "SELECT SUM(dbo.OrderRecord.Price) AS 'Total Sale', COUNT(dbo.OrderRecord.Id) AS 'Total Pax', (SUM(dbo.OrderRecord.Commission) + COALESCE((SELECT SUM(dbo.OtherSaleRecord.Commission) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false'), 0)) AS 'Total Commission', (SUM(dbo.OrderRecord.Price) / COUNT(dbo.OrderRecord.Id)) AS 'Average', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Total Staff', (SELECT SUM(dbo.OtherSaleRecord.Price) FROM dbo.OtherSaleRecord WHERE dbo.OtherSaleRecord.BranchId = '" + branchIds + "' AND dbo.OtherSaleRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OtherSaleRecord.CancelStatus = 'false') AS 'Total Other Sale', (SELECT TOP 1 dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC) AS 'Top A', (SELECT dbo.MassageTopic.Name FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "' GROUP BY dbo.MassageTopic.Name ORDER BY COUNT(dbo.OrderRecord.MassageTopicId) DESC OFFSET 1 ROW FETCH NEXT 1 ROW ONLY) AS 'Top B', (SELECT dbo.Account.StaffAmount FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') * (SELECT dbo.SystemSetting.Value FROM dbo.SystemSetting WHERE BranchId = '" + branchIds + "' AND Name = 'OilPrice') AS 'Total Oil Income', (SELECT dbo.Account.StartMoney FROM dbo.Account WHERE Id = '" + accountIdInInteger + "' AND BranchId = '" + branchIds + "') AS 'Initial Money' FROM dbo.OrderRecord LEFT JOIN dbo.MassageTopic ON dbo.OrderRecord.MassageTopicId = dbo.MassageTopic.Id WHERE dbo.OrderRecord.BranchId = '" + branchIds + "' AND dbo.OrderRecord.AccountId = '" + accountIdInInteger + "' AND dbo.OrderRecord.CancelStatus = 'false' AND dbo.MassageTopic.SellItemTypeId = '" + sellItemTypeId + "';";
 
                         connetionString = ConfigurationManager.AppSettings["cString"];
                         cnn = new SqlConnection(connetionString);
@@ -6092,7 +6092,7 @@ namespace WebApplication13.Controllers
                             strCredit = strCredit_B,
                             bid = bid,
                             bName = getBranchName(bid),
-                            accountId = accountId
+                            accountId = accountIdInInteger.ToString()
                         };
 
                         //return View(hv);
@@ -6115,6 +6115,127 @@ namespace WebApplication13.Controllers
                 return RedirectToAction("Index");
             }
         }
+        public ActionResult ManageMassageTopic(string cmd)
+        {
+            //Check if Log out button is clicked
+            if (cmd != null)
+            {
+
+                //Remove cookie when log out
+                RemoveCookie();
+                return RedirectToAction("Index");
+            }
+
+            //Check user token
+            // Retrieve the cookie from the request
+            HttpCookie cookie = Request.Cookies["TokenCookie"];
+            HttpCookie cookie_user = Request.Cookies["UserCookie"];
+
+            string tokenValue = null;
+            string userName = null;
+
+            //Check user token from cookie
+            if (cookie != null)
+            {
+                tokenValue = cookie.Value;
+
+                //Check user name from cookie
+                if (cookie_user != null)
+                {
+                    userName = cookie_user.Value;
+                }
+                else
+                {
+                    userName = "Annonymous";
+                }
+
+                // Get list of massage topics
+                using (var context = new spasystemdbEntities()) // Assuming this is your DB context name
+                {
+                    var massageTopics = context.MassageTopics.ToList();
+
+                    var model = new HeaderForMaster()
+                    {
+                        strLoginName = userName,
+                        MassageTopics = massageTopics // Pass the list to the model
+                    };
+
+                    return View(model);
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public ActionResult LoadCreateForm()
+        {
+            return PartialView("_CreateMassageTopicPartial", new MassageTopic());
+        }
+
+        [HttpPost]
+        public ActionResult CreateMassageTopic(MassageTopic newTopic)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                context.MassageTopics.Add(newTopic);
+                context.SaveChanges();
+            }
+
+            // Return updated list after creation
+            using (var newContext = new spasystemdbEntities())
+            {
+                var massageTopics = newContext.MassageTopics.ToList();
+                return PartialView("_MassageTopicListPartial", massageTopics);
+            }
+        }
+
+        // Reload the table (list) after clicking "Back"
+        public ActionResult ReloadMassageTopicList()
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                var massageTopics = context.MassageTopics.ToList();
+                return PartialView("_MassageTopicListPartial", massageTopics);
+            }
+        }
+
+        public ActionResult DeleteMassageTopic(int id)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                var topic = context.MassageTopics.FirstOrDefault(m => m.Id == id);
+                if (topic != null)
+                {
+                    context.MassageTopics.Remove(topic);
+                    context.SaveChanges();
+                }
+            }
+
+            // After deletion, return the updated list
+            return RedirectToAction("ReloadMassageTopicList");
+        }
+
+        [HttpPost]
+        public ActionResult UpdateMassageTopic(MassageTopic updatedTopic)
+        {
+            using (var context = new spasystemdbEntities())
+            {
+                var topic = context.MassageTopics.FirstOrDefault(m => m.Id == updatedTopic.Id);
+                if (topic != null)
+                {
+                    topic.Name = updatedTopic.Name;
+                    topic.HeaderColor = updatedTopic.HeaderColor;
+                    topic.ChildColor = updatedTopic.ChildColor;
+                    context.SaveChanges();
+                }
+            }
+
+            // After updating, return the updated list of massage topics
+            return RedirectToAction("ReloadMassageTopicList");
+        }
+
         public ActionResult Member(string accountId, string monthNo, string yearNo, string cmd)
         {
             
@@ -9925,7 +10046,6 @@ namespace WebApplication13.Controllers
 
             return sumDiscount;
         }
-
 
 
     }

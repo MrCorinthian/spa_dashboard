@@ -1,0 +1,13 @@
+﻿@model WebApplication13.Models.MassageTopic
+
+<h2>Create New Massage Topic</h2>
+
+@using (Html.BeginForm("CreateMassageTopic", "Home", FormMethod.Post, new { id = "createForm" }))
+{
+    <div class="form-group">
+        <label for="Name">Name</label>
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+
+    <input type="submit" value="Create" class="btn btn-success" />
+}

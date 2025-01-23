@@ -298,10 +298,13 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP1.pubxml" />
+    <None Include="Properties\PublishProfiles\spabackoffice2019 - FTP2.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP1.pubxml" />
+    <None Include="Properties\PublishProfiles\spabackoffice2019 - ReadOnly - FTP2.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\spabackoffice2019 - Web Deploy2.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
@@ -496,12 +499,17 @@
     <Compile Include="Models\DiscountRecord.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmployeeType.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\FinalSaleForEachTopic.cs" />
     <Compile Include="Models\ForInsertMember.cs" />
+    <Compile Include="Models\HeaderForMaster.cs" />
     <Compile Include="Models\HeaderValue.cs" />
     <Compile Include="Models\HeaderValueVIP.cs" />
     <Compile Include="Models\HeaderValueVIPGroup.cs" />
     <Compile Include="Models\HeaderValueVIPPriv.cs" />
+    <Compile Include="Models\HeaderWithBeauty.cs" />
     <Compile Include="Models\JsonProp.cs" />
     <Compile Include="Models\JsonPropForTopAB.cs" />
     <Compile Include="Models\JsonPropForTopABflot.cs" />
@@ -583,6 +591,9 @@
     <Compile Include="Models\Mobile\ReportParams.cs" />
     <Compile Include="Models\Mobile\ReportTransaction.cs" />
     <Compile Include="Models\Mobile\ResponseData.cs" />
+    <Compile Include="Models\OrderReceipt.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\OrderRecord.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
@@ -600,6 +611,9 @@
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Receipt.cs">
+      <DependentUpon>SpaDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SellItemType.cs">
       <DependentUpon>SpaDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpaDataModel.Context.cs">
@@ -653,7 +667,7 @@
     <Content Include="Views\Accounts\Details.cshtml" />
     <Content Include="Views\Accounts\Edit.cshtml" />
     <Content Include="Views\Accounts\Index.cshtml" />
-    <Content Include="Views\Home\Khaosan.cshtml" />
+    <Content Include="Views\Home\_CreateMassageTopicPartial.cshtml" />
     <Content Include="Views\Home\UrbanThree.cshtml" />
     <Content Include="Views\Home\UrbanFour.cshtml" />
     <Content Include="Views\Home\UrbanFive.cshtml" />
@@ -668,6 +682,12 @@
     <Content Include="Views\Mobile\Index.cshtml" />
     <Content Include="Views\Home\UrbanEight.cshtml" />
     <Content Include="Views\Privacy\Index.cshtml" />
+    <Content Include="Views\Home\ThaiGardenOne.cshtml" />
+    <Content Include="Views\Home\ThaiBeautyOne.cshtml" />
+    <Content Include="Views\Home\UrbanBeauty.cshtml" />
+    <Content Include="Views\Home\_UrbanBeautyPartial.cshtml" />
+    <Content Include="Views\Home\ManageMassageTopic.cshtml" />
+    <Content Include="Views\Home\_MassageTopicListPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

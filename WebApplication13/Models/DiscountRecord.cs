@@ -26,5 +26,6 @@ namespace WebApplication13.Models
         public string CancelStatus { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
+        public Nullable<int> OrderReceiptId { get; set; }
     }
 }

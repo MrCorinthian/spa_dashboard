@@ -78,6 +78,21 @@
           <Property Name="CancelStatus" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="OrderReceiptId" Type="int" />
+        </EntityType>
+        <EntityType Name="EmployeeType">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="BranchId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ShowName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Active" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Image" Type="varchar" MaxLength="50" />
+          <Property Name="CreateDateTime" Type="datetime" />
+          <Property Name="UpdateDateTime" Type="datetime" />
         </EntityType>
         <EntityType Name="MassagePlan">
           <Key>
@@ -101,6 +116,7 @@
           <Property Name="Commission" Type="smallint" Nullable="false" />
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="Position" Type="int" />
         </EntityType>
         <EntityType Name="MassageTopic">
           <Key>
@@ -112,6 +128,7 @@
           <Property Name="ChildColor" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="SellItemTypeId" Type="int" />
         </EntityType>
         <EntityType Name="Member">
           <Key>
@@ -354,6 +371,20 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="Created" Type="datetime2" Precision="7" />
           <Property Name="Expired" Type="datetime2" Precision="7" />
         </EntityType>
+        <EntityType Name="OrderReceipt">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="BranchId" Type="int" Nullable="false" />
+          <Property Name="AccountId" Type="int" Nullable="false" />
+          <Property Name="ReceiptNo" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="CancelStatus" Type="varchar" MaxLength="10" />
+          <Property Name="CreateDateTime" Type="datetime" />
+          <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="SellItemTypeId" Type="int" />
+        </EntityType>
         <EntityType Name="OrderRecord">
           <Key>
             <PropertyRef Name="Id" />
@@ -376,6 +407,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="MemberId" Type="int" />
           <Property Name="MemberDiscountAmount" Type="smallint" />
           <Property Name="ReceiptId" Type="int" />
+          <Property Name="OrderReceiptId" Type="int" />
         </EntityType>
         <EntityType Name="OrderRecordWithDiscount">
           <Key>
@@ -401,6 +433,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
+          <Property Name="CommissionPercent" Type="int" />
         </EntityType>
         <EntityType Name="OtherSaleRecord">
           <Key>
@@ -419,6 +452,8 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="CreateDateTime" Type="datetime" />
           <Property Name="UpdateDateTime" Type="datetime" />
           <Property Name="IsCreditCard" Type="varchar" MaxLength="10" />
+          <Property Name="OrderReceiptId" Type="int" />
+          <Property Name="Commission" Type="smallint" />
         </EntityType>
         <EntityType Name="PriviledgeType">
           <Key>
@@ -443,6 +478,19 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="Updated" Type="datetime2" Precision="7" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="SellItemType">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="BranchId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ShowName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Active" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CreateDateTime" Type="datetime" />
+          <Property Name="UpdateDateTime" Type="datetime" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -499,6 +547,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySet Name="DiscountMaster" EntityType="Self.DiscountMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DiscountMasterDetail" EntityType="Self.DiscountMasterDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DiscountRecord" EntityType="Self.DiscountRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeType" EntityType="Self.EmployeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MassagePlan" EntityType="Self.MassagePlan" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MassageSet" EntityType="Self.MassageSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MassageTopic" EntityType="Self.MassageTopic" Schema="dbo" store:Type="Tables" />
@@ -518,12 +567,14 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySet Name="MobileSetting" EntityType="Self.MobileSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileUser" EntityType="Self.MobileUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileUserLoginToken" EntityType="Self.MobileUserLoginToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderReceipt" EntityType="Self.OrderReceipt" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderRecord" EntityType="Self.OrderRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderRecordWithDiscount" EntityType="Self.OrderRecordWithDiscount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OtherSale" EntityType="Self.OtherSale" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OtherSaleRecord" EntityType="Self.OtherSaleRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PriviledgeType" EntityType="Self.PriviledgeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Receipt" EntityType="Self.Receipt" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SellItemType" EntityType="Self.SellItemType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SystemSetting" EntityType="Self.SystemSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
@@ -592,6 +643,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="Commission" Type="Int16" Nullable="false" />
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Position" Type="Int32" />
         </EntityType>
         <EntityType Name="MassageTopic">
           <Key>
@@ -603,6 +655,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="ChildColor" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="SellItemTypeId" Type="Int32" />
         </EntityType>
         <EntityType Name="OrderRecord">
           <Key>
@@ -626,6 +679,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="MemberId" Type="Int32" />
           <Property Name="MemberDiscountAmount" Type="Int16" />
           <Property Name="ReceiptId" Type="Int32" />
+          <Property Name="OrderReceiptId" Type="Int32" />
         </EntityType>
         <EntityContainer Name="spasystemdbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Accounts" EntityType="Self.Account" />
@@ -663,6 +717,9 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySet Name="MobileExportInvoices" EntityType="spasystemdbModel.MobileExportInvoice" />
           <EntitySet Name="MobileUsers" EntityType="spasystemdbModel.MobileUser" />
           <EntitySet Name="MobileDropdowns" EntityType="spasystemdbModel.MobileDropdown" />
+          <EntitySet Name="EmployeeTypes" EntityType="spasystemdbModel.EmployeeType" />
+          <EntitySet Name="SellItemTypes" EntityType="spasystemdbModel.SellItemType" />
+          <EntitySet Name="OrderReceipts" EntityType="spasystemdbModel.OrderReceipt" />
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -699,6 +756,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="CommissionPercent" Type="Int32" />
         </EntityType>
         <EntityType Name="OtherSaleRecord">
           <Key>
@@ -717,6 +775,8 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
           <Property Name="IsCreditCard" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="OrderReceiptId" Type="Int32" />
+          <Property Name="Commission" Type="Int16" />
         </EntityType>
         <EntityType Name="SystemSetting">
           <Key>
@@ -776,6 +836,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="CancelStatus" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="OrderReceiptId" Type="Int32" />
         </EntityType>
         <EntityType Name="OrderRecordWithDiscount">
           <Key>
@@ -1064,6 +1125,47 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <Property Name="Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Active" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="EmployeeType">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BranchId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShowName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Image" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SellItemType">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BranchId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShowName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OrderReceipt">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BranchId" Type="Int32" Nullable="false" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <Property Name="ReceiptNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CancelStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="SellItemTypeId" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1113,6 +1215,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="MassageSets">
             <EntityTypeMapping TypeName="spasystemdbModel.MassageSet">
               <MappingFragment StoreEntitySet="MassageSet">
+                <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="MassageTopicId" ColumnName="MassageTopicId" />
                 <ScalarProperty Name="MassagePlanId" ColumnName="MassagePlanId" />
@@ -1126,6 +1229,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="MassageTopics">
             <EntityTypeMapping TypeName="spasystemdbModel.MassageTopic">
               <MappingFragment StoreEntitySet="MassageTopic">
+                <ScalarProperty Name="SellItemTypeId" ColumnName="SellItemTypeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="HeaderColor" ColumnName="HeaderColor" />
@@ -1138,6 +1242,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="OrderRecords">
             <EntityTypeMapping TypeName="spasystemdbModel.OrderRecord">
               <MappingFragment StoreEntitySet="OrderRecord">
+                <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
                 <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
                 <ScalarProperty Name="MemberDiscountAmount" ColumnName="MemberDiscountAmount" />
                 <ScalarProperty Name="MemberId" ColumnName="MemberId" />
@@ -1187,6 +1292,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="OtherSales">
             <EntityTypeMapping TypeName="spasystemdbModel.OtherSale">
               <MappingFragment StoreEntitySet="OtherSale">
+                <ScalarProperty Name="CommissionPercent" ColumnName="CommissionPercent" />
                 <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
                 <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -1199,6 +1305,8 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="OtherSaleRecords">
             <EntityTypeMapping TypeName="spasystemdbModel.OtherSaleRecord">
               <MappingFragment StoreEntitySet="OtherSaleRecord">
+                <ScalarProperty Name="Commission" ColumnName="Commission" />
+                <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
                 <ScalarProperty Name="IsCreditCard" ColumnName="IsCreditCard" />
                 <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
                 <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
@@ -1256,6 +1364,7 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
           <EntitySetMapping Name="DiscountRecords">
             <EntityTypeMapping TypeName="spasystemdbModel.DiscountRecord">
               <MappingFragment StoreEntitySet="DiscountRecord">
+                <ScalarProperty Name="OrderReceiptId" ColumnName="OrderReceiptId" />
                 <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
                 <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
                 <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
@@ -1572,6 +1681,47 @@ warning 6002: The table/view 'spasystemdb.dbo.MobileDropdown' does not have a pr
                 <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeTypes">
+            <EntityTypeMapping TypeName="spasystemdbModel.EmployeeType">
+              <MappingFragment StoreEntitySet="EmployeeType">
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+                <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SellItemTypes">
+            <EntityTypeMapping TypeName="spasystemdbModel.SellItemType">
+              <MappingFragment StoreEntitySet="SellItemType">
+                <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+                <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderReceipts">
+            <EntityTypeMapping TypeName="spasystemdbModel.OrderReceipt">
+              <MappingFragment StoreEntitySet="OrderReceipt">
+                <ScalarProperty Name="SellItemTypeId" ColumnName="SellItemTypeId" />
+                <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+                <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+                <ScalarProperty Name="CancelStatus" ColumnName="CancelStatus" />
+                <ScalarProperty Name="ReceiptNo" ColumnName="ReceiptNo" />
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

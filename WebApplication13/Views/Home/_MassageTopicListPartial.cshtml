@@ -1,0 +1,36 @@
+﻿@model List<WebApplication13.Models.MassageTopic>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Header color</th>
+            <th>Child color</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var topic in Model)
+        {
+            <tr>
+                <td>@topic.Id</td>
+                <td>@topic.Name</td>
+                <td>
+                    @topic.HeaderColor
+                    <div style="width: 60px; height: 20px; background-color:@topic.HeaderColor; display: inline-block; border: 1px solid #000;"></div>
+                </td>
+                <td>
+                    @topic.ChildColor
+                    <div style="width: 60px; height: 20px; background-color:@topic.ChildColor; display: inline-block; border: 1px solid #000;"></div>
+                </td>
+                <td>
+                    <a href="@Url.Action("UpdateMassageTopic", new { id = topic.Id })" class="btn btn-primary">Update</a>
+                    <form action="@Url.Action("DeleteMassageTopic", new { id = topic.Id })" method="post" style="display:inline;">
+                        <input type="submit" class="btn btn-danger" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

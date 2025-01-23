@@ -21,5 +21,6 @@ namespace WebApplication13.Models
         public short Commission { get; set; }
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
+        public Nullable<int> Position { get; set; }
     }
 }

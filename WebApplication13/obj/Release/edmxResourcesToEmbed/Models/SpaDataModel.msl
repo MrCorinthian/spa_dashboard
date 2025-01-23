@@ -437,6 +437,7 @@
     <EntitySetMapping Name="MobileComTransactions">
       <EntityTypeMapping TypeName="spasystemdbModel.MobileComTransaction">
         <MappingFragment StoreEntitySet="MobileComTransaction">
+          <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="Created" ColumnName="Created" />
           <ScalarProperty Name="Longitude" ColumnName="Longitude" />

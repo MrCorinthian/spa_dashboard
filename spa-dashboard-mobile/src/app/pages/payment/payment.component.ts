@@ -98,6 +98,7 @@ export class PaymentComponent {
       })
       .subscribe((res) => {
         this.getDataTable(this.currentIndex);
+        this.closePopup();
       });
   }
 

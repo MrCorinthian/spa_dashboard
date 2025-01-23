@@ -88,6 +88,7 @@ namespace WebApplication13.Controllers.Mobile
                     filter.status = DataDAL.GetActiveFlag(filter.status);
                     DateTime monthYear = DateTime.ParseExact($"{filter.year} {filter.month} 01", "yyyy MMMM dd", CultureInfo.InvariantCulture);
                     DateTime now = DataDAL.GetDateTimeNow();
+                    DateTime monthYearNow = DateTime.ParseExact($"{now.year} {now.month} 01", "yyyy MMMM dd", CultureInfo.InvariantCulture);
                     using (var db = new spasystemdbEntities())
                     {
                         PaymentDataIndex dataIndex = new PaymentDataIndex();
@@ -133,7 +134,25 @@ namespace WebApplication13.Controllers.Mobile
                                 pData.BankAccountNumber = user.BankAccountNumber;
                                 MobileComPayment paymentStatus = db.MobileComPayments.FirstOrDefault(c => c.MobileUserId == user.Id && c.PaymentMonth.Year == monthYear.Year && c.PaymentMonth.Month == monthYear.Month);
                                 pData.PaymentStatus = paymentStatus != null ? "Y" : "N";
-                                pData.Payment = monthYear.Year <= now.Year && monthYear.Month < now.Month ? true : false;
+                                if (monthYear.Year < now.Year)
+                                {
+                                    pData.Payment = true;
+                                }
+                                else if (monthYear.Year == now.Year)
+                                {
+                                    if (monthYear.Month < now.Month)
+                                    {
+                                        pData.Payment = true;
+                                    }
+                                    else
+                                    {
+                                        pData.Payment = false;
+                                    }
+                                }
+                                else
+                                {
+                                    pData.Payment = false;
+                                }
 
                                 double sumCom = comTrans.Sum(s => s.TotalBaht);
                                 pData.ComTrans = comTrans;
@@ -177,7 +196,7 @@ namespace WebApplication13.Controllers.Mobile
                 {
                     DateTime monthYear = DateTime.ParseExact($"{filter.year} {filter.month} 01", "yyyy MMMM dd", CultureInfo.InvariantCulture);
                     DateTime now = DataDAL.GetDateTimeNow();
-                    if (monthYear.Year == now.Year && monthYear.Month < now.Month)
+                    if (monthYear < now)
                     {
                         using (var db = new spasystemdbEntities())
                         {

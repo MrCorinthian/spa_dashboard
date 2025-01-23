@@ -466,6 +466,7 @@
     <Property Name="Longitude" Type="Double" />
     <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ReceiptId" Type="Int32" />
   </EntityType>
   <EntityType Name="MobileExportInvoice">
     <Key>
